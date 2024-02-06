@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.6.33801.468
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "post-office-database", "post-office-database.csproj", "{66E80BAE-1E1C-4C90-95D3-DD4CBB52089C}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{66E80BAE-1E1C-4C90-95D3-DD4CBB52089C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{66E80BAE-1E1C-4C90-95D3-DD4CBB52089C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{66E80BAE-1E1C-4C90-95D3-DD4CBB52089C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{66E80BAE-1E1C-4C90-95D3-DD4CBB52089C}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {260BFC17-12D9-4E71-9CE2-4662A4AAC098}
+	EndGlobalSection
+EndGlobal

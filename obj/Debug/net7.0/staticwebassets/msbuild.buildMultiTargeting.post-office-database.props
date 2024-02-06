@@ -1,0 +1,3 @@
+﻿<Project>
+  <Import Project="..\build\post-office-database.props" />
+</Project>
