@@ -1,4 +1,30 @@
-.app-container {
+.fixed-header {
   display: flex;
-  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #343a40;
+  color: #fff;
+  padding: 0.5rem 1rem;
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 1030;
+}
+
+.fixed-header nav {
+  display: flex;
+}
+
+.fixed-header a {
+  color: #fff;
+  text-decoration: none;
+  margin-right: 1rem;
+}
+
+.fixed-header a:hover {
+  text-decoration: underline;
+}
+
+.websiteName {
+  font-size: 1.5rem;
 }
