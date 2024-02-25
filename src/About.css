@@ -1,0 +1,29 @@
+.about-us-container {
+  position: relative; /* Enable positioning for the overlay */
+  width: 100%; 
+  height: 100%; 
+}
+
+.background-image {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* Ensure image covers the entire container */
+  opacity: 0; /* Initially hide the image */
+  transition: opacity 0.5s ease-in-out; /* Add smooth transition */
+}
+
+.background-image.loaded {
+  opacity: 1; /* Show the image once loaded */
+}
+
+.loading-animation {
+  /* Styles for your loading animation (e.g., spinner, placeholder text) */
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  /* Adjust styles as needed for your chosen animation */
+}
