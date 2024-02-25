@@ -1,24 +1,22 @@
 import React from 'react';
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Header from './components/Header';
-import About from './components/About';
-import LoginScreen from './pages/login'; // Import your LoginScreen component
+import About from './pages/About';
+import LoginScreen from './pages/login';
+import Registration from './pages/register';
 import "./App.css";
 
 const App = () => {
   return (
     <Router>
-      <Header/>
-      <Routes> {/* Corrected import to use Routes */}
-        <Route
-          path = "/"
-          element = {<About/>}
-        />
-        <Route
-          path = "/login"
-          element = {<LoginScreen />}
-        />
-      </Routes>
+      <div className="app-container"> {/* Wrap header and routes in a container */}
+        <Header />
+        <Routes>
+          <Route path="/About" element={<About />} />
+          <Route path="/login" element={<LoginScreen />} />
+          <Route path="/register" element={<Registration />} />
+        </Routes>
+      </div>
     </Router>
   );
 };
