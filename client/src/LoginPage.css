@@ -1,0 +1,75 @@
+/* LoginPage.css */
+
+.login-page {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-color: #f2f2f2;
+}
+
+.login-form-container {
+  width: 100%;
+  max-width: 420px;
+  margin: auto;
+  padding: 20px;
+}
+
+.login-card {
+  background-color: #fff;
+  padding: 40px;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+.login-form form {
+  display: flex;
+  flex-direction: column;
+}
+
+.username-field,
+.password-field {
+  margin-bottom: 20px;
+}
+
+.username-input,
+.password-input {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  margin-top: 5px;
+}
+
+.submit-button button {
+  width: 100%; 
+  padding: 10px; 
+  border: none;
+  background-color: #007bff; 
+  color: white;
+  border-radius: 5px; 
+  cursor: pointer; 
+  margin-top: 20px;
+}
+
+.submit-button button:hover {
+  background-color: #0056b3; 
+}
+
+.register-link {
+  margin-top: 20px;
+}
+
+.register-link p {
+  color: #333; 
+}
+
+.register-link a {
+  color: #007bff;
+  text-decoration: none;
+}
+
+.register-link a:hover {
+  text-decoration: underline;
+}

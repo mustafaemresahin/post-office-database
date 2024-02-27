@@ -6,7 +6,9 @@ const LoginPage = () => {
     <div className="login-page">
       <div className="login-form-container">
         <div className="login-card"> {/* Wrap in login-card */}
+        <h1>Login</h1>
           <div className="login-form">
+            
             <form>
               <div className="username-field">
                 <input
@@ -30,9 +32,10 @@ const LoginPage = () => {
                 </button>
               </div>
             </form>
-            <div className="register-link">
-              <a href="/register">Register Account</a>
-            </div>
+            
+          </div>
+          <div className="register-link">
+            <p>If you don't have an account <a href="/register">Register Account</a></p>
           </div>
         </div>
       </div>

@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import Header from './components/Header';
 import About from './pages/About';
 import LoginScreen from './pages/login';
@@ -12,7 +12,8 @@ const App = () => {
       <div className="app-container"> {/* Wrap header and routes in a container */}
         <Header />
         <Routes>
-          <Route path="/About" element={<About />} />
+          <Route path="/" element={<Navigate replace to="/home" />} />
+          <Route path="/home" element={<About />} />
           <Route path="/login" element={<LoginScreen />} />
           <Route path="/register" element={<Registration />} />
         </Routes>

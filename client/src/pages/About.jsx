@@ -28,6 +28,7 @@ const AboutUs = () => {
       />
       <div className="text-overlay">
         <h1>Hello, this is the about section of our home screen!</h1>
+        <p></p>
       </div>
     </div>
   );
