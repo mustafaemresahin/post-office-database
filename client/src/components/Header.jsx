@@ -11,6 +11,9 @@ const Header = () => {
       <div className="websiteName">{/* Your website name content here */}</div>
       <div className="logo">{/* Your logo content here */}</div>
       <nav>
+        <Link to="/Send Package">Send Package</Link>
+      </nav>
+      <nav>
         <Link to="/login">Login/Signup</Link>
       </nav>
     </header>

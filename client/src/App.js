@@ -4,6 +4,7 @@ import Header from './components/Header';
 import About from './pages/About';
 import LoginScreen from './pages/login';
 import Registration from './pages/register';
+import Package from './pages/sendPackage';
 import "./App.css";
 
 const App = () => {
@@ -16,6 +17,7 @@ const App = () => {
           <Route path="/home" element={<About />} />
           <Route path="/login" element={<LoginScreen />} />
           <Route path="/register" element={<Registration />} />
+          <Route path="/Send Package" element={<Package />} />
         </Routes>
       </div>
     </Router>
