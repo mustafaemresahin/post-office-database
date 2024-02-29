@@ -1,0 +1,16 @@
+.package-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 80vh;
+  padding: 2rem;
+  margin:20px;
+  background-color: #f2f2f2;
+}
+
+.expedited-shipping-container {
+  display: inline-block;
+  align-items: center;
+
+}
+
