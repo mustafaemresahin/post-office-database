@@ -1,5 +1,27 @@
 const http = require('http'); // Import the built-in HTTP module
+require('dotenv').config();
+const mysql = require('mysql2/promise');
 
+/*
+const pool = mysql.createPool({
+  host: process.env.DB_HOST,
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  database: process.env.DB_NAME,  // Replace with your database name
+  port: process.env.DB_PORT
+});
+
+pool.getConnection()
+    .then(conn => {
+        console.log('Connected to MySQL database!');
+        // Perform database operations here using `conn.query()`
+        conn.release();
+    })
+    .catch(err => {
+        console.error('Error connecting to MySQL database:', err);
+    });
+
+    */
 // Define a function to handle incoming requests
 const handleRequest = (request, response) => {
   // Set the response headers
