@@ -5,7 +5,9 @@ import About from './pages/About';
 import LoginScreen from './pages/login';
 import Registration from './pages/register';
 import Package from './pages/sendPackage';
+import Track from './pages/TrackPackage';
 import "./css/App.css";
+
 
 const App = () => {
   return (
@@ -18,6 +20,7 @@ const App = () => {
           <Route path="/login" element={<LoginScreen />} />
           <Route path="/register" element={<Registration />} />
           <Route path="/Send Package" element={<Package />} />
+          <Route path="/track" element={<Track />} />
         </Routes>
       </div>
     </Router>

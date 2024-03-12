@@ -14,6 +14,9 @@ const Header = () => {
         <Link to="/Send Package">Send Package</Link>
       </nav>
       <nav>
+        <Link to="/track">Track Package </Link>
+        </nav>
+      <nav>
         <Link to="/login">Login/Signup</Link>
       </nav>
     </header>
