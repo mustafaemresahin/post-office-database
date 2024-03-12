@@ -29,7 +29,6 @@ const AboutUs = () => {
       <div className="text-overlay">
         <h1>Hello, this is the home screen!</h1>
         <p>More content</p>
-        <p>Mustafa's branch</p>
       </div>
     </div>
   );
