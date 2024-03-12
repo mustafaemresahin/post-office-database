@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import '../register.css';
-import '../package.css';
+import '../css/register.css';
+import '../css/package.css';
 
 const ShippingForm = () => {
   const [formData, setFormData] = useState({

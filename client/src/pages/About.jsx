@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import '../About.css';
+import '../css/About.css';
 
 const AboutUs = () => {
   const [isLoading, setIsLoading] = useState(true);
