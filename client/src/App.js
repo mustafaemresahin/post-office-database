@@ -5,7 +5,7 @@ import About from './pages/About';
 import LoginScreen from './pages/login';
 import Registration from './pages/register';
 import Package from './pages/sendPackage';
-import "./App.css";
+import "./css/App.css";
 
 const App = () => {
   return (
