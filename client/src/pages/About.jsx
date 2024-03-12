@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import '../About.css';
+import '../css/About.css';
 
 const AboutUs = () => {
   const [isLoading, setIsLoading] = useState(true);
@@ -27,8 +27,8 @@ const AboutUs = () => {
         className="background-image"
       />
       <div className="text-overlay">
-        <h1>Hello, this is the about section of our home screen!</h1>
-        <p></p>
+        <h1>Hello, this is the home screen!</h1>
+        <p>More content</p>
       </div>
     </div>
   );
