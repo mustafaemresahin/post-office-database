@@ -4,25 +4,7 @@ import image from '../img/about-us-bg.png';
 import '../css/register.css';
 import '../css/tracking.css'; 
 import { useNavigate } from 'react-router-dom';
-
-let navigate = useNavigate();
-
-const TrackingForm = () => {
-  const [trackingNumber, setTrackingNumber] = 
-  
-  useState({trackingNumber: ''});
-
-  const handleChange = (event) => {
-    setTrackingNumber(event.target.value);
-  };
-
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    console.log('Tracking Number:', trackingNumber);
-    // TODO: Implement tracking logic here (e.g., call an API to track the package)
-  };
-
-
+function About() {
   return (
     <div className="about-us-container">
       <div className='about-us'>
@@ -35,7 +17,7 @@ const TrackingForm = () => {
 
           
             <div className='button-holder'>
-            <button onClick={()=>navigate('../sendPackage.jsx')}>send package</button>
+        <button onClick={()=>{window.location.href="/about"}}>send package</button>
             <button onClick={()=>{window.location.href="/about"}}>track package</button>
             <button onClick={()=>{window.location.href="/about"}}>register</button>
             </div>
@@ -89,6 +71,8 @@ const TrackingForm = () => {
 
     </div>
   );
-};
 
-export default TrackingForm;
+
+};
+export default About;
+
