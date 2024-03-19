@@ -6,6 +6,7 @@ import LoginScreen from './pages/login';
 import Registration from './pages/register';
 import Package from './pages/sendPackage';
 import "./css/App.css";
+import ProfilePage from './pages/profile';
 
 const App = () => {
   return (
@@ -16,6 +17,7 @@ const App = () => {
           <Route path="/" element={<Navigate replace to="/home" />} />
           <Route path="/home" element={<About />} />
           <Route path="/login" element={<LoginScreen />} />
+          <Route path="/profile" element={<ProfilePage />} />
           <Route path="/register" element={<Registration />} />
           <Route path="/Send Package" element={<Package />} />
         </Routes>
