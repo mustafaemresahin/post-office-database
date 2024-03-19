@@ -2,7 +2,7 @@ const http = require('http'); // Import the built-in HTTP module
 require('dotenv').config();
 const mysql = require('mysql2/promise');
 
-/*
+
 const pool = mysql.createPool({
   host: process.env.DB_HOST,
   user: process.env.DB_USER,
@@ -21,7 +21,7 @@ pool.getConnection()
         console.error('Error connecting to MySQL database:', err);
     });
 
-    */
+
 // Define a function to handle incoming requests
 const handleRequest = (request, response) => {
   // Set the response headers
