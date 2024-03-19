@@ -7,6 +7,8 @@ import Registration from './pages/register';
 import Package from './pages/sendPackage';
 import Track from './pages/TrackPackage';
 import "./css/App.css";
+import ProfilePage from './pages/profile';
+import {Shop} from './pages/shop';
 
 
 const App = () => {
@@ -18,9 +20,11 @@ const App = () => {
           <Route path="/" element={<Navigate replace to="/home" />} />
           <Route path="/home" element={<About />} />
           <Route path="/login" element={<LoginScreen />} />
+          <Route path="/profile" element={<ProfilePage />} />
           <Route path="/register" element={<Registration />} />
           <Route path="/Send Package" element={<Package />} />
           <Route path="/track" element={<Track />} />
+          <Route path="/Shop" element={<Shop />} />
         </Routes>
       </div>
     </Router>

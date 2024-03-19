@@ -1,12 +1,22 @@
+
+
+
+
 .about-us-container {
-  position: relative; /* Enable positioning for the overlay */
-  width: 100%; 
+  /* position: relative; /* Enable positioning for the overlay */
+  /* width: 100%; 
   height: 100%;
-  background-color: #f2f2f2;
+  background-color: #f2f2f2; */ 
+
+
+  margin: 35px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .text-overlay {
-  padding: 20px;
+  padding: 35px;
 }
 
 .background-image {
@@ -32,3 +42,98 @@
   transform: translate(-50%, -50%);
   /* Adjust styles as needed for your chosen animation */
 }
+
+.featured-products-1{
+  
+  display: flex;
+  justify-content: center; /* Centers children horizontally */
+  align-items: center; /* Centers children vertically */
+  gap: 30px; /* Adjust the gap between items as necessary */
+  margin: 50px; /* Margin around the whole container */
+
+}
+
+.image-holder-1{
+
+  flex: 1; /* Allows the image holder to grow and take up space */
+  display: flex;
+  order:1;
+  flex-direction: column;
+
+  
+}
+
+.image-holder-2{
+
+  flex: 1; /* Allows the image holder to grow and take up space */
+  display: flex;
+  /* justify-content:flex-start; */
+  flex-direction: column;
+  order: 2;
+
+  
+}
+
+.content-holder-1{
+
+  flex: 1; /* Allows the content holder to grow and take up space */
+  display: flex;
+  order: 2;
+  flex-direction: column; /* Stacks content vertically */
+}
+
+
+.content-holder-2{
+
+  flex: 1; /* Allows the content holder to grow and take up space */
+  display: flex;
+  /* justify-content: flex-end; */
+  flex-direction: column; /* Stacks content vertically */
+  order: 1;
+}
+img{
+  position: flex;
+  width: 100%;
+  height: 100%;
+}
+
+.about-us{
+  width: 100vw;
+  background-image: url('../img/about-us-bg.png');
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 40vh;
+  background-color: #f2f2f2;
+  margin: 30px;
+
+
+}
+
+.button-holder{
+
+  display: flex;
+  justify-content: center; /* Centers children horizontally */
+  align-items: center; /* Centers children vertically */
+  gap: 30px; /* Adjust the gap between items as necessary */
+  margin: 50px; /* Margin around the whole container */
+
+
+
+}
+.about-us-card{
+
+  background-color: #f2f2f2;
+
+  min-height: 20vh;
+  border-radius: 5%;
+  margin: 10%;
+  padding: 40px;
+
+
+}
+
+
+
+

@@ -18,6 +18,7 @@ const TrackingForm = () => {
   };
 
   return (
+    <div className='tracking-page'>
     <div className="tracking-container">
       <div className="registration-card">
         <div className="registration-form"> 
@@ -41,6 +42,7 @@ const TrackingForm = () => {
         </div>
       </div>
     </div> 
+    </div>
   );
 };
 
