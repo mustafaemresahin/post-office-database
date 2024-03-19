@@ -7,6 +7,7 @@ import Registration from './pages/register';
 import Package from './pages/sendPackage';
 import "./css/App.css";
 import ProfilePage from './pages/profile';
+import {Shop} from './pages/shop';
 
 const App = () => {
   return (
@@ -20,6 +21,8 @@ const App = () => {
           <Route path="/profile" element={<ProfilePage />} />
           <Route path="/register" element={<Registration />} />
           <Route path="/Send Package" element={<Package />} />
+          <Route path="/Shop" element={<Shop />} />
+    
         </Routes>
       </div>
     </Router>

@@ -1,13 +1,13 @@
 const http = require('http'); // Import the built-in HTTP module
 require('dotenv').config();
 const mysql = require('mysql2/promise');
+const cors = require('cors');
 
-/*
+
 const pool = mysql.createPool({
   host: process.env.DB_HOST,
   user: process.env.DB_USER,
   password: process.env.DB_PASSWORD,
-  database: process.env.DB_NAME,  // Replace with your database name
   port: process.env.DB_PORT
 });
 
@@ -21,40 +21,37 @@ pool.getConnection()
         console.error('Error connecting to MySQL database:', err);
     });
 
-    */
-// Define a function to handle incoming requests
-const handleRequest = (request, response) => {
-  // Set the response headers
-  response.setHeader('Content-Type', 'application/json');  // Assuming JSON response
+const server = http.createServer((req, res) => {
+  // Handle Cors Function To Allow Axios
+  handleCors(req, res);
 
-  // Handle different HTTP methods (e.g., GET, POST)
-  if (request.method === 'GET') {
-    // Handle GET requests (logic to retrieve data)
-    response.statusCode = 200; // Set status code for successful request
-    response.end(JSON.stringify({ message: 'This is a GET response' }));  // Example response data
-  } else if (request.method === 'POST') {
-    // Handle POST requests (logic to process data)
-    let data = '';
-    request.on('data', (chunk) => {
-      data += chunk;
-    });
+  // GET Requests 
+  if (req.method === "GET") {
+      if (req.url === "/") {
+          res.setHeader('Content-Type', 'text/html');
+          res.write('<html><head><title>Hello, World!</title></head><body><h1>Hello, World!</h1></body></html>');
+          res.end();
+      }
+    }
+  else if (req.method === "POST") {
+  }
+  else if(req.method == "DELETE") {
 
-    request.on('end', () => {
-      // Parse the request body (if applicable)
-      const parsedData = JSON.parse(data);
-      // Process the data here (logic based on received data)
-      response.statusCode = 201; // Set status code for successful creation
-      response.end(JSON.stringify({ message: 'Data received successfully' }));
-    });
-  } else {
-    // Handle other methods or errors
-    response.statusCode = 405; // Method Not Allowed
-    response.end(JSON.stringify({ message: 'Method not supported' }));
+  }
+});
+
+const handleCors = (req, res) => {
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+
+  if (req.method === 'OPTIONS') {
+      res.writeHead(200);
+      res.end();
+      return;
   }
 };
 
-// Create an HTTP server and listen for requests
-const server = http.createServer(handleRequest);
 const port = process.env.PORT || 4000; // Use environment variable or default port
 server.listen(port, () => {
   console.log(`Server listening on port ${port}`);
