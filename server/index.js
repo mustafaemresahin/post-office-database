@@ -1,25 +1,30 @@
 const http = require('http'); // Import the built-in HTTP module
 require('dotenv').config();
-const mysql = require('mysql2/promise');
+const mysql = require('mysql2');
 const cors = require('cors');
 
 
-const pool = mysql.createPool({
-  host: process.env.DB_HOST,
-  user: process.env.DB_USER,
-  password: process.env.DB_PASSWORD,
-  port: process.env.DB_PORT
+const fs = require('fs');
+
+const connection = mysql.createConnection(
+{
+    host: 'post-office-web-database.mysql.database.azure.com',
+    user: 'postofficeadmin',
+    password: 'D@tabase123',
+    database: 'mydb',
+    port: 3306,
+    ssl: {ca: fs.readFileSync('C:\\Users\\rayya.DESKTOP-92F6ECR\\.ssh\\DigiCertGlobalRootCA.crt.pem')}
 });
 
-pool.getConnection()
-    .then(conn => {
-        console.log('Connected to MySQL database!');
-        // Perform database operations here using `conn.query()`
-        conn.release();
-    })
-    .catch(err => {
-        console.error('Error connecting to MySQL database:', err);
-    });
+// connect to database
+connection.connect((err) => {
+  if (err) {
+      console.log('Not connected to database');
+      throw err;
+  } else {
+      console.log('Connected to database');
+  }
+});
 
 const server = http.createServer((req, res) => {
   // Handle Cors Function To Allow Axios
