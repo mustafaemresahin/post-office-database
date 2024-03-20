@@ -18,6 +18,9 @@ const Header = () => {
         <Link to="/Profile">Profile</Link>
       </nav>
       <nav>
+        <Link to="/track">Track Package </Link>
+        </nav>
+      <nav>
         <Link to="/login">Login/Signup</Link>
       </nav>
     </header>
