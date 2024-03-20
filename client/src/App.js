@@ -8,6 +8,7 @@ import Package from './pages/sendPackage';
 import "./css/App.css";
 import ProfilePage from './pages/profile';
 import {Shop} from './pages/shop';
+import EditProfile from './pages/editprofile';
 
 const App = () => {
   return (
@@ -22,6 +23,7 @@ const App = () => {
           <Route path="/register" element={<Registration />} />
           <Route path="/Send Package" element={<Package />} />
           <Route path="/Shop" element={<Shop />} />
+          <Route path="/editprofile" element={<EditProfile />} />
     
         </Routes>
       </div>

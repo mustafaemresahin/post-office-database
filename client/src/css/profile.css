@@ -22,6 +22,7 @@
 .profile-table {
     width: 100%;
     border-collapse: collapse;
+    margin-bottom: 20px;
 }
 
 /*.profile-table header {
@@ -69,6 +70,5 @@
     width: 100%;
     transition: background-color 0.2s;
     text-align: center;
-    margin-top: 20px;
-    margin: 20px auto;
+    margin: 5px auto;
   }
