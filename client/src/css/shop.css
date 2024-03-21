@@ -31,7 +31,7 @@
     cursor: pointer;
   }
    .addToCartBttn {
-    background-color: transparent;
+    background-color: gray;
     border: 2px solid rgb(19, 19, 19);
     min-width: 100px;
     padding-left: 10px;
