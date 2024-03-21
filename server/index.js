@@ -83,6 +83,54 @@ const server = http.createServer( async (req, res) => {
         }
       );
     }
+    // Get ALl Customers
+    else if (req.url === "/customers") 
+    {
+      db.query(
+        "SELECT * FROM customer",
+        (error, result) => {
+          if (error) {
+            res.writeHead(500, { "Content-Type": "application/json" });
+            res.end(JSON.stringify({ error: error }));
+          } else {
+             res.writeHead(200, { "Content-Type": "application/json" });
+            res.end(JSON.stringify(result));
+          }
+        }
+      );
+    }
+    // Get ALL packages
+    else if (req.url === "/package") 
+    {
+      db.query(
+        "SELECT * FROM package",
+        (error, result) => {
+          if (error) {
+            res.writeHead(500, { "Content-Type": "application/json" });
+            res.end(JSON.stringify({ error: error }));
+          } else {
+             res.writeHead(200, { "Content-Type": "application/json" });
+            res.end(JSON.stringify(result));
+          }
+        }
+      );
+    }
+    // Get ALL transactions
+    else if (req.url === "/transaction") 
+    {
+      db.query(
+        "SELECT * FROM transaction",
+        (error, result) => {
+          if (error) {
+            res.writeHead(500, { "Content-Type": "application/json" });
+            res.end(JSON.stringify({ error: error }));
+          } else {
+             res.writeHead(200, { "Content-Type": "application/json" });
+            res.end(JSON.stringify(result));
+          }
+        }
+      );
+    }
   }
   else if (req.method === "POST") {
     if (req.url === "/register") {
