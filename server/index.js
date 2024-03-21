@@ -73,31 +73,32 @@ const server = http.createServer( async (req, res) => {
       req.on("data", (chunk) => {
           data += chunk;
       });
-
+      const currentDate = new Date();
+      const formattedDate = currentDate.toISOString().slice(0, 19).replace('T', ' ');
       req.on("end", () => {
           const body = JSON.parse(data);
-          const userid = body.userid;
+          const userid = uuidv4().substring(0,10);
           const firstname = body.firstname;
           const lastname = body.lastname; 
           const username = body.username;
           const password = body.password;
           const phoneNumber = body.phoneNumber;
           const email = body.email;
-          const dateSignup = body.dateSignup; 
-          const role = body.role;
+          const dateSignup = formattedDate; 
+          const role = 'User';
           const address = body.address;
           
           db.query(
             "INSERT INTO customer_user (UserID, CustomerUser, CustomerPass, Email, firstname, lastname, address, phonenumber, dateSignedUp, role) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
-              [userid, firstname, lastname, email, username, password, address, phoneNumber, dateSignup, role],
+              [userid, username, password, email, firstname, lastname, address, phoneNumber, dateSignup, role],
               (error) => {
                   if (error) {
-                      console.log(error);
-                      res.writeHead(500, {"Content-Type": "application/json"});
-                      res.end(JSON.stringify({error: "Do we get this far?"}));
+                    console.log(error);
+                    res.writeHead(500, {"Content-Type": "application/json"});
+                    res.end(JSON.stringify({error: "Do we get this far?"}));
                   } else {
-                      res.writeHead(200, {"Content-Type": "application/json"});
-                      res.end(JSON.stringify({ message: "User has signed up successfully" }));
+                    res.writeHead(200, {"Content-Type": "application/json"});
+                    res.end(JSON.stringify({ message: "User has signed up successfully" }));
                   }
               }
           );
