@@ -5,7 +5,7 @@ import axios from 'axios';
 
 const LoginPage = () => {
   const navigate = useNavigate();
-  const [values] = useState({ username: "", password: "" });
+  const [values, setValues] = useState({ username: "", password: "" });
 
   const handleSubmit = async (event) => {
     event.preventDefault(); // Prevent default form submission behavior
@@ -21,6 +21,13 @@ const LoginPage = () => {
     }
   };
 
+  const handleChange = (event) => {
+    const { name, value } = event.target;
+    setValues(prevValues => ({
+      ...prevValues,
+      [name]: value
+    }));
+  };
 
   return (
     <div className="login-page">
@@ -33,6 +40,7 @@ const LoginPage = () => {
                 <input
                   type="text"
                   placeholder="Username"
+                  onChange={handleChange}
                   required
                   className="username-input"
                 />
@@ -41,6 +49,7 @@ const LoginPage = () => {
                 <input
                   type="password"
                   placeholder="Password"
+                  onChange={handleChange}
                   required
                   className="password-input"
                 />

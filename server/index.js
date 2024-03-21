@@ -4,7 +4,21 @@ const mysql = require('mysql2');
 const cors = require('cors');
 const url = require('url');
 const { v4: uuidv4 } = require('uuid');
+const jwt = require('jsonwebtoken');
 
+const generateToken = (user) => {
+  return jwt.sign(
+    {
+      id: user.id,
+      username: user.username,
+      email: user.email,
+    },
+    'postofficeproject',
+    {
+      expiresIn: '30d',
+    }
+  );
+};
 
 const fs = require('fs');
 
@@ -102,6 +116,49 @@ const server = http.createServer( async (req, res) => {
                   }
               }
           );
+      });
+    }
+    else if (req.url === "/login") {
+      let data = "";
+      req.on("data", (chunk) => {
+        data += chunk;
+      });
+      
+      req.on("end", () => {
+        const body = JSON.parse(data);
+        const username = body.username;
+        const password = body.password;
+    
+        db.query(
+          "SELECT * FROM customer_user WHERE CustomerUser = ? AND CustomerPass = ?",
+          [username, password],
+          (error, results) => {
+            if (error) {
+              res.writeHead(500, { "Content-Type": "application/json" });
+              res.end(JSON.stringify({ error: error }));
+            } else {
+              if (results.length > 0) {
+                const user = results[0]; // Assuming user is found in the first result
+    
+                // Generate token
+                const token = generateToken(user);
+    
+                // Send user details and token in response
+                res.writeHead(200, { 'Content-Type': 'application/json' });
+                res.end(JSON.stringify({
+                  id: user.id,
+                  username: user.username,
+                  email: user.email,
+                  token: token
+                }));
+              } else {
+                // No user found with the given username and password
+                res.writeHead(401, { "Content-Type": "application/json" });
+                res.end(JSON.stringify({ message: "Wrong username or password" }));
+              }
+            }
+          }
+        );
       });
     }
   }
