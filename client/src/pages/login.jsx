@@ -5,23 +5,22 @@ import axios from 'axios';
 
 const LoginPage = () => {
   const navigate = useNavigate();
-  const [values, setValues] = useState({ username: "", password: "" });
+  const [values, setValues] = useState({username:"",password:""});
 
   const handleSubmit = async (event) => {
     event.preventDefault(); // Prevent default form submission behavior
 
     try {
       // Send POST request to login endpoint
-      console.log('Submitting values', values);
       const response = await axios.post("/login",values); 
       console.log('Login successful:', response.data);
+      localStorage.setItem('token', response.data.token);
       navigate('/profile');
     } catch (error) {
       // Handle login error
       console.error('Login failed:', error);
     }
   };
-
   const handleChange = (event) => {
     const { name, value } = event.target;
     setValues(prevValues => ({
@@ -44,6 +43,8 @@ const LoginPage = () => {
                   name="username"
                   value={values.username}
                   onChange={handleChange}
+                  name="username" // added this line
+                  value={values.username} // added this line
                   required
                   className="username-input"
                 />
@@ -53,8 +54,8 @@ const LoginPage = () => {
                   type="password"
                   placeholder="Password"
                   onChange={handleChange}
-                  name="password"
-                  value={values.password}
+                  name="password" // added this line
+                  value={values.password} // added this line
                   required
                   className="password-input"
                 />
