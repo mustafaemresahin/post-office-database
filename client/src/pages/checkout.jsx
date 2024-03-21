@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import '../css/checkout.css'; // Import your CSS file for styling
+import '../css/cart.css';
 
 function Checkout() {
     // State variables to hold form data
@@ -44,8 +45,13 @@ function Checkout() {
                     <label htmlFor="zip">ZIP Code:</label>
                     <input type="text" id="zip" value={zip} onChange={(e) => setZip(e.target.value)} required />
                 </div>
-                <button type="submit">Place Order</button>
             </form>
+            <div className="cartItem">
+                <div className="description">
+                    <h1>cart item goes here</h1>
+                </div>
+            </div>
+            <button type="submit">Place Order</button>
         </div>
     );
 }
