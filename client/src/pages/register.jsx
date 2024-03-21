@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../css/register.css';
+import axios from 'axios';
 
 const Registration = () => {
   const [userData, setUserData] = useState({
@@ -23,12 +24,16 @@ const Registration = () => {
     }));
   };
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
 
-    console.log('Submitting:', userData);
-
-    navigate('/login'); 
+    try {
+      const response = await axios.post('/register', userData);
+      console.log('Registration successful:', response.data);
+      navigate('/login');
+    } catch (error) {
+      console.error('Registration failed:', error);
+    }
   };
 
   return (
