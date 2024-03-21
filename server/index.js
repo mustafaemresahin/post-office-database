@@ -2,11 +2,13 @@ const http = require('http'); // Import the built-in HTTP module
 require('dotenv').config();
 const mysql = require('mysql2');
 const cors = require('cors');
+const url = require('url');
+const { v4: uuidv4 } = require('uuid');
 
 
 const fs = require('fs');
 
-const connection = mysql.createConnection(
+const db = mysql.createConnection(
 {
     host: 'post-office-web-database.mysql.database.azure.com',
     user: 'postofficeadmin',
@@ -17,7 +19,7 @@ const connection = mysql.createConnection(
 });
 
 // connect to database
-connection.connect((err) => {
+db.connect((err) => {
   if (err) {
       console.log('Not connected to database');
       throw err;
@@ -25,26 +27,6 @@ connection.connect((err) => {
       console.log('Connected to database');
   }
 });
-
-const server = http.createServer((req, res) => {
-  // Handle Cors Function To Allow Axios
-  handleCors(req, res);
-
-  // GET Requests 
-  if (req.method === "GET") {
-      if (req.url === "/") {
-          res.setHeader('Content-Type', 'text/html');
-          res.write('<html><head><title>Hello, World!</title></head><body><h1>Hello, World!</h1></body></html>');
-          res.end();
-      }
-    }
-  else if (req.method === "POST") {
-  }
-  else if(req.method == "DELETE") {
-
-  }
-});
-
 const handleCors = (req, res) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
@@ -56,6 +38,77 @@ const handleCors = (req, res) => {
       return;
   }
 };
+
+const server = http.createServer( async (req, res) => {
+  // Handle Cors Function To Allow Axios
+  handleCors(req, res);
+
+  // GET Requests 
+  if (req.method === "GET") {
+    if (req.url === "/") {
+      res.setHeader('Content-Type', 'text/html');
+      res.write('<html><head><title>Hello, World!</title></head><body><h1>Hello, World!</h1></body></html>');
+      res.end();
+    }
+    // Get ALl Users
+    else if (req.url === "/users") 
+    {
+      db.query(
+        "SELECT * FROM customer_user",
+        (error, result) => {
+          if (error) {
+            res.writeHead(500, { "Content-Type": "application/json" });
+            res.end(JSON.stringify({ error: error }));
+          } else {
+             res.writeHead(200, { "Content-Type": "application/json" });
+            res.end(JSON.stringify(result));
+          }
+        }
+      );
+    }
+  }
+  else if (req.method === "POST") {
+    if (req.url === "/register") {
+      let data = "";
+      req.on("data", (chunk) => {
+          data += chunk;
+      });
+
+      req.on("end", () => {
+          const body = JSON.parse(data);
+          const userid = body.userid;
+          const firstname = body.firstname;
+          const lastname = body.lastname; 
+          const username = body.username;
+          const password = body.password;
+          const phoneNumber = body.phoneNumber;
+          const email = body.email;
+          const dateSignup = body.dateSignup; 
+          const role = body.role;
+          const address = body.address;
+          
+          db.query(
+            "INSERT INTO customer_user (UserID, CustomerUser, CustomerPass, Email, firstname, lastname, address, phonenumber, dateSignedUp, role) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+              [userid, firstname, lastname, email, username, password, address, phoneNumber, dateSignup, role],
+              (error) => {
+                  if (error) {
+                      console.log(error);
+                      res.writeHead(500, {"Content-Type": "application/json"});
+                      res.end(JSON.stringify({error: "Do we get this far?"}));
+                  } else {
+                      res.writeHead(200, {"Content-Type": "application/json"});
+                      res.end(JSON.stringify({ message: "User has signed up successfully" }));
+                  }
+              }
+          );
+      });
+    }
+  }
+  else if(req.method == "DELETE") {
+    const reqURL = url.parse(req.url, true);
+    const pathSegments = reqURL.pathname.split("/");
+  }
+});
 
 const port = process.env.PORT || 4000; // Use environment variable or default port
 server.listen(port, () => {

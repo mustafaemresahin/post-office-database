@@ -1,6 +1,6 @@
 import React from "react";
 import '../css/LoginPage.css';
-//import axios from 'axios';
+import axios from 'axios';
 
 const LoginPage = () => {
   return (
