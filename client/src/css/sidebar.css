@@ -1,0 +1,51 @@
+/* Sidebar container */
+.sidebar {
+    height: 100%;
+    width: 200px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    background-color: gray;
+    padding-top: 20px;
+    margin-top: 35px; 
+
+  }
+  
+  .sidebar li {
+    padding: 10px 15px;
+    list-style-type: none;
+    margin: 10px;
+  }
+  
+  .sidebar a {
+    padding: 30px; 
+    text-decoration: none;
+    font-size: 18px;
+    color: #818181;
+    display: block;
+  }
+  
+  /* Change color on hover */
+  .sidebar a:hover {
+    color: #f1f1f1;
+  }
+  
+  /* Active/current link */
+  .sidebar .active {
+    background-color: #4CAF50;
+    color: white;
+  }
+  
+  /* Main content */
+  .main-content {
+    margin-left: 200px; /* Adjust according to sidebar width */
+    padding: 20px;
+  }
+  
+  /* Clear float */
+  .clearfix::after {
+    content: "";
+    clear: both;
+    display: table;
+  }
+  
