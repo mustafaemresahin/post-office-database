@@ -12,9 +12,7 @@ const LoginPage = () => {
 
     try {
       // Send POST request to login endpoint
-      const response = await axios.post("/login", values, {
-        withCredentials: true
-      }); 
+      const response = await axios.post("/login", values); 
       console.log('Login successful:', response.data);
       localStorage.setItem('token', response.data.token);
       navigate('/profile');

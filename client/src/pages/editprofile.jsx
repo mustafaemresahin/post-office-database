@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../css/register.css';
 import '../css/package.css';
@@ -18,6 +18,14 @@ const EditProfile = () => {
         ZipCode:'',
         PhoneNumber:''
       });
+
+      useEffect(() => {
+        const token = localStorage.getItem('token');
+        if (!token) {
+          // If no token found, redirect to login page
+          navigate("/login");
+        }
+      }, [navigate]);
     
       const handleChange = (event) => {
         const { name, value, type } = event.target;
