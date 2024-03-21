@@ -1,15 +1,34 @@
 import React from 'react';
-import '../css/profile.css';
+import { useNavigate } from 'react-router-dom';
 import '../css/register.css';
 import '../css/package.css';
+import '../css/profile.css';
 
 const ProfilePage = () => {
+
+    const navigate = useNavigate();
+
+    const handleNavigation = (event, route) => {
+        event.preventDefault();
+        // Navigate to the specified route
+        navigate(route);
+    };
+    
+    /*const navigate = useNavigate();
+
+    const handleLogout = (event) => {
+        event.preventDefault();
+
+        // Navigate to the home route
+        navigate('/home');
+    };*/
+
     return (
         <div className="package-container">
-
+        
         <div className="registration-card">
            {/* <div className="registration-form">*/}
-
+           <form onSubmit={handleNavigation}>
             <table className="profile-table">
                 <thead>
                     <tr>
@@ -51,8 +70,14 @@ const ProfilePage = () => {
                     </tr>
                 </tbody>
             </table>
-            {/*</div>*/}
+            <button className="logout-button" type="submit" onClick={(event) => handleNavigation(event, '/editProfile')}>Edit</button>
+            <button className="logout-button" type="submit" onClick={(event) => handleNavigation(event, '/home')}>Log out</button>
+            {/*<button className="logout-button" type="submit">Log out</button>
+            <button onClick={(event) => handleNavigation(event, '/home')}>Logout</button>
+            {/*<button type="submit">Log out</button>*/}
+            </form>
         </div>
+        
         </div>
     );
 }
