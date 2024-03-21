@@ -29,8 +29,11 @@ const db = mysql.createConnection(
     password: 'D@tabase123',
     database: 'mydb',
     port: 3306,
-    ssl: {ca: fs.readFileSync('C:\\Users\\rayya.DESKTOP-92F6ECR\\.ssh\\DigiCertGlobalRootCA.crt.pem')}
+    //ssl: {ca: fs.readFileSync('C:\\Users\\rayya.DESKTOP-92F6ECR\\.ssh\\DigiCertGlobalRootCA.crt.pem')}
 });
+
+
+
 
 // connect to database
 db.connect((err) => {
