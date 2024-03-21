@@ -1,4 +1,7 @@
-
+*, *:before, *:after {
+  box-sizing: border-box;
+  max-width: 100%;
+}
 
 
 
@@ -130,6 +133,7 @@ img{
   border-radius: 5%;
   margin: 10%;
   padding: 40px;
+  text-align: center;
 
 
 }

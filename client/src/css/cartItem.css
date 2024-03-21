@@ -1,0 +1,23 @@
+/* cartItem.css */
+.cartItem {
+    display: flex;
+    align-items: center;
+    gap: 1rem; /* Space between image and description */
+  }
+  
+  .description {
+    flex: 1; /* Allow description to fill available space */
+  }
+  
+  .countHandler {
+    display: flex;
+    align-items: center;
+  }
+  
+  .countHandler button,
+  .countHandler input {
+    /* Ensure buttons and input do not overflow */
+    min-width: 30px; /* Adjust based on your design */
+    max-width: 100%; /* Prevent overflow */
+  }
+  

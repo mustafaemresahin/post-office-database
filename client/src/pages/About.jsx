@@ -1,9 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import '../css/About.css';
 import image from '../img/about-us-bg.png';
 import '../css/register.css';
 import '../css/tracking.css'; 
-import { useNavigate } from 'react-router-dom';
 function About() {
   return (
     <div className="about-us-container">
@@ -12,8 +11,9 @@ function About() {
           <div className='about-us-card'>
 
             <h3>
-              Welcome to our website! We are a group hlakdhlkhdlkqwhsjhckjashjkah fjfgjkgjjllhlkhk
+              Welcome to our website! We are a group 8
             </h3>
+            <p>Mustafa, Guillermo, Rayyan, Yla, Athena</p>
 
           
             <div className='button-holder'>
