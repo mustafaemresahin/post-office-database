@@ -12,6 +12,7 @@ const LoginPage = () => {
 
     try {
       // Send POST request to login endpoint
+      console.log('Submitting values', values);
       const response = await axios.post("/login",values); 
       console.log('Login successful:', response.data);
       navigate('/profile');
@@ -40,6 +41,8 @@ const LoginPage = () => {
                 <input
                   type="text"
                   placeholder="Username"
+                  name="username"
+                  value={values.username}
                   onChange={handleChange}
                   required
                   className="username-input"
@@ -50,6 +53,8 @@ const LoginPage = () => {
                   type="password"
                   placeholder="Password"
                   onChange={handleChange}
+                  name="password"
+                  value={values.password}
                   required
                   className="password-input"
                 />
