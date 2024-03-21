@@ -13,7 +13,8 @@ import { Cart } from "./pages/cart";
 import EditProfile from './pages/editprofile';
 import { ShopContextProvider } from "./context/shop-context";
 import { AuthProvider } from './context/AuthContext'; // Import your AuthProvider
-
+import Checkout from './pages/checkout';
+import Sidebar from './pages/sidebar';
 
 const App = () => {
   return (
@@ -31,7 +32,9 @@ const App = () => {
           <Route path="/track" element={<Track />} />
           <Route path="/Shop" element={<Shop />} />
           <Route path ="/Cart" element={<Cart />} />
+          <Route path="/Checkout" element={<Checkout/>} />
           <Route path="/editprofile" element={<EditProfile />} />
+          <Route path="/sidebar" element={<Sidebar />} />
         </Routes>
         </ShopContextProvider>
       </div>
