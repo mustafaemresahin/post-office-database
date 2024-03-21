@@ -43,8 +43,6 @@ const LoginPage = () => {
                   name="username"
                   value={values.username}
                   onChange={handleChange}
-                  name="username" // added this line
-                  value={values.username} // added this line
                   required
                   className="username-input"
                 />
