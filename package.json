@@ -9,5 +9,9 @@
     "dev": "concurrently \"npm run client\" \"npm run server\"",
     "backend": "cd backend && npm run jest",
     "test:all": "concurrently \"npm run client\" \"npm run backend\""
+  },
+  "dependencies": {
+    "jsonwebtoken": "^9.0.2",
+    "uuid": "^9.0.1"
   }
 }

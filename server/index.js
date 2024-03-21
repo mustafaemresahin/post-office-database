@@ -180,30 +180,38 @@ const server = http.createServer( async (req, res) => {
         const username = body.username;
         const password = body.password;
     
+        // Here, make sure you are hashing and comparing passwords correctly if using hashing
+        // If passwords are hashed, compare the hash of the provided password with the stored hash
         db.query(
-          "SELECT * FROM customer_user WHERE CustomerUser = ? AND CustomerPass = ?",
-          [username, password],
+          "SELECT * FROM customer_user WHERE CustomerUser = ?",
+          [username],
           (error, results) => {
             if (error) {
               res.writeHead(500, { "Content-Type": "application/json" });
-              res.end(JSON.stringify({ error: error }));
+              res.end(JSON.stringify({ error: 'Internal Server Error' }));
             } else {
               if (results.length > 0) {
                 const user = results[0]; // Assuming user is found in the first result
-    
-                // Generate token
-                const token = generateToken(user);
-    
-                // Send user details and token in response
-                res.writeHead(200, { 'Content-Type': 'application/json' });
-                res.end(JSON.stringify({
-                  id: user.id,
-                  username: user.username,
-                  email: user.email,
-                  token: token
-                }));
+                // Check if the provided password matches the stored password
+                // If you're using hashed passwords, this is where bcrypt.compare would be used
+                if (user.CustomerPass === password) {
+                  // Generate token
+                  const token = generateToken(user);
+                  // Send user details and token in response
+                  res.writeHead(200, { 'Content-Type': 'application/json' });
+                  res.end(JSON.stringify({
+                    id: user.UserID,
+                    username: user.CustomerUser,
+                    email: user.Email,
+                    token: token
+                  }));
+                } else {
+                  // Password does not match
+                  res.writeHead(401, { "Content-Type": "application/json" });
+                  res.end(JSON.stringify({ message: "Wrong username or password" }));
+                }
               } else {
-                // No user found with the given username and password
+                // No user found
                 res.writeHead(401, { "Content-Type": "application/json" });
                 res.end(JSON.stringify({ message: "Wrong username or password" }));
               }
@@ -212,6 +220,7 @@ const server = http.createServer( async (req, res) => {
         );
       });
     }
+    
   }
   else if(req.method == "DELETE") {
     const reqURL = url.parse(req.url, true);
