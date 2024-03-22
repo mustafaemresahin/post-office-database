@@ -6,6 +6,7 @@ const url = require('url');
 const { v4: uuidv4 } = require('uuid');
 const jwt = require('jsonwebtoken');
 const path = require('path');
+const fs = require('fs');
 
 const generateToken = (user) => {
   return jwt.sign(
@@ -21,8 +22,6 @@ const generateToken = (user) => {
   );
 };
 
-const fs = require('fs');
-
 const db = mysql.createConnection(
 {
     host: 'post-office-web-database.mysql.database.azure.com',
@@ -32,52 +31,6 @@ const db = mysql.createConnection(
     port: 3306,
     //ssl: {ca: fs.readFileSync('C:\\Users\\rayya.DESKTOP-92F6ECR\\.ssh\\DigiCertGlobalRootCA.crt.pem')}
 });
-
-// Serve static files
-const serveStaticFiles = (req, res) => {
-  const parsedUrl = url.parse(req.url);
-  let pathname = `./client/build${parsedUrl.pathname}`;
-  const mimeType = {
-    '.ico': 'image/x-icon',
-    '.html': 'text/html',
-    '.js': 'text/javascript',
-    '.json': 'application/json',
-    '.css': 'text/css',
-    '.png': 'image/png',
-    '.jpg': 'image/jpeg',
-    '.wav': 'audio/wav',
-    '.mp4': 'video/mp4',
-    '.woff': 'application/font-woff',
-    '.ttf': 'application/font-ttf',
-    '.eot': 'application/vnd.ms-fontobject',
-    '.otf': 'application/font-otf',
-    '.wasm': 'application/wasm'
-  };
-
-  fs.exists(pathname, function (exist) {
-    if(!exist) {
-      res.statusCode = 404;
-      res.end(`File ${pathname} not found!`);
-      return;
-    }
-
-    if (fs.statSync(pathname).isDirectory()) {
-      pathname += 'index.html';
-    }
-
-    fs.readFile(pathname, function(err, data){
-      if(err){
-        res.statusCode = 500;
-        res.end(`Error getting the file: ${err}.`);
-      } else {
-        const ext = path.parse(pathname).ext;
-        res.setHeader('Content-type', mimeType[ext] || 'text/plain' );
-        res.end(data);
-      }
-    });
-  });
-};
-
 
 // connect to database
 db.connect((err) => {
@@ -100,8 +53,51 @@ const handleCors = (req, res) => {
       return;
   }
 };
+const mimeType = {
+  '.ico': 'image/x-icon',
+  '.html': 'text/html',
+  '.js': 'text/javascript',
+  '.json': 'application/json',
+  '.css': 'text/css',
+  '.png': 'image/png',
+  '.jpg': 'image/jpeg',
+  // Add any more mime types as needed
+};
+
+// This serves files from the specified directory
+const serveFile = (filePath, contentType, response) => {
+  fs.readFile(filePath, (err, content) => {
+    if (err) {
+      if (err.code === 'ENOENT') {
+        // If the file is not found, return 404
+        response.writeHead(404, { 'Content-Type': 'text/html' });
+        response.end('Not found');
+      } else {
+        // For any other server error, return 500
+        response.writeHead(500);
+        response.end('Sorry, there was an error on the server.');
+      }
+    } else {
+      // If file is found, serve it
+      response.writeHead(200, { 'Content-Type': contentType });
+      response.end(content, 'utf-8');
+    }
+  });
+};
 
 const server = http.createServer( async (req, res) => {
+
+  const basePath = path.join(__dirname, '../client/build');
+  let filePath = basePath + req.url;
+  // If no specific file requested, serve the index.html (SPA support)
+  if (req.url === '/') {
+    filePath = path.join(basePath, 'index.html');
+  }
+
+  const ext = String(path.extname(filePath)).toLowerCase();
+  const contentType = mimeType[ext] || 'application/octet-stream';
+
+  serveFile(filePath, contentType, res);
   // Handle Cors Function To Allow Axios
   handleCors(req, res);
 
@@ -274,7 +270,6 @@ const server = http.createServer( async (req, res) => {
     const reqURL = url.parse(req.url, true);
     const pathSegments = reqURL.pathname.split("/");
   }
-  serveStaticFiles(req, res);
 });
 
 const port = process.env.PORT || 4000; // Use environment variable or default port
