@@ -83,7 +83,7 @@ function Checkout() {
             
 
             {/*input form ends here */}
-            <div style={{ display: 'flex' }}>
+            <div style={{ display: 'flex'}}>
                 <div className="cartItem">
                     <div className="description">
                         <h1>cart item goes here</h1>
