@@ -3,6 +3,9 @@
     "concurrently": "^8.2.2"
   },
   "scripts": {
+    "start": "node server/index.js",
+    "heroku-postbuild": "NPM_CONFIG_PRODUCTION=false npm install --prefix client && npm run build --prefix client",
+    "build": "cd client && npm run build",
     "test": "echo \"Error: no test specified\" && exit 1",
     "client": "cd client && npm start",
     "server": "cd server && npm start",
@@ -12,6 +15,7 @@
   },
   "dependencies": {
     "jsonwebtoken": "^9.0.2",
+    "serve": "^14.2.1",
     "uuid": "^9.0.1"
   }
 }
