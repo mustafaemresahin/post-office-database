@@ -6,7 +6,6 @@ const url = require('url');
 const { v4: uuidv4 } = require('uuid');
 const jwt = require('jsonwebtoken');
 const path = require('path');
-const fs = require('fs');
 
 const generateToken = (user) => {
   return jwt.sign(
