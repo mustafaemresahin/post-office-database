@@ -8,7 +8,7 @@ export const Shop = () => {
       return  (
        <div className="shopTitle">
            <div>
-               <h1>Post Office Shop</h1>
+               <h3>Post Office Shop</h3>
            </div>
            <div className ="products"> {PRODUCTS.map((product) => (
                <Product data= {product} />

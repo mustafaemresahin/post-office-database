@@ -1,10 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import '../css/About.css';
 import image from '../img/about-us-bg.png';
 import image1 from '../img/about-us-features-1.png';
 import '../css/register.css';
 import '../css/tracking.css'; 
-import { useNavigate } from 'react-router-dom';
 function About() {
   return (
     <div className="about-us-container">
@@ -13,8 +12,12 @@ function About() {
           <div className='about-us-card'>
 
             <h3>
+
               Welcome to our website! This is your premier online resource for finding postal services worldwide. With our comprehensive and up-to-date listings, you can easily locate post offices in any country, city, or neighborhood, ensuring that your letters, parcels, and packages are sent or received without hassle.
+
+              Welcome to our website! We are a group 8
             </h3>
+            <p>Mustafa, Guillermo, Rayyan, Yla, Athena</p>
 
 
           
