@@ -3,6 +3,37 @@
     padding: 30px;
 }
 
+.checkout-container-split {
+    padding: 30px;
+    display: flex;
+}
+
+.container-split {
+    width: 50%; /* Each div takes up 50% of the container width */
+    padding: 20px;
+    border: 1px solid #ccc;
+}
+
+.checkout-confirm {
+    width: 400px;
+    height: 250px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    box-shadow: 0px 1px 5px rgba(0, 0, 0, 0.1);
+    margin: 30px;
+  }
+
+  .confirm-header {
+    font-size: 20px;
+    font-weight: bold;
+    margin:auto;
+}
+
+.confirm-total {
+    margin:auto;
+}
+
 .form-group {
     margin-bottom: 15px;
 }

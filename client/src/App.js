@@ -14,6 +14,8 @@ import EditProfile from './pages/editprofile';
 import { ShopContextProvider } from "./context/shop-context";
 import Checkout from './pages/checkout';
 import Sidebar from './pages/sidebar';
+import Employee from './pages/Employee';
+import ShippingForm from './pages/add-package';
 
 const App = () => {
   return (
@@ -34,6 +36,9 @@ const App = () => {
           <Route path="/Checkout" element={<Checkout/>} />
           <Route path="/editprofile" element={<EditProfile />} />
           <Route path="/sidebar" element={<Sidebar />} />
+          <Route path="/Employee" element={<Employee />} />
+          <Route path="/add-package" element={<ShippingForm />} />
+
         </Routes>
         </ShopContextProvider>
       </div>
