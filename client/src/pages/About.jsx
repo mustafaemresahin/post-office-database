@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import '../css/About.css';
 import image from '../img/about-us-bg.png';
+import image1 from '../img/about-us-features-1.png';
 import '../css/register.css';
 import '../css/tracking.css'; 
 import { useNavigate } from 'react-router-dom';
@@ -12,8 +13,9 @@ function About() {
           <div className='about-us-card'>
 
             <h3>
-              Welcome to our website! We are a group hlakdhlkhdlkqwhsjhckjashjkah fjfgjkgjjllhlkhk
+              Welcome to our website! This is your premier online resource for finding postal services worldwide. With our comprehensive and up-to-date listings, you can easily locate post offices in any country, city, or neighborhood, ensuring that your letters, parcels, and packages are sent or received without hassle.
             </h3>
+
 
           
             <div className='button-holder'>
@@ -33,16 +35,16 @@ function About() {
 
       <div className='featured-products-1'>
           <div className='image-holder-1'>
-          <img src= {image} alt="Description" />
+          <img src= {image1} alt="Description" />
           </div>
           <div className='content-holder-1'>
             <div className='service-title'>
-              <h2>Free Supplies</h2> 
+              <h2>Vision</h2> 
             </div>
             <div className='service-info'>
-              <h2>Ship with free Priority Mail® or Priority Mail Express® envelopes and boxes. Our supplies get you mailing and shipping in no time.</h2> 
+              <h2>Our mission is to provide easy access to postal information and services, whether you're sending a love letter, an important document, or a care package to someone special. We understand the importance of reliable postal services in keeping the world connected, and our database is meticulously maintained by a dedicated team to ensure accuracy and relevance.</h2> 
             </div>
-             <button href="#text-buttons">Order Now</button>   
+             <button onClick={()=>{window.location.href="/register"}}>Get Started</button>   
             </div>
           
 
@@ -55,12 +57,12 @@ function About() {
         </div>
         <div className='content-holder-2'>
           <div className='service-title'>
-            <h2>Free Supplies</h2> 
+            <h2>Get Your Supplies</h2> 
           </div>
           <div className='service-info'>
-            <h2>Ship with free Priority Mail® or Priority Mail Express® envelopes and boxes. Our supplies get you mailing and shipping in no time.</h2> 
+            <h2>Discover a vast array of postal supplies at our post office, designed to meet all your mailing and shipping needs with ease and efficiency. From a wide selection of boxes and envelopes of various sizes to secure your items, to an extensive range of packaging materials ensuring their safe transit, we've got you covered.</h2> 
           </div>
-          <button href="#text-buttons">Order Now</button>
+          <button onClick={()=>{window.location.href="/shop"}}>Get Supplies</button>  
         </div>
           
         
