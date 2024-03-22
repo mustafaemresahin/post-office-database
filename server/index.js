@@ -33,7 +33,50 @@ const db = mysql.createConnection(
     //ssl: {ca: fs.readFileSync('C:\\Users\\rayya.DESKTOP-92F6ECR\\.ssh\\DigiCertGlobalRootCA.crt.pem')}
 });
 
+// Serve static files
+const serveStaticFiles = (req, res) => {
+  const parsedUrl = url.parse(req.url);
+  let pathname = `./client/build${parsedUrl.pathname}`;
+  const mimeType = {
+    '.ico': 'image/x-icon',
+    '.html': 'text/html',
+    '.js': 'text/javascript',
+    '.json': 'application/json',
+    '.css': 'text/css',
+    '.png': 'image/png',
+    '.jpg': 'image/jpeg',
+    '.wav': 'audio/wav',
+    '.mp4': 'video/mp4',
+    '.woff': 'application/font-woff',
+    '.ttf': 'application/font-ttf',
+    '.eot': 'application/vnd.ms-fontobject',
+    '.otf': 'application/font-otf',
+    '.wasm': 'application/wasm'
+  };
 
+  fs.exists(pathname, function (exist) {
+    if(!exist) {
+      res.statusCode = 404;
+      res.end(`File ${pathname} not found!`);
+      return;
+    }
+
+    if (fs.statSync(pathname).isDirectory()) {
+      pathname += 'index.html';
+    }
+
+    fs.readFile(pathname, function(err, data){
+      if(err){
+        res.statusCode = 500;
+        res.end(`Error getting the file: ${err}.`);
+      } else {
+        const ext = path.parse(pathname).ext;
+        res.setHeader('Content-type', mimeType[ext] || 'text/plain' );
+        res.end(data);
+      }
+    });
+  });
+};
 
 
 // connect to database
@@ -61,47 +104,6 @@ const handleCors = (req, res) => {
 const server = http.createServer( async (req, res) => {
   // Handle Cors Function To Allow Axios
   handleCors(req, res);
-
-  // Serve static files from the React app
-  let filePath = path.join(__dirname, 'client/build', req.url === '/' ? 'index.html' : req.url);
-  const extname = String(path.extname(filePath)).toLowerCase();
-  const mimeTypes = {
-    '.html': 'text/html',
-    '.js': 'text/javascript',
-    '.css': 'text/css',
-    '.json': 'application/json',
-    '.png': 'image/png',
-    '.jpg': 'image/jpg',
-    '.gif': 'image/gif',
-    '.svg': 'image/svg+xml',
-    '.wav': 'audio/wav',
-    '.mp4': 'video/mp4',
-    '.woff': 'application/font-woff',
-    '.ttf': 'application/font-ttf',
-    '.eot': 'application/vnd.ms-fontobject',
-    '.otf': 'application/font-otf',
-    '.wasm': 'application/wasm'
-  };
-
-  fs.readFile(filePath, function(error, content) {
-    if (error) {
-      if(error.code == 'ENOENT'){
-        fs.readFile('./404.html', function(error, content) {
-          res.writeHead(404, { 'Content-Type': 'text/html' });
-          res.end(content, 'utf-8');
-        });
-      }
-      else {
-        res.writeHead(500);
-        res.end('Sorry, check with the site admin for error: '+error.code+' ..\n');
-        res.end(); 
-      }
-    }
-    else {
-      res.writeHead(200, { 'Content-Type': mimeTypes[extname] || 'application/octet-stream' });
-      res.end(content, 'utf-8');
-    }
-  });
 
   // GET Requests 
   if (req.method === "GET") {
@@ -272,6 +274,7 @@ const server = http.createServer( async (req, res) => {
     const reqURL = url.parse(req.url, true);
     const pathSegments = reqURL.pathname.split("/");
   }
+  serveStaticFiles(req, res);
 });
 
 const port = process.env.PORT || 4000; // Use environment variable or default port
