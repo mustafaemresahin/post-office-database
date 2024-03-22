@@ -1,4 +1,7 @@
-
+*, *:before, *:after {
+  box-sizing: border-box;
+  max-width: 100%;
+}
 
 
 
@@ -50,6 +53,7 @@
   align-items: center; /* Centers children vertically */
   gap: 30px; /* Adjust the gap between items as necessary */
   margin: 50px; /* Margin around the whole container */
+  padding:30px;
 
 }
 
@@ -59,6 +63,8 @@
   display: flex;
   order:1;
   flex-direction: column;
+  min-height:20vh;
+  min-width: 20vw;;
 
   
 }
@@ -67,9 +73,10 @@
 
   flex: 1; /* Allows the image holder to grow and take up space */
   display: flex;
-  /* justify-content:flex-start; */
   flex-direction: column;
   order: 2;
+  min-height:20vh;
+  min-width: 20vw;;
 
   
 }
@@ -84,10 +91,8 @@
 
 
 .content-holder-2{
-
   flex: 1; /* Allows the content holder to grow and take up space */
   display: flex;
-  /* justify-content: flex-end; */
   flex-direction: column; /* Stacks content vertically */
   order: 1;
 }
@@ -99,7 +104,7 @@ img{
 
 .about-us{
   width: 100vw;
-  background-image: url('../img/about-us-bg.png');
+  background-image: url('../img/about-us-features-2.png');
 
   display: flex;
   justify-content: center;
@@ -130,10 +135,19 @@ img{
   border-radius: 5%;
   margin: 10%;
   padding: 40px;
+  text-align: center;
 
 
 }
 
+h3{
+  text-align: center;
+}
+
+image{
+  height: 20px;
+  width: 40px;
+}
 
 
 

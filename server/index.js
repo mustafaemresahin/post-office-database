@@ -5,6 +5,7 @@ const cors = require('cors');
 const url = require('url');
 const { v4: uuidv4 } = require('uuid');
 const jwt = require('jsonwebtoken');
+const path = require('path');
 
 const generateToken = (user) => {
   return jwt.sign(
@@ -32,7 +33,50 @@ const db = mysql.createConnection(
     //ssl: {ca: fs.readFileSync('C:\\Users\\rayya.DESKTOP-92F6ECR\\.ssh\\DigiCertGlobalRootCA.crt.pem')}
 });
 
+// Serve static files
+const serveStaticFiles = (req, res) => {
+  const parsedUrl = url.parse(req.url);
+  let pathname = `./client/build${parsedUrl.pathname}`;
+  const mimeType = {
+    '.ico': 'image/x-icon',
+    '.html': 'text/html',
+    '.js': 'text/javascript',
+    '.json': 'application/json',
+    '.css': 'text/css',
+    '.png': 'image/png',
+    '.jpg': 'image/jpeg',
+    '.wav': 'audio/wav',
+    '.mp4': 'video/mp4',
+    '.woff': 'application/font-woff',
+    '.ttf': 'application/font-ttf',
+    '.eot': 'application/vnd.ms-fontobject',
+    '.otf': 'application/font-otf',
+    '.wasm': 'application/wasm'
+  };
 
+  fs.exists(pathname, function (exist) {
+    if(!exist) {
+      res.statusCode = 404;
+      res.end(`File ${pathname} not found!`);
+      return;
+    }
+
+    if (fs.statSync(pathname).isDirectory()) {
+      pathname += 'index.html';
+    }
+
+    fs.readFile(pathname, function(err, data){
+      if(err){
+        res.statusCode = 500;
+        res.end(`Error getting the file: ${err}.`);
+      } else {
+        const ext = path.parse(pathname).ext;
+        res.setHeader('Content-type', mimeType[ext] || 'text/plain' );
+        res.end(data);
+      }
+    });
+  });
+};
 
 
 // connect to database
@@ -230,6 +274,7 @@ const server = http.createServer( async (req, res) => {
     const reqURL = url.parse(req.url, true);
     const pathSegments = reqURL.pathname.split("/");
   }
+  serveStaticFiles(req, res);
 });
 
 const port = process.env.PORT || 4000; // Use environment variable or default port

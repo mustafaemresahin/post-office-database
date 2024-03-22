@@ -46,3 +46,28 @@
     color: white;
     cursor: pointer;
   }
+
+  /* shop.css */
+.shopTitle {
+  margin: auto;
+  padding: 0 1rem; /* Add padding on smaller screens */
+}
+
+.products {
+  display: flex;
+  flex-wrap: wrap; /* Ensure items can wrap on small screens */
+  justify-content: center; /* Center items for a nice layout */
+  gap: 1rem; /* Add some space between items */
+}
+
+.product {
+  flex: 1 1 200px; /* Example: Allow flex items to grow and shrink, but not smaller than 200px */
+  /* Adjust other styles as necessary */
+}
+
+/* General CSS for images in cart items and shop products */
+img {
+  max-width: 100%;
+  height: auto;
+  display: block; /* Remove extra space below the image */
+}
