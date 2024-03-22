@@ -13,7 +13,7 @@ export const PRODUCTS = [
    {
        id: 2,
        productName: 'Supplies',
-       price: 0.00,
+       price: 0.99,
        productImage: product2,
    },
    {

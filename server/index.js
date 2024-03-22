@@ -48,6 +48,7 @@ const handleCors = (req, res) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+  res.setHeader('Access-Control-Allow-Credentials', 'true');
 
   if (req.method === 'OPTIONS') {
       res.writeHead(200);
@@ -192,6 +193,8 @@ const server = http.createServer( async (req, res) => {
             } else {
               if (results.length > 0) {
                 const user = results[0]; // Assuming user is found in the first result
+
+                const userRole = user.role;
                 // Check if the provided password matches the stored password
                 // If you're using hashed passwords, this is where bcrypt.compare would be used
                 if (user.CustomerPass === password) {
@@ -203,6 +206,7 @@ const server = http.createServer( async (req, res) => {
                     id: user.UserID,
                     username: user.CustomerUser,
                     email: user.Email,
+                    role: userRole,
                     token: token
                   }));
                 } else {

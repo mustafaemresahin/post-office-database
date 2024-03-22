@@ -1,11 +1,10 @@
-import React from 'react';
+import React, { useEffect} from "react";
 import { useNavigate } from 'react-router-dom';
 import '../css/register.css';
 import '../css/package.css';
 import '../css/profile.css';
 
 const ProfilePage = () => {
-
     const navigate = useNavigate();
 
     const handleNavigation = (event, route) => {
@@ -13,15 +12,28 @@ const ProfilePage = () => {
         // Navigate to the specified route
         navigate(route);
     };
+    useEffect(() => {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        // If no token found, redirect to login page
+        navigate("/login");
+      }
+    }, [navigate]);
     
-    /*const navigate = useNavigate();
 
     const handleLogout = (event) => {
-        event.preventDefault();
-
-        // Navigate to the home route
-        navigate('/home');
-    };*/
+      event.preventDefault(); // Prevent default form submission behavior
+  
+      // Remove token from localStorage
+      localStorage.removeItem('token');
+  
+      // Navigate to the home route
+      navigate('/home');
+    };
+    const handleEditProfile = (event) => {
+      event.preventDefault();
+      navigate('/editProfile');
+    };
 
     return (
         <div className="package-container">
@@ -70,8 +82,8 @@ const ProfilePage = () => {
                     </tr>
                 </tbody>
             </table>
-            <button className="logout-button" type="submit" onClick={(event) => handleNavigation(event, '/editProfile')}>Edit</button>
-            <button className="logout-button" type="submit" onClick={(event) => handleNavigation(event, '/home')}>Log out</button>
+            <button className="logout-button" type="submit" onClick={handleEditProfile}>Edit</button>
+            <button className="logout-button" type="submit" onClick={handleLogout}>Log out</button>
             {/*<button className="logout-button" type="submit">Log out</button>
             <button onClick={(event) => handleNavigation(event, '/home')}>Logout</button>
             {/*<button type="submit">Log out</button>*/}
