@@ -36,7 +36,7 @@ steps:
 - task: CopyFiles@2
   inputs:
     Contents: |
-      client/dist/**
+      client/build/**
       server/**
     TargetFolder: $(Build.ArtifactStagingDirectory)
 
