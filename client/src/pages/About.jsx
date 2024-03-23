@@ -51,7 +51,8 @@ function About() {
             </div>
              <button onClick={()=>{window.location.href="/register"}}>Get Started</button>   
             </div>
-          
+
+
 
 
 
@@ -69,14 +70,11 @@ function About() {
           </div>
           <button onClick={()=>{window.location.href="/shop"}}>Get Supplies</button>  
         </div>
-          
-        
-
-
-
       </div>
 
     </div>
+
+
   );
 
 

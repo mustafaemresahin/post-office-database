@@ -1,0 +1,36 @@
+.user-table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+.user-th {
+  border: 1px solid #ffffff;
+  text-align: left;
+  padding: 8px;
+  font-size: 20px;
+  background-color: rgb(117, 201, 250);
+}
+
+.user-tr td {
+  border: 1px solid #ffffff;
+  text-align: left;
+  padding: 8px;
+  font-size: 20px;
+  background-color: rgb(205, 235, 253);
+  height: 20px; /* Set a fixed height for cells */
+}
+
+/* Additional styling for form elements */
+.user-container form {
+  display: flex;
+  gap: 5px;
+}
+
+.user-container form td:last-child {
+  display: flex;
+  justify-content: space-evenly;
+}
+
+.user-container form * {
+  font-size: 20px;
+}

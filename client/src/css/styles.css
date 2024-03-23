@@ -1,24 +1,73 @@
-.fixed-header {
-  position: relative;
+.custom-header {
+  background-color: #3d3d3d; /* Bootstrap primary color */
+  color: #fff;
+  padding: 0.5rem 1rem;
+  position: fixed;
   top: 0;
-  left: 0;
-  z-index: 10; /* Ensure the header stays on top of other elements */
-  background-color: #C0A889;
-  padding: 20px;
+  justify-content: center; /* Center items horizontally */
+  align-items: center;
+  width: 100%;
+  z-index: 1030; /* Similar to Bootstrap's z-index for fixed navbars */
+}
+
+.container {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  width: 100vh;
+  max-width: 860px;
+  margin: auto;
 }
 
-.fixed-header a {
-  padding-right: 10px;
-  padding-left: 10px;
+.header-brand {
+  color: #fff;
+  text-decoration: none;
+  font-size: 1.25rem;
+  font-weight: bold;
 }
 
-body {
-  background-color: #f2f2f2; /* Your desired background color */
-  margin: 0;
-  padding: 0;
-  /* Add other global styles if needed */
+.menu-toggle {
+  font-size: 1.25rem;
+  background: none;
+  border: none;
+  color: #fff;
+  display: none; /* Hidden by default, shown in smaller screens */
+}
+
+.header-nav {
+  display: flex;
+  gap: 1px;
+}
+
+.header-nav a {
+  color: #fff;
+  text-decoration: none;
+  padding: 0.5rem 1rem;
+  border-radius: 0.25rem; /* Rounded corners like Bootstrap buttons */
+  transition: background-color 0.2s ease-in-out;
+}
+
+.header-nav a:hover {
+  background-color: #0056b3; /* Darker shade for hover effect */
+}
+
+@media (max-width: 768px) {
+  .header-nav {
+    display: none; /* Hidden by default in smaller screens */
+    flex-direction: column;
+    width: 100%;
+    padding: 0.5rem;
+  }
+
+  .header-nav.show {
+    display: flex; /* Shown when menu toggle is clicked */
+  }
+
+  .menu-toggle {
+    display: block; /* Show toggle button in smaller screens */
+  }
+}
+
+.activeLink {
+  background-color: #007bff; /* Change this color as desired to indicate active state */
+  color: #fff !important; /* Ensure text color is white for better visibility */
 }

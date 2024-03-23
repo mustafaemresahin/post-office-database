@@ -45,6 +45,7 @@ const ProfilePage = () => {
   
       // Navigate to the home route
       navigate('/home');
+      window.location.reload();
     };
     const handleEditProfile = (event) => {
       event.preventDefault();
@@ -98,8 +99,10 @@ const ProfilePage = () => {
                 </tbody>
                 </>
             ) : (
-                <p>User not found.</p>
+                <p>Loading...</p>
             )}
+            <br></br>
+            <br></br>
             <button className="logout-button" type="button" onClick={handleEditProfile}>Edit</button>
             <button className="logout-button" type="button" onClick={handleLogout}>Log out</button>
             </form>

@@ -17,6 +17,7 @@ const LoginPage = () => {
       localStorage.setItem('token', response.data.token);
       localStorage.setItem('id', response.data.id);
       navigate('/profile');
+      window.location.reload();
     } catch (error) {
       // Handle login error
       console.error('Login failed:', error);

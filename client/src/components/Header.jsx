@@ -1,41 +1,53 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
-import '../css/styles.css'; // Importing the CSS file
+import React, { useState, useEffect } from 'react';
+import { NavLink } from 'react-router-dom';
+import '../css/styles.css'; // Ensure this is the correct path to your CSS file
+import axios from 'axios';
 
 const Header = () => {
-  return (
-    <header className="fixed-header">
-      <nav>
-        <Link to="/home">Home</Link>
-      </nav>
-      <div className="websiteName">{/* Your website name content here */}</div>
-      <div className="logo">{/* Your logo content here */}</div>
-      <nav>
-        <Link to="/Send Package">Send Package</Link>
-      </nav>
-      <nav>
-      <Link to="/Shop">Shop</Link>
-      </nav>
-      <nav>
-      <Link to="/Cart">Cart</Link>
-      </nav>
-      
-      <nav>
-        <Link to="/Profile">Profile</Link>
-      </nav>
-      <nav>
-        <Link to="/track">Track Package </Link>
-        </nav>
-      <nav>
-        <Link to="/login">Login/Signup</Link>
-      </nav>
-      <nav>
-        <Link to="/Sidebar">Admin</Link>
-      </nav>
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
-      <nav>
-        <Link to="/Employee">Employee</Link>
-      </nav>
+  const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
+  const [user, setUser] = useState([]);
+
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    const id = localStorage.getItem('id');
+    setIsLoggedIn(!!token);
+    if (!token) {
+      // If no token found, do nothing
+    }
+    else{
+      axios.get('/api/users')
+      .then(response => {
+          const userData = response.data.find(user => user.UserID === id); // Find the user by id
+          if (userData) {
+            setUser(userData); // Set the found user into the users state, as an array for consistency
+          } else {
+            console.log('User not found');
+            // Handle the case where the user is not found
+          }
+        })
+        .catch(error => console.error('Error:', error));
+    }
+  }, []);
+
+  return (
+    <header className="custom-header">
+      <div className="container">
+        <button className="menu-toggle" onClick={toggleMenu}>☰</button>
+        <nav onClick={toggleMenu} className={`header-nav ${isMenuOpen ? 'show' : ''}`}>
+          <NavLink to="/home" className={({ isActive }) => isActive ? "activeLink" : ""}>Home</NavLink>
+          <NavLink to="/Send Package" className={({ isActive }) => isActive ? "activeLink" : ""}>Send Package</NavLink>
+          <NavLink to="/Shop" className={({ isActive }) => isActive ? "activeLink" : ""}>Shop</NavLink>
+          <NavLink to="/Cart" className={({ isActive }) => isActive ? "activeLink" : ""}>Cart</NavLink>
+          <NavLink to="/track" className={({ isActive }) => isActive ? "activeLink" : ""}>Track Package</NavLink>
+          <NavLink to="/sidebar" className={({ isActive }) => isActive ? "activeLink" : ""}>Admin</NavLink>
+          <NavLink to="/Employee" className={({ isActive }) => isActive ? "activeLink" : ""}>Employee</NavLink>
+          {!isLoggedIn && <NavLink to="/login" className={({ isActive }) => isActive ? "activeLink" : ""}>Login/Signup</NavLink>}
+          {isLoggedIn && <NavLink to="/Profile" className={({ isActive }) => isActive ? "activeLink" : ""}>Logged in as {user.firstname}</NavLink>}
+        </nav>
+      </div>
     </header>
   );
 };
