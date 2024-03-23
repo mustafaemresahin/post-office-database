@@ -12,7 +12,7 @@ const LoginPage = () => {
 
     try {
       // Send POST request to login endpoint
-      const response = await axios.post("http://localhost:3000/login",values); 
+      const response = await axios.post("/login",values); 
       console.log('Login successful:', response.data);
       localStorage.setItem('token', response.data.token);
       localStorage.setItem('id', response.data.id);
