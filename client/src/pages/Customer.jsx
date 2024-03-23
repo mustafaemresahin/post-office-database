@@ -2,8 +2,7 @@ import axios from 'axios'
 import { nanoid } from 'nanoid'
 import React, { useEffect, useState } from 'react'
 import '../css/customer.css';
-import { Link } from 'react-router-dom';
-
+import {useNavigate} from 'react-router-dom'; 
 function Customer() {
     const [data, setData] = useState([])
 
@@ -12,50 +11,54 @@ function Customer() {
             .then(res => setData(res.data))
             .catch(err => console.log(err));
     }, [])
-//     const [addFormData, setAddFormData] = useState({
-//         CustomerUser: ' ',
-//         Email:' ',
-//         firstname: '',
-//         lastname:'',
-//         address:'',
-//         phonenumber:'',
-//         role:''
-// })
-// const handleAddFormChange = (event) => {
-//     event.preventDefault();
-//     const fieldName = event.target.getAttribute('name');
-//     const fieldValue = event.target.value;
-
-//     const newFormData = {...addFormData};
-//     newFormData[fieldName] = fieldValue;
-
-//     setAddFormData(newFormData);
-// };
-
-// const handleAddFormSubmit = (event) => {
-//     event.preventDefault();
-
-//     const newData = {
-//     id: nanoid(), 
-//     CustomerUser: addFormData.CustomerUser ,
-//     Email: addFormData.Email,
-//     firstname: addFormData.firstname,
-//     lastname:addFormData.lastname,
-//     address: addFormData.address,
-//     phonenumber:addFormData.phonenumber,
-//     role: addFormData.role
-//     };
     
-//      const newDatas = [...data, newData];
-//     setData(newDatas);
-    
+    const [addFormData, setAddFormData] = useState({
+        CustomerUser: ' ',
+        Email:' ',
+        firstname: '',
+        lastname:'',
+        address:'',
+        phonenumber:'',
+        role:''
+})
+const handleAddFormChange = (event) => {
+    event.preventDefault();
+    const fieldName = event.target.getAttribute('name');
+    const fieldValue = event.target.value;
 
-// };
+    const newFormData = {...addFormData};
+    newFormData[fieldName] = fieldValue;
+
+    setAddFormData(newFormData);
+};
+
+const navigate = useNavigate();
+const handleAddFormSubmit = (event) => {
+    event.preventDefault();
+    axios.post('/api/users', addFormData)
+    .then (res => {
+        console.log(res);
+        navigate('/profile')
+    })
+    .catch(err => console.log(err));
+
+    const newData = {
+    id: nanoid(), 
+    CustomerUser: addFormData.CustomerUser ,
+    Email: addFormData.Email,
+    firstname: addFormData.firstname,
+    lastname:addFormData.lastname,
+    address: addFormData.address,
+    phonenumber:addFormData.phonenumber,
+    role: addFormData.role
+    };
+    const newDatas = [...data, newData];
+    setData(newDatas);
+};
 
     return (
         <div className="user-container">
             <h1>User information</h1>
-            <Link to="/create" className="btn-add">Add +</Link>
             <table className="user-table">
                 <thead>
                     <tr>
@@ -95,7 +98,7 @@ function Customer() {
 
             
 
-            {/* <h2>Add new user</h2>
+            <h2>Add new user</h2>
             <form onSubmit={handleAddFormSubmit}>
                 <input
                     type="text"
@@ -148,7 +151,7 @@ function Customer() {
                     onChange={handleAddFormChange}
                 />
                 <button type="submit">Add</button>
-            </form> */}
+            </form>
         </div>
     )
 }
