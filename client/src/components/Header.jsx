@@ -33,6 +33,10 @@ const Header = () => {
       <nav>
         <Link to="/sidebar">Admin</Link>
       </nav>
+
+      <nav>
+        <Link to="/Employee">Employee</Link>
+      </nav>
     </header>
   );
 };
