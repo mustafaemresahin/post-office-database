@@ -52,3 +52,7 @@
 .user-container form * {
   font-size: 20px;
 }
+
+.user-container {
+  padding: 30px;
+}

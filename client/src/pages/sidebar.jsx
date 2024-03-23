@@ -49,12 +49,12 @@ function Sidebar({ openSidebarToggle, OpenSidebar }) {
           </a>
         </li>
         <li className='sidebar-list-item'>
-          <a href="">
+          <a href="/products">
             Products
           </a>
         </li>
         <li className='sidebar-list-item'>
-          <a href="">
+          <a href="/categories">
             Categories
           </a>
         </li>
@@ -64,12 +64,12 @@ function Sidebar({ openSidebarToggle, OpenSidebar }) {
           </a>
         </li>
         <li className='sidebar-list-item'>
-          <a href="">
+          <a href="/inventory">
             Inventory
           </a>
         </li>
         <li className='sidebar-list-item'>
-          <a href="">
+          <a href="/reports">
             Reports
           </a>
         </li>
