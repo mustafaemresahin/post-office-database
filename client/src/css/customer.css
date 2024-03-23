@@ -3,6 +3,24 @@
   width: 100%;
 }
 
+.btn-add {
+  border: 1px solid #ffffff;
+  text-align: center; /* Align text to center */
+  padding: 8px;
+  font-size: 20px;
+  background-color: rgb(205, 235, 253);
+  height: auto; /* Adjust height to fit content */
+  display: inline-block; /* Make it inline-block to fit content */
+  text-decoration: none; /* Remove default underline */
+  color: black; /* Change text color */
+  cursor: pointer; /* Change cursor style to indicate button */
+}
+
+.btn-add:hover {
+  background-color: #9fc5e8; /* Change background color on hover */
+}
+
+
 .user-th {
   border: 1px solid #ffffff;
   text-align: left;
@@ -33,4 +51,8 @@
 
 .user-container form * {
   font-size: 20px;
+}
+
+.user-container {
+  padding: 30px;
 }

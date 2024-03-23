@@ -1,61 +1,62 @@
 import axios from 'axios'
-import { nanoid } from 'nanoid'
 import React, { useEffect, useState } from 'react'
 import '../css/customer.css';
+import { Link } from 'react-router-dom';
 
 function Customer() {
-    const [data, setData] = useState(['http://localhost:4000/api/users'])
-    const [addFormData, setAddFormData] = useState({
-        CustomerUser: ' ',
-        Email:' ',
-        firstname: '',
-        lastname:'',
-        address:'',
-        phonenumber:'',
-        role:''
-})
-const handleAddFormChange = (event) => {
-    event.preventDefault();
-    const fieldName = event.target.getAttribute('name');
-    const fieldValue = event.target.value;
-
-    const newFormData = {...addFormData};
-    newFormData[fieldName] = fieldValue;
-
-    setAddFormData(newFormData);
-};
-
-const handleAddFormSubmit = (event) => {
-    event.preventDefault();
-
-    const newData = {
-    id: nanoid(), 
-    CustomerUser: addFormData.CustomerUser ,
-    Email: addFormData.Email,
-    firstname: addFormData.firstname,
-    lastname:addFormData.lastname,
-    address: addFormData.address,
-    phonenumber:addFormData.phonenumber,
-    role: addFormData.role
-    };
-    
-     const newDatas = [...data, newData];
-    setData(newDatas);
-    
-
-
-};
-
+    const [data, setData] = useState([])
 
     useEffect(() => {
-        axios.get('http://localhost:4000/api/users')
+        axios.get('/api/users')
             .then(res => setData(res.data))
             .catch(err => console.log(err));
     }, [])
+//     const [addFormData, setAddFormData] = useState({
+//         CustomerUser: ' ',
+//         Email:' ',
+//         firstname: '',
+//         lastname:'',
+//         address:'',
+//         phonenumber:'',
+//         role:''
+// })
+// const handleAddFormChange = (event) => {
+//     event.preventDefault();
+//     const fieldName = event.target.getAttribute('name');
+//     const fieldValue = event.target.value;
+
+//     const newFormData = {...addFormData};
+//     newFormData[fieldName] = fieldValue;
+
+//     setAddFormData(newFormData);
+// };
+
+// const handleAddFormSubmit = (event) => {
+//     event.preventDefault();
+
+//     const newData = {
+//     id: nanoid(), 
+//     CustomerUser: addFormData.CustomerUser ,
+//     Email: addFormData.Email,
+//     firstname: addFormData.firstname,
+//     lastname:addFormData.lastname,
+//     address: addFormData.address,
+//     phonenumber:addFormData.phonenumber,
+//     role: addFormData.role
+//     };
+    
+//      const newDatas = [...data, newData];
+//     setData(newDatas);
+    
+
+// };
 
     return (
         <div className="user-container">
+            <br></br>
+            <br></br>
             <h1>User information</h1>
+            <Link to="/create" className="btn-add">Add +</Link>
             <table className="user-table">
                 <thead>
                     <tr>
@@ -67,6 +68,7 @@ const handleAddFormSubmit = (event) => {
                         <th className="user-th">Address</th>
                         <th className="user-th">Phone Number</th>
                         <th className="user-th">Role</th>
+                        <th className="user-th">Action</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -81,13 +83,20 @@ const handleAddFormSubmit = (event) => {
                                 <td>{user.address}</td>
                                 <td>{user.phonenumber}</td>
                                 <td>{user.role}</td>
+                                <td>
+                                 <button className='btnedit'>Read</button>
+                                    <button className='btnedit'>Edit</button>
+                                    <button className='btndelete'>Delete</button>
+                                </td>
                             </tr>
                         )
                     })}
                 </tbody>
             </table>
 
-            <h2>Add new user</h2>
+            
+
+            {/* <h2>Add new user</h2>
             <form onSubmit={handleAddFormSubmit}>
                 <input
                     type="text"
@@ -140,7 +149,7 @@ const handleAddFormSubmit = (event) => {
                     onChange={handleAddFormChange}
                 />
                 <button type="submit">Add</button>
-            </form>
+            </form> */}
         </div>
     )
 }
