@@ -267,13 +267,17 @@ const server = http.createServer( async (req, res) => {
     return;
   }
   if (!req.url.startsWith("/api")) {
-    let filePath = path.join(__dirname, '../client/build', req.url === '/' ? 'index.html' : req.url);
+    // Serve static files or index.html for non-API requests
+    const basePath = path.join(__dirname, '../client/build');
+    let filePath = path.join(basePath, req.url);
 
-    fs.exists(filePath, function(exist) {
-      if (!exist) {
-        // If the file doesn’t exist, serve index.html
-        filePath = path.join(__dirname, '../client/build', 'index.html');
+    // Check if the file exists and is not a directory
+    fs.stat(filePath, (err, stats) => {
+      if (err || !stats.isFile()) {
+        // If the file doesn't exist or is a directory, serve index.html
+        filePath = path.join(basePath, 'index.html');
       }
+
       // Determine the content type
       const ext = path.extname(filePath).toLowerCase();
       const contentType = mimeType[ext] || 'application/octet-stream';
@@ -281,7 +285,8 @@ const server = http.createServer( async (req, res) => {
       // Serve the file
       serveFile(filePath, contentType, res);
     });
-    return;
+
+    return; // Important to return here to avoid further processing
   } else {
     // Optionally handle not found for API routes
     res.writeHead(404, { "Content-Type": "application/json" });
