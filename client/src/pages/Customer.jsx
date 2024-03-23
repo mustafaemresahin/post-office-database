@@ -1,5 +1,4 @@
 import axios from 'axios'
-import { nanoid } from 'nanoid'
 import React, { useEffect, useState } from 'react'
 import '../css/customer.css';
 import {useNavigate} from 'react-router-dom'; 
@@ -58,6 +57,8 @@ const handleAddFormSubmit = (event) => {
 
     return (
         <div className="user-container">
+            <br></br>
+            <br></br>
             <h1>User information</h1>
             <table className="user-table">
                 <thead>
