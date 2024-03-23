@@ -93,7 +93,7 @@ const server = http.createServer( async (req, res) => {
   if (req.method === "GET") {
     
     // Get ALl Users
-    if (req.url === "/users") 
+    if (req.url === "/api/users") 
     {
       db.query("SELECT * FROM customer_user", (error, result) => {
         if (error) {
@@ -108,7 +108,7 @@ const server = http.createServer( async (req, res) => {
       });
     }
     // Get ALl Customers
-    else if (req.url === "/customers") 
+    else if (req.url === "/api/customers") 
     {
       db.query(
         "SELECT * FROM customer",
@@ -124,7 +124,7 @@ const server = http.createServer( async (req, res) => {
       );
     }
     // Get ALL packages
-    else if (req.url === "/package") 
+    else if (req.url === "/api/package") 
     {
       db.query(
         "SELECT * FROM package",
@@ -140,7 +140,7 @@ const server = http.createServer( async (req, res) => {
       );
     }
     // Get ALL transactions
-    else if (req.url === "/transaction") 
+    else if (req.url === "/api/transaction") 
     {
       db.query(
         "SELECT * FROM transaction",
@@ -157,7 +157,7 @@ const server = http.createServer( async (req, res) => {
     }
   }
   else if (req.method === "POST") {
-    if (req.url === "/register") {
+    if (req.url === "/api/register") {
       let data = "";
       req.on("data", (chunk) => {
           data += chunk;
@@ -193,7 +193,7 @@ const server = http.createServer( async (req, res) => {
           );
       });
     }
-    else if (req.url === "/login") {
+    else if (req.url === "/api/login") {
       let data = "";
       req.on("data", (chunk) => {
         data += chunk;
@@ -253,22 +253,26 @@ const server = http.createServer( async (req, res) => {
     const reqURL = url.parse(req.url, true);
     const pathSegments = reqURL.pathname.split("/");
   }
-  const basePath = path.join(__dirname, '../client/build');
-  filePath = path.join(basePath, req.url);
+  if (!req.url.startsWith("/api")) {
+    let filePath = path.join(__dirname, '../client/build', req.url === '/' ? 'index.html' : req.url);
 
-  fs.exists(filePath, function(exist) {
-    if (!exist) {
-      // If the file doesn’t exist, return the main index.html (for React Router to handle routing)
-      filePath = path.join(basePath, 'index.html');
-      contentType = 'text/html';
-    } else {
-      // If the file exists, determine its content type
-      const ext = String(path.extname(filePath)).toLowerCase();
-      contentType = mimeType[ext] || 'application/octet-stream';
-    }
+    fs.exists(filePath, function(exist) {
+      if (!exist) {
+        // If the file doesn’t exist, serve index.html
+        filePath = path.join(__dirname, '../client/build', 'index.html');
+      }
+      // Determine the content type
+      const ext = path.extname(filePath).toLowerCase();
+      const contentType = mimeType[ext] || 'application/octet-stream';
 
-    serveFile(filePath, contentType, res);
-  });
+      // Serve the file
+      serveFile(filePath, contentType, res);
+    });
+  } else {
+    // Optionally handle not found for API routes
+    res.writeHead(404, { "Content-Type": "application/json" });
+    res.end(JSON.stringify({ message: "API route not found" }));
+  }
 });
 
 const port = process.env.PORT || 4000; // Use environment variable or default port

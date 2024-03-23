@@ -22,7 +22,7 @@ const ProfilePage = () => {
         navigate("/login");
       }
       else{
-        axios.get('/users')
+        axios.get('/api/users')
         .then(response => {
             const userData = response.data.find(user => user.UserID === id); // Find the user by id
             if (userData) {
