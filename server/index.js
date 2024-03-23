@@ -99,11 +99,14 @@ const server = http.createServer( async (req, res) => {
         if (error) {
           res.writeHead(500, { "Content-Type": "application/json" });
           res.end(JSON.stringify({ error: error }));
+          return;
         } else {
           res.writeHead(200, { "Content-Type": "application/json" });
           res.end(JSON.stringify(result));
+          return;
         }
       });
+      return;
     }
     // Get ALl Customers
     else if (req.url === "/api/customers") 
@@ -114,12 +117,15 @@ const server = http.createServer( async (req, res) => {
           if (error) {
             res.writeHead(500, { "Content-Type": "application/json" });
             res.end(JSON.stringify({ error: error }));
+            return;
           } else {
              res.writeHead(200, { "Content-Type": "application/json" });
             res.end(JSON.stringify(result));
+            return;
           }
         }
       );
+      return;
     }
     // Get ALL packages
     else if (req.url === "/api/package") 
@@ -130,12 +136,15 @@ const server = http.createServer( async (req, res) => {
           if (error) {
             res.writeHead(500, { "Content-Type": "application/json" });
             res.end(JSON.stringify({ error: error }));
+            return;
           } else {
             res.writeHead(200, { "Content-Type": "application/json" });
             res.end(JSON.stringify(result));
+            return;
           }
         }
       );
+      return;
     }
     // Get ALL transactions
     else if (req.url === "/api/transaction") 
@@ -146,12 +155,15 @@ const server = http.createServer( async (req, res) => {
           if (error) {
             res.writeHead(500, { "Content-Type": "application/json" });
             res.end(JSON.stringify({ error: error }));
+            return;
           } else {
             res.writeHead(200, { "Content-Type": "application/json" });
             res.end(JSON.stringify(result));
+            return;
           }
         }
       );
+      return;
     }
   }
   else if (req.method === "POST") {
@@ -183,12 +195,15 @@ const server = http.createServer( async (req, res) => {
                     console.log(error);
                     res.writeHead(500, {"Content-Type": "application/json"});
                     res.end(JSON.stringify({error: "Do we get this far?"}));
+                    return;
                   } else {
                     res.writeHead(200, {"Content-Type": "application/json"});
                     res.end(JSON.stringify({ message: "User has signed up successfully" }));
+                    return;
                   }
               }
           );
+          return;
       });
     }
     else if (req.url === "/api/login") {
@@ -211,6 +226,7 @@ const server = http.createServer( async (req, res) => {
             if (error) {
               res.writeHead(500, { "Content-Type": "application/json" });
               res.end(JSON.stringify({ error: 'Internal Server Error' }));
+              return;
             } else {
               if (results.length > 0) {
                 const user = results[0]; // Assuming user is found in the first result
@@ -230,19 +246,23 @@ const server = http.createServer( async (req, res) => {
                     role: userRole,
                     token: token
                   }));
+                  return;
                 } else {
                   // Password does not match
                   res.writeHead(401, { "Content-Type": "application/json" });
                   res.end(JSON.stringify({ message: "Wrong username or password" }));
+                  return;
                 }
               } else {
                 // No user found
                 res.writeHead(401, { "Content-Type": "application/json" });
                 res.end(JSON.stringify({ message: "Wrong username or password" }));
+                return;
               }
             }
           }
         );
+        return;
       });
     }
     
@@ -250,6 +270,7 @@ const server = http.createServer( async (req, res) => {
   else if(req.method == "DELETE") {
     const reqURL = url.parse(req.url, true);
     const pathSegments = reqURL.pathname.split("/");
+    return;
   }
   // Serve static files or index.html for non-API requests
   const basePath = path.join(__dirname, '../client/build');
