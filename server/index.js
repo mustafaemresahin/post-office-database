@@ -116,9 +116,11 @@ const server = http.createServer( async (req, res) => {
           if (error) {
             res.writeHead(500, { "Content-Type": "application/json" });
             res.end(JSON.stringify({ error: error }));
+            return;
           } else {
              res.writeHead(200, { "Content-Type": "application/json" });
             res.end(JSON.stringify(result));
+            return;
           }
         }
       );
@@ -132,9 +134,11 @@ const server = http.createServer( async (req, res) => {
           if (error) {
             res.writeHead(500, { "Content-Type": "application/json" });
             res.end(JSON.stringify({ error: error }));
+            return;
           } else {
-             res.writeHead(200, { "Content-Type": "application/json" });
+            res.writeHead(200, { "Content-Type": "application/json" });
             res.end(JSON.stringify(result));
+            return;
           }
         }
       );
@@ -148,9 +152,11 @@ const server = http.createServer( async (req, res) => {
           if (error) {
             res.writeHead(500, { "Content-Type": "application/json" });
             res.end(JSON.stringify({ error: error }));
+            return;
           } else {
-             res.writeHead(200, { "Content-Type": "application/json" });
+            res.writeHead(200, { "Content-Type": "application/json" });
             res.end(JSON.stringify(result));
+            return;
           }
         }
       );
@@ -185,9 +191,11 @@ const server = http.createServer( async (req, res) => {
                     console.log(error);
                     res.writeHead(500, {"Content-Type": "application/json"});
                     res.end(JSON.stringify({error: "Do we get this far?"}));
+                    return;
                   } else {
                     res.writeHead(200, {"Content-Type": "application/json"});
                     res.end(JSON.stringify({ message: "User has signed up successfully" }));
+                    return;
                   }
               }
           );
@@ -213,6 +221,7 @@ const server = http.createServer( async (req, res) => {
             if (error) {
               res.writeHead(500, { "Content-Type": "application/json" });
               res.end(JSON.stringify({ error: 'Internal Server Error' }));
+              return;
             } else {
               if (results.length > 0) {
                 const user = results[0]; // Assuming user is found in the first result
@@ -232,15 +241,18 @@ const server = http.createServer( async (req, res) => {
                     role: userRole,
                     token: token
                   }));
+                  return;
                 } else {
                   // Password does not match
                   res.writeHead(401, { "Content-Type": "application/json" });
                   res.end(JSON.stringify({ message: "Wrong username or password" }));
+                  return;
                 }
               } else {
                 // No user found
                 res.writeHead(401, { "Content-Type": "application/json" });
                 res.end(JSON.stringify({ message: "Wrong username or password" }));
+                return;
               }
             }
           }
@@ -252,6 +264,7 @@ const server = http.createServer( async (req, res) => {
   else if(req.method == "DELETE") {
     const reqURL = url.parse(req.url, true);
     const pathSegments = reqURL.pathname.split("/");
+    return;
   }
   if (!req.url.startsWith("/api")) {
     let filePath = path.join(__dirname, '../client/build', req.url === '/' ? 'index.html' : req.url);
@@ -268,10 +281,12 @@ const server = http.createServer( async (req, res) => {
       // Serve the file
       serveFile(filePath, contentType, res);
     });
+    return;
   } else {
     // Optionally handle not found for API routes
     res.writeHead(404, { "Content-Type": "application/json" });
     res.end(JSON.stringify({ message: "API route not found" }));
+    return;
   }
 });
 
