@@ -7,6 +7,7 @@ import '../css/shop.css';
 export const Shop = () => {
       return  (
        <div className="shopTitle">
+        <br></br>
            <div>
                <h3>Post Office Shop</h3>
            </div>

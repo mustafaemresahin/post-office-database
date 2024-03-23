@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import Header from './components/Header';
 import About from './pages/About';
@@ -12,7 +12,7 @@ import {Shop} from './pages/shop';
 import { Cart } from "./pages/cart";
 import EditProfile from './pages/editprofile';
 import { ShopContextProvider } from "./context/shop-context";
-import { AuthProvider } from './context/AuthContext'; // Import your AuthProvider
+// import { AuthProvider } from './context/AuthContext'; // Import your AuthProvider
 import Checkout from './pages/checkout';
 import Sidebar from './pages/sidebar';
 import Customer from './pages/Customer';
@@ -46,7 +46,7 @@ const App = () => {
 
         </Routes>
         </ShopContextProvider>
-      </div>
+      </div>      
     </Router>
   );
 };
