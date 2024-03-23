@@ -12,9 +12,10 @@ const LoginPage = () => {
 
     try {
       // Send POST request to login endpoint
-      const response = await axios.post("https://post-office-web.azurewebsites.net/login",values); 
+      const response = await axios.post("http://localhost:3000/login",values); 
       console.log('Login successful:', response.data);
       localStorage.setItem('token', response.data.token);
+      localStorage.setItem('id', response.data.id);
       navigate('/profile');
     } catch (error) {
       // Handle login error
