@@ -53,7 +53,6 @@ const handleCors = (req, res) => {
       return;
   }
 };
-/*
 const mimeType = {
   '.ico': 'image/x-icon',
   '.html': 'text/html',
@@ -85,7 +84,6 @@ const serveFile = (filePath, contentType, response) => {
     }
   });
 };
-*/
 
 const server = http.createServer( async (req, res) => {
   // Handle Cors Function To Allow Axios
@@ -267,7 +265,46 @@ const server = http.createServer( async (req, res) => {
         return;
       });
     }
-    
+    else if (req.url === "/api/sentPackages") {
+      let data = "";
+      req.on("data", (chunk) => {
+        data += chunk;
+      });
+      const currentDate = new Date();
+      const formattedDate = currentDate.toISOString().slice(0, 19).replace('T', ' ');
+
+      req.on("end", () => {
+        const body = JSON.parse(data);
+        const PackageID = uuidv4().substring(0,30);
+        const Weight = body.weight;
+        const Dimensions = body.length * body.width * body.height;
+        const Type = body.packageType;
+        const Status = 'Pending';
+        const DateSent = formattedDate;
+        const VehicleID = ''; //we dont have vehicles yet so just leaving this blank, will prolly cause error
+        const destinationAddress = body.address;
+        const expedited = body.expeditedShipping;
+
+        db.query(
+          "INSERT INTO package (PackageID, SenderID, Weight, Dimensions, Type, Status, DateSent, VehicleID, destination, expeditiedShipping) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+          [PackageID, SenderID, Weight, Dimensions, Type, Status, DateSent, VehicleID, destinationAddress, expedited],
+          (error) => 
+          {
+            if (error) {
+              console.log(error);
+              res.writeHead(500, {"Content-Type": "application/json"});
+              res.end(JSON.stringify({error: "Do we get this far?"}));
+              return;
+            } else {
+              res.writeHead(200, {"Content-Type": "application/json"});
+              res.end(JSON.stringify({ message: "Package submitted successfully" }));
+              return;
+            }
+          }
+        );
+        return;
+      });
+    }
   }
   else if(req.method == "DELETE") {
     const reqURL = url.parse(req.url, true);
