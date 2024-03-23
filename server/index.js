@@ -89,20 +89,19 @@ const server = http.createServer( async (req, res) => {
   // Handle Cors Function To Allow Axios
   handleCors(req, res);
 
+  const basePath = path.join(__dirname, '../client/build');
+  let filePath = basePath + req.url;
+
   // GET Requests 
   if (req.method === "GET") {
     if (req.url === "/") {
-      const basePath = path.join(__dirname, '../client/build');
-      let filePath = basePath + req.url;
+      
       
       if (req.url === "/") {
         filePath = path.join(basePath, 'index.html');
       }
 
-      const ext = String(path.extname(filePath)).toLowerCase();
-      const contentType = mimeType[ext] || 'application/octet-stream';
-
-      serveFile(filePath, contentType, res);
+      
     }
     // Get ALl Users
     else if (req.url === "/users") 
@@ -265,7 +264,10 @@ const server = http.createServer( async (req, res) => {
     const reqURL = url.parse(req.url, true);
     const pathSegments = reqURL.pathname.split("/");
   }
-  
+  const ext = String(path.extname(filePath)).toLowerCase();
+  const contentType = mimeType[ext] || 'application/octet-stream';
+
+  serveFile(filePath, contentType, res);
 });
 
 const port = process.env.PORT || 4000; // Use environment variable or default port
