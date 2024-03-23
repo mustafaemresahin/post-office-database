@@ -12,9 +12,11 @@ const ShippingForm = () => {
     width: '',
     height: '',
     weight: '',
-    expeditedShipping: false,
+    expeditedShipping: 0,
     address: '',
     packageType: '',
+    recipientFirstName: '',
+    recipientLastName: '',
   });
   useEffect(() => {
     const token = localStorage.getItem('token');
@@ -42,7 +44,7 @@ const ShippingForm = () => {
     const { name, value, type } = event.target;
     setFormData((prevState) => ({
       ...prevState,
-      [name]: type === 'checkbox' ? event.target.checked : value,
+      [name]: type === 'checkbox' ? (event.target.checked ? 1 : 0) : value,
     }));
   };
 
@@ -56,7 +58,8 @@ const ShippingForm = () => {
       // Send POST request to package endpoint
       const response = await axios.post("/api/sentPackages",formDataWithUserId ); 
       console.log('Package successfully submitted:', response.data);
-      navigate('/home');
+      // Redirect to cart page with label data
+      navigate('/cart', { state: { label: response.data.label } });
     } catch (error) {
       // Handle package error
       console.error('Package submission failed:', error);
@@ -114,12 +117,34 @@ const ShippingForm = () => {
               />
             </div>
             <div>
-              <label htmlFor="address">Address:</label>
+              <label htmlFor="address">Recipient Address:</label>
               <input
                 type="text"
                 id="address"
                 name="address"
                 value={formData.address}
+                onChange={handleChange}
+                required
+              />
+            </div>
+            <div>
+              <label htmlFor="recipientFirstName">Recipient First Name:</label>
+              <input
+                type="text"
+                id="recipientFirstName"
+                name="recipientFirstName"
+                value={formData.recipientFirstName}
+                onChange={handleChange}
+                required
+              />
+            </div>
+            <div>
+              <label htmlFor="recipientLastName">Recipient Last Name:</label>
+              <input
+                type="text"
+                id="recipientLastName"
+                name="recipientLastName"
+                value={formData.recipientLastName}
                 onChange={handleChange}
                 required
               />

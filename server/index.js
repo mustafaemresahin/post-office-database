@@ -281,13 +281,19 @@ const server = http.createServer( async (req, res) => {
         const Type = body.packageType;
         const Status = 'Pending';
         const DateSent = formattedDate;
-        const VehicleID = ''; //we dont have vehicles yet so just leaving this blank, will prolly cause error
+        const VehicleID = null; //we dont have vehicles yet so just leaving this blank, will prolly cause error
         const destinationAddress = body.address;
         const expedited = body.expeditedShipping;
+        const SenderID = body.userId;
+        const recipientFirstName = body.recipientFirstName;
+        const recipientLastName = body.recipientLastName;
+
+        console.log(body);
+        console.log({PackageID, SenderID, Weight, Dimensions, Type, Status, DateSent, VehicleID, destinationAddress, expedited, recipientFirstName, recipientLastName });
 
         db.query(
-          "INSERT INTO package (PackageID, SenderID, Weight, Dimensions, Type, Status, DateSent, VehicleID, destination, expeditiedShipping) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
-          [PackageID, SenderID, Weight, Dimensions, Type, Status, DateSent, VehicleID, destinationAddress, expedited],
+          "INSERT INTO package (PackageID, SenderID, Weight, Dimensions, Type, Status, DateSent, VehicleID, destination, expeditedShipping, recipientFirstName, recipientLastName) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )",
+          [PackageID, SenderID, Weight, Dimensions, Type, Status, DateSent, VehicleID, destinationAddress, expedited, recipientFirstName, recipientLastName],
           (error) => 
           {
             if (error) {
