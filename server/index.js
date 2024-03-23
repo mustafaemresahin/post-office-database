@@ -99,11 +99,9 @@ const server = http.createServer( async (req, res) => {
         if (error) {
           res.writeHead(500, { "Content-Type": "application/json" });
           res.end(JSON.stringify({ error: error }));
-          return; // Exit early since we've completed handling this request
         } else {
           res.writeHead(200, { "Content-Type": "application/json" });
           res.end(JSON.stringify(result));
-          return; // Exit early since we've completed handling this request
         }
       });
     }
@@ -116,11 +114,9 @@ const server = http.createServer( async (req, res) => {
           if (error) {
             res.writeHead(500, { "Content-Type": "application/json" });
             res.end(JSON.stringify({ error: error }));
-            return;
           } else {
              res.writeHead(200, { "Content-Type": "application/json" });
             res.end(JSON.stringify(result));
-            return;
           }
         }
       );
@@ -134,11 +130,9 @@ const server = http.createServer( async (req, res) => {
           if (error) {
             res.writeHead(500, { "Content-Type": "application/json" });
             res.end(JSON.stringify({ error: error }));
-            return;
           } else {
             res.writeHead(200, { "Content-Type": "application/json" });
             res.end(JSON.stringify(result));
-            return;
           }
         }
       );
@@ -152,11 +146,9 @@ const server = http.createServer( async (req, res) => {
           if (error) {
             res.writeHead(500, { "Content-Type": "application/json" });
             res.end(JSON.stringify({ error: error }));
-            return;
           } else {
             res.writeHead(200, { "Content-Type": "application/json" });
             res.end(JSON.stringify(result));
-            return;
           }
         }
       );
@@ -191,11 +183,9 @@ const server = http.createServer( async (req, res) => {
                     console.log(error);
                     res.writeHead(500, {"Content-Type": "application/json"});
                     res.end(JSON.stringify({error: "Do we get this far?"}));
-                    return;
                   } else {
                     res.writeHead(200, {"Content-Type": "application/json"});
                     res.end(JSON.stringify({ message: "User has signed up successfully" }));
-                    return;
                   }
               }
           );
@@ -221,7 +211,6 @@ const server = http.createServer( async (req, res) => {
             if (error) {
               res.writeHead(500, { "Content-Type": "application/json" });
               res.end(JSON.stringify({ error: 'Internal Server Error' }));
-              return;
             } else {
               if (results.length > 0) {
                 const user = results[0]; // Assuming user is found in the first result
@@ -241,18 +230,15 @@ const server = http.createServer( async (req, res) => {
                     role: userRole,
                     token: token
                   }));
-                  return;
                 } else {
                   // Password does not match
                   res.writeHead(401, { "Content-Type": "application/json" });
                   res.end(JSON.stringify({ message: "Wrong username or password" }));
-                  return;
                 }
               } else {
                 // No user found
                 res.writeHead(401, { "Content-Type": "application/json" });
                 res.end(JSON.stringify({ message: "Wrong username or password" }));
-                return;
               }
             }
           }
@@ -264,35 +250,27 @@ const server = http.createServer( async (req, res) => {
   else if(req.method == "DELETE") {
     const reqURL = url.parse(req.url, true);
     const pathSegments = reqURL.pathname.split("/");
-    return;
   }
-  if (!req.url.startsWith("/api")) {
-    // Serve static files or index.html for non-API requests
-    const basePath = path.join(__dirname, '../client/build');
-    let filePath = path.join(basePath, req.url);
+  // Serve static files or index.html for non-API requests
+  const basePath = path.join(__dirname, '../client/build');
+  let filePath = path.join(basePath, req.url);
 
-    // Check if the file exists and is not a directory
-    fs.stat(filePath, (err, stats) => {
-      if (err || !stats.isFile()) {
-        // If the file doesn't exist or is a directory, serve index.html
-        filePath = path.join(basePath, 'index.html');
-      }
+  // Check if the file exists and is not a directory
+  fs.stat(filePath, (err, stats) => {
+    if (err || !stats.isFile()) {
+      // If the file doesn't exist or is a directory, serve index.html
+      filePath = path.join(basePath, 'index.html');
+    }
 
-      // Determine the content type
-      const ext = path.extname(filePath).toLowerCase();
-      const contentType = mimeType[ext] || 'application/octet-stream';
+    // Determine the content type
+    const ext = path.extname(filePath).toLowerCase();
+    const contentType = mimeType[ext] || 'application/octet-stream';
 
-      // Serve the file
-      serveFile(filePath, contentType, res);
-    });
+    // Serve the file
+    serveFile(filePath, contentType, res);
+  });
 
-    return; // Important to return here to avoid further processing
-  } else {
-    // Optionally handle not found for API routes
-    res.writeHead(404, { "Content-Type": "application/json" });
-    res.end(JSON.stringify({ message: "API route not found" }));
-    return;
-  }
+  return; // Important to return here to avoid further processing
 });
 
 const port = process.env.PORT || 4000; // Use environment variable or default port
