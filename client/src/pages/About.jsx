@@ -22,7 +22,7 @@ function About() {
 
           
             <div className='button-holder'>
-        <button onClick={()=>{window.location.href="/Send%20Package"}}>Send Package</button>
+        <button onClick={()=>{() => navigate("/Send%20Package")}}>Send Package</button>
             <button onClick={()=>{window.location.href="/track"}}>Track Package</button>
             <button onClick={()=>{window.location.href="/register"}}>register</button>
             </div>
