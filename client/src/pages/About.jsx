@@ -1,10 +1,12 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import '../css/About.css';
 import image from '../img/about-us-bg.png';
 import image1 from '../img/about-us-features-1.png';
 import '../css/register.css';
 import '../css/tracking.css'; 
 function About() {
+  const navigate = useNavigate();
   return (
     <div className="about-us-container">
       <div className='about-us'>
