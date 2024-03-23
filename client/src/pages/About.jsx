@@ -4,6 +4,7 @@ import image from '../img/about-us-bg.png';
 import '../css/register.css';
 import '../css/tracking.css'; 
 import { useNavigate } from 'react-router-dom';
+import {Link } from 'react-router-dom';
 function About() {
   return (
     <div className="about-us-container">
@@ -44,7 +45,8 @@ function About() {
             </div>
              <button href="#text-buttons">Order Now</button>   
             </div>
-          
+
+
 
 
 
@@ -62,14 +64,11 @@ function About() {
           </div>
           <button href="#text-buttons">Order Now</button>
         </div>
-          
-        
-
-
-
       </div>
 
     </div>
+
+
   );
 
 

@@ -14,8 +14,10 @@ import EditProfile from './pages/editprofile';
 import { ShopContextProvider } from "./context/shop-context";
 import Checkout from './pages/checkout';
 import Sidebar from './pages/sidebar';
+import Customer from './pages/Customer';
 
 const App = () => {
+
   return (
     <Router>
       <div className="app-container"> {/* Wrap header and routes in a container */}
@@ -34,6 +36,8 @@ const App = () => {
           <Route path="/Checkout" element={<Checkout/>} />
           <Route path="/editprofile" element={<EditProfile />} />
           <Route path="/sidebar" element={<Sidebar />} />
+          <Route path="/customer" element={<Customer />} />
+
         </Routes>
         </ShopContextProvider>
       </div>

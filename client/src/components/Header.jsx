@@ -29,8 +29,9 @@ const Header = () => {
       <nav>
         <Link to="/login">Login/Signup</Link>
       </nav>
+
       <nav>
-        <Link to="/Sidebar">Admin</Link>
+        <Link to="/sidebar">Admin</Link>
       </nav>
     </header>
   );
