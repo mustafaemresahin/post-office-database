@@ -53,6 +53,7 @@ const handleCors = (req, res) => {
       return;
   }
 };
+/*
 const mimeType = {
   '.ico': 'image/x-icon',
   '.html': 'text/html',
@@ -84,9 +85,11 @@ const serveFile = (filePath, contentType, response) => {
     }
   });
 };
+*/
 
 const server = http.createServer( async (req, res) => {
 
+  /*
   const basePath = path.join(__dirname, '../client/build');
   let filePath = basePath + req.url;
   // If no specific file requested, serve the index.html (SPA support)
@@ -98,6 +101,7 @@ const server = http.createServer( async (req, res) => {
   const contentType = mimeType[ext] || 'application/octet-stream';
 
   serveFile(filePath, contentType, res);
+  */
   // Handle Cors Function To Allow Axios
   handleCors(req, res);
 
