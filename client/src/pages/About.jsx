@@ -1,10 +1,12 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import '../css/About.css';
 import image from '../img/about-us-bg.png';
 import image1 from '../img/about-us-features-1.png';
 import '../css/register.css';
 import '../css/tracking.css'; 
 function About() {
+  const navigate = useNavigate();
   return (
     <div className="about-us-container">
       <div className='about-us'>
@@ -22,7 +24,7 @@ function About() {
 
           
             <div className='button-holder'>
-        <button onClick={()=>{window.location.href="/Send%20Package"}}>Send Package</button>
+        <button onClick={()=> {navigate("/Send%20Package")}}>Send Package</button>
             <button onClick={()=>{window.location.href="/track"}}>Track Package</button>
             <button onClick={()=>{window.location.href="/register"}}>register</button>
             </div>
