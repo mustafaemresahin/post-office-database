@@ -272,26 +272,29 @@ const server = http.createServer( async (req, res) => {
     const pathSegments = reqURL.pathname.split("/");
     return;
   }
-  // Serve static files or index.html for non-API requests
-  const basePath = path.join(__dirname, '../client/build');
-  let filePath = path.join(basePath, req.url);
+  if (!req.url.startsWith("/api")) {
+    // Serve static files or index.html for non-API requests
+    const basePath = path.join(__dirname, '../client/build');
+    let filePath = path.join(basePath, req.url);
 
-  // Check if the file exists and is not a directory
-  fs.stat(filePath, (err, stats) => {
-    if (err || !stats.isFile()) {
-      // If the file doesn't exist or is a directory, serve index.html
-      filePath = path.join(basePath, 'index.html');
-    }
+    // Check if the file exists and is not a directory
+    fs.stat(filePath, (err, stats) => {
+      if (err || !stats.isFile()) {
+        // If the file doesn't exist or is a directory, serve index.html
+        filePath = path.join(basePath, 'index.html');
+      }
 
-    // Determine the content type
-    const ext = path.extname(filePath).toLowerCase();
-    const contentType = mimeType[ext] || 'application/octet-stream';
+      // Determine the content type
+      const ext = path.extname(filePath).toLowerCase();
+      const contentType = mimeType[ext] || 'application/octet-stream';
 
-    // Serve the file
-    serveFile(filePath, contentType, res);
-  });
+      // Serve the file
+      serveFile(filePath, contentType, res);
+    });
 
-  return; // Important to return here to avoid further processing
+    return; // Important to return here to avoid further processing
+  }
+  
 });
 
 const port = process.env.PORT || 4000; // Use environment variable or default port
