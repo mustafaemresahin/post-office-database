@@ -1,7 +1,9 @@
 import axios from 'axios'
 import React, { useEffect, useState } from 'react'
 import '../css/customer.css';
-import {useNavigate} from 'react-router-dom'; 
+import {useNavigate} from 'react-router-dom';
+
+
 function Customer() {
     const [data, setData] = useState([])
 
@@ -19,8 +21,9 @@ function Customer() {
         address:'',
         phonenumber:'',
         role:''
-})
-const handleAddFormChange = (event) => {
+    })
+
+const handleAddChange = (event) => {
     event.preventDefault();
     const fieldName = event.target.getAttribute('name');
     const fieldValue = event.target.value;
@@ -32,28 +35,26 @@ const handleAddFormChange = (event) => {
 };
 
 const navigate = useNavigate();
-const handleAddFormSubmit = (event) => {
+const handleAddSubmit = (event) => {
     event.preventDefault();
-    axios.post('/api/users', addFormData)
-    .then (res => {
-        console.log(res);
-        navigate('/profile')
-    })
-    .catch(err => console.log(err));
+    axios.post('/api/users',addFormData);
+    console.log('Adding successful');
+    navigate ("/customer");
 
     const newData = {
-    id: nanoid(), 
-    CustomerUser: addFormData.CustomerUser ,
     Email: addFormData.Email,
+    CustomerUser: addFormData.CustomerUser ,
     firstname: addFormData.firstname,
     lastname:addFormData.lastname,
     address: addFormData.address,
     phonenumber:addFormData.phonenumber,
     role: addFormData.role
     };
+
     const newDatas = [...data, newData];
     setData(newDatas);
 };
+
 
     return (
         <div className="user-container">
@@ -100,13 +101,13 @@ const handleAddFormSubmit = (event) => {
             
 
             <h2>Add new user</h2>
-            <form onSubmit={handleAddFormSubmit}>
+            <form onSubmit={handleAddSubmit}>
                 <input
                     type="text"
                     name="CustomerUser"
                     required="required"
                     placeholder="Enter a username..."
-                    onChange={handleAddFormChange}
+                    onChange={handleAddChange}
 
                 />
                 <input
@@ -114,42 +115,42 @@ const handleAddFormSubmit = (event) => {
                     name="Email"
                     required="required"
                     placeholder="Enter an email..."
-                    onChange={handleAddFormChange}
+                    onChange={handleAddChange}
                 />
                 <input
                     type="text"
                     name="firstname"
                     required="required"
                     placeholder="Enter first name.."
-                    onChange={handleAddFormChange}
+                    onChange={handleAddChange}
                 />
                 <input
                     type="text"
                     name="lastname"
                     required="required"
                     placeholder="Enter last name.."
-                    onChange={handleAddFormChange}
+                    onChange={handleAddChange}
                 />
                 <input
                     type="text"
                     name="address"
                     required="required"
                     placeholder="Enter an address.."
-                    onChange={handleAddFormChange}
+                    onChange={handleAddChange}
                 />
                 <input
                     type="text"
                     name="phonenumber"
                     required="required"
                     placeholder="Enter a phone number.."
-                    onChange={handleAddFormChange}
+                    onChange={handleAddChange}
                 />
                 <input
                     type="text"
                     name="role"
                     required="required"
                     placeholder="Enter the role"
-                    onChange={handleAddFormChange}
+                    onChange={handleAddChange}
                 />
                 <button type="submit">Add</button>
             </form>
