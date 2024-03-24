@@ -288,8 +288,7 @@ const server = http.createServer( async (req, res) => {
         const recipientFirstName = body.recipientFirstName;
         const recipientLastName = body.recipientLastName;
 
-        console.log(body);
-        console.log({PackageID, SenderID, Weight, Dimensions, Type, Status, DateSent, VehicleID, destinationAddress, expedited, recipientFirstName, recipientLastName });
+        //console.log({PackageID, SenderID, Weight, Dimensions, Type, Status, DateSent, VehicleID, destinationAddress, expedited, recipientFirstName, recipientLastName });
 
         db.query(
           "INSERT INTO package (PackageID, SenderID, Weight, Dimensions, Type, Status, DateSent, VehicleID, destination, expeditedShipping, recipientFirstName, recipientLastName) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )",
@@ -311,6 +310,35 @@ const server = http.createServer( async (req, res) => {
         return;
       });
     }
+    
+    else if (req.url === "/api/sentPackages/pending") {
+      let data = "";
+      req.on("data", (chunk) => {
+          data += chunk;
+      });
+      req.on("end", () => {
+        const body = JSON.parse(data);
+        console.log("server",body);
+        const userId = body.userId;
+        db.query(
+          "SELECT * FROM packages WHERE SenderID = ? AND Status = ?",
+          [userId, 'Pending'],
+          (error, result) => {
+            if (error) {
+              res.writeHead(500, { "Content-Type": "application/json" });
+              res.end(JSON.stringify({ error: error }));
+              return;
+            } else {
+              res.writeHead(200, { "Content-Type": "application/json" });
+              res.end(JSON.stringify(result));
+              return;
+            }
+          }
+        ); 
+      });
+      return;
+    }
+    
   }
   else if(req.method == "DELETE") {
     const reqURL = url.parse(req.url, true);
