@@ -6,6 +6,7 @@ import axios from 'axios';
 
 const ShippingForm = () => {
   const navigate = useNavigate();
+  //const { addToCart } = useContext(ShopContext);
   const [userId, setUserId] = useState(null);
   const [formData, setFormData] = useState({
     length: '',
@@ -58,8 +59,8 @@ const ShippingForm = () => {
       // Send POST request to package endpoint
       const response = await axios.post("/api/sentPackages",formDataWithUserId ); 
       console.log('Package successfully submitted:', response.data);
-      // Redirect to cart page with label data
-      navigate('/cart', { state: { label: response.data.label } });
+      // Redirect to cart page 
+      navigate('/cart');
     } catch (error) {
       // Handle package error
       console.error('Package submission failed:', error);
