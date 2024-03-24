@@ -42,10 +42,15 @@ const Header = () => {
           <NavLink to="/Shop" className={({ isActive }) => isActive ? "activeLink" : ""}>Shop</NavLink>
           <NavLink to="/Cart" className={({ isActive }) => isActive ? "activeLink" : ""}>Cart</NavLink>
           <NavLink to="/track" className={({ isActive }) => isActive ? "activeLink" : ""}>Track Package</NavLink>
-          <NavLink to="/sidebar" className={({ isActive }) => isActive ? "activeLink" : ""}>Admin</NavLink>
+          <NavLink to="/sidebar" className={({ isActive }) => isActive ? "activeLink" : ""}>Admin</NavLink> 
+          {/*GOTTA CHANGE THE isLoggedIn on admin and employee to the authentification for both */}
+          {/*{isLoggedIn && (<NavLink to="/sidebar" className={({ isActive }) => isActive ? "activeLink" : ""}>Admin</NavLink>)}*/}
           <NavLink to="/Employee" className={({ isActive }) => isActive ? "activeLink" : ""}>Employee</NavLink>
+          {/*{isLoggedIn && (<NavLink to="/Employee" className={({ isActive }) => isActive ? "activeLink" : ""}>Employee</NavLink>)}*/}
           {!isLoggedIn && <NavLink to="/login" className={({ isActive }) => isActive ? "activeLink" : ""}>Login/Signup</NavLink>}
           {isLoggedIn && <NavLink to="/Profile" className={({ isActive }) => isActive ? "activeLink" : ""}>Logged in as {user.firstname}</NavLink>}
+          <NavLink to="/vehicles" className={({ isActive }) => isActive ? "activeLink" : ""}>Vehicles</NavLink>
+
         </nav>
       </div>
     </header>
