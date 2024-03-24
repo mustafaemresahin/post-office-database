@@ -197,6 +197,54 @@ const server = http.createServer( async (req, res) => {
       );
       return;
     }
+// API endpoint for adding a vehicle
+else if (req.url === "/api/vehicleadd" && req.method === 'POST') {
+  let body = '';
+  req.on('data', (chunk) => {
+    body += chunk.toString();
+  });
+  req.on('end', () => {
+
+    const Vehicle = JSON.parse(body);
+    const VehicleID = uuidv4().substring(0, 10);
+    const Type = Vehicle.Type;
+    const Unit = Vehicle.Unit;
+
+    db.query(
+      "INSERT INTO Vehicles (VehicleID, Type, Unit) VALUES (?, ?, ?)",
+      [VehicleID, Type, Unit],
+      (error) => {
+        if (error) {
+          res.writeHead(500, { "Content-Type": "application/json" });
+          res.end(JSON.stringify({ error: error }));
+          return;
+        } else {
+          res.writeHead(201, { "Content-Type": "application/json" });
+          res.end(JSON.stringify({ message: 'Vehicle added successfully' }));
+          return;
+        }
+      }
+    );
+  });
+}
+
+// API endpoint for listing vehicles
+else if (req.url === "/api/vehiclelist" && req.method === "GET") {
+  db.query(
+    "SELECT * FROM vehicles",
+    (error, result) => {
+      if (error) {
+        res.writeHead(500, { "Content-Type": "application/json" });
+        res.end(JSON.stringify({ error: error }));
+        return;
+      } else {
+        res.writeHead(200, { "Content-Type": "application/json" });
+        res.end(JSON.stringify(result));
+        return;
+      }
+    }
+  );
+}
   }
   else if (req.method === "POST") {
     if (req.url === "/api/register") {

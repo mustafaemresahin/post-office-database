@@ -18,7 +18,8 @@ import Sidebar from './pages/sidebar';
 import Customer from './pages/Customer';
 import Employee from './pages/Employee';
 import ShippingForm from './pages/add-package';
-import VehiclesTable from './pages/vehicles';
+import VehiclesTable from './pages/VehicleList';
+import VehicleAdd from './pages/VehicleAdd';
 
 const App = () => {
 
@@ -45,6 +46,8 @@ const App = () => {
           <Route path="/Employee" element={<Employee />} />
           <Route path="/add-package" element={<ShippingForm />} />
           <Route path="/vehicles" element={<VehiclesTable />} />
+          <Route path="/addvehicles" element={<VehicleAdd />} />
+
 
         </Routes>
         </ShopContextProvider>

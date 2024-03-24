@@ -6,3 +6,26 @@
     max-width: 800px;
     width: 100%;
   }
+
+.tr-padded{
+  padding: 20px;
+}
+
+.vehicle-card {
+  margin-bottom: 20px; /* Add some space below the table */
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th, td {
+  border: 1px solid #ddd; /* Add borders to table cells */
+  padding: 8px; /* Add padding to table cells */
+  text-align: left; /* Align text to the left */
+}
+
+th {
+  background-color: #f2f2f2; /* Light gray background for table headers */
+}
