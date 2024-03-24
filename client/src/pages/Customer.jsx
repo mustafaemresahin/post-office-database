@@ -35,6 +35,7 @@ const handleAddChange = (event) => {
 };
 
 const navigate = useNavigate();
+
 const handleAddSubmit = (event) => {
     event.preventDefault();
     axios.post('/api/users',addFormData);
@@ -55,6 +56,17 @@ const handleAddSubmit = (event) => {
     setData(newDatas);
 };
 
+    // Delete A User
+    const deleteUser = async (UserID) => {
+        axios.delete('https://post-office-database-web-795a025bc915.herokuapp.com/api/users', + UserID)
+        .then((response) => {
+            console.log(response);
+            window.location.reload();
+            navigate("/profile");
+        }).catch((error) => {
+            console.log(error)
+        })
+    };
 
     return (
         <div className="user-container">
@@ -76,9 +88,9 @@ const handleAddSubmit = (event) => {
                     </tr>
                 </thead>
                 <tbody>
-                    {data.map((user, index) => {
+                    {data.map((user) => {
                         return (
-                            <tr key={index} className="user-tr">
+                            <tr key={user.UserID} className="user-tr">
                                 <td>{user.UserID}</td>
                                 <td>{user.CustomerUser}</td>
                                 <td>{user.Email}</td>
@@ -90,7 +102,9 @@ const handleAddSubmit = (event) => {
                                 <td>
                                  <button className='btnedit'>Read</button>
                                     <button className='btnedit'>Edit</button>
-                                    <button className='btndelete'>Delete</button>
+                                    <button onClick={() => {
+                                            deleteUser(user.UserID)}
+                                        } className="btn-delete"> Delete </button>
                                 </td>
                             </tr>
                         )

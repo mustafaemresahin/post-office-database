@@ -465,8 +465,33 @@ const server = http.createServer( async (req, res) => {
   else if(req.method == "DELETE") {
     const reqURL = url.parse(req.url, true);
     const pathSegments = reqURL.pathname.split("/");
-    return;
+
+    //Delete a user
+    if (req.method === "DELETE") {
+      const reqURL = url.parse(req.url, true);
+      const pathSegments = reqURL.pathname.split("/");
+
+      // Delete A User
+      if (pathSegments.length === 4 && pathSegments[2] === "users") {
+          const UserID = pathSegments[3];
+
+          db.query(
+              "DELETE FROM customer_user WHERE UserID = ?",
+              [UserID],
+              (error) => {
+                  if (error) {
+                      res.writeHead(500, {"Content-Type": "application/json"});
+                      res.end(JSON.stringify({error: error}));
+                  } else {
+                      res.writeHead(200, {"Content-Type": "application/json"});
+                      res.end(JSON.stringify({ message: "User has been deleted successfully" }));
+                  }
+              }
+          );
+      }
+    }
   }
+
   if (!req.url.startsWith("/api")) {
     // Serve static files or index.html for non-API requests
     const basePath = path.join(__dirname, '../client/build');
