@@ -56,14 +56,6 @@ export const Cart = () => {
           return null;
         })}
       </div>
-      {pendingPackages.length > 0 && (
-      <div className="cart">
-        <h2>Pending Packages:</h2>
-        {pendingPackages.map((packageItem) => (
-          <packageItem key={packageItem.id} packageItem={packageItem} />
-        ))}
-      </div>
-      )}
       {totalAmount > 0 ? (
         <div className="checkout">
           <p> Subtotal: ${totalAmount} </p>
