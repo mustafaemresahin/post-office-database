@@ -8,27 +8,56 @@ const Header = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
-  const [user, setUser] = useState([]);
+  const [name, setName] = useState(null);
 
   useEffect(() => {
     const token = localStorage.getItem('token');
     const id = localStorage.getItem('id');
+    const role = localStorage.getItem('role');
     setIsLoggedIn(!!token);
     if (!token) {
       // If no token found, do nothing
     }
     else{
-      axios.get('/api/users')
-      .then(response => {
-          const userData = response.data.find(user => user.UserID === id); // Find the user by id
-          if (userData) {
-            setUser(userData); // Set the found user into the users state, as an array for consistency
-          } else {
-            console.log('User not found');
-            // Handle the case where the user is not found
-          }
-        })
-        .catch(error => console.error('Error:', error));
+      if(role === "admin"){
+        axios.get('/api/admin')
+        .then(response => {
+            const userData = response.data.find(user => user.AdminID === id); // Find the user by id
+            if (userData) {
+              setName(userData.Fname);
+            } else {
+              console.log('User not found');
+              // Handle the case where the user is not found
+            }
+          })
+          .catch(error => console.error('Error:', error));
+      }
+      else if(role === "employee"){
+        axios.get('/api/users')
+        .then(response => {
+            const userData = response.data.find(user => user.UserID === id); // Find the user by id
+            if (userData) {
+              setName(userData.firstname);
+            } else {
+              console.log('User not found');
+              // Handle the case where the user is not found
+            }
+          })
+          .catch(error => console.error('Error:', error));
+      }
+      else{
+        axios.get('/api/users')
+        .then(response => {
+            const userData = response.data.find(user => user.UserID === id); // Find the user by id
+            if (userData) {
+              setName(userData.firstname);
+            } else {
+              console.log('User not found');
+              // Handle the case where the user is not found
+            }
+          })
+          .catch(error => console.error('Error:', error));
+      }
     }
   }, []);
 
@@ -48,7 +77,7 @@ const Header = () => {
           <NavLink to="/Employee" className={({ isActive }) => isActive ? "activeLink" : ""}>Employee</NavLink>
           {/*{isLoggedIn && (<NavLink to="/Employee" className={({ isActive }) => isActive ? "activeLink" : ""}>Employee</NavLink>)}*/}
           {!isLoggedIn && <NavLink to="/login" className={({ isActive }) => isActive ? "activeLink" : ""}>Login/Signup</NavLink>}
-          {isLoggedIn && <NavLink to="/Profile" className={({ isActive }) => isActive ? "activeLink" : ""}>Logged in as {user.firstname}</NavLink>}
+          {isLoggedIn && <NavLink to="/Profile" className={({ isActive }) => isActive ? "activeLink" : ""}>Logged in as {name}</NavLink>}
           <NavLink to="/vehicles" className={({ isActive }) => isActive ? "activeLink" : ""}>Vehicles</NavLink>
 
         </nav>
