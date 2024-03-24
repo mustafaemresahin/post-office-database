@@ -9,9 +9,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "client": "cd client && npm start",
     "server": "cd server && npm start",
-    "dev": "concurrently \"npm run client\" \"npm run server\"",
-    "backend": "cd backend && npm run jest",
-    "test:all": "concurrently \"npm run client\" \"npm run backend\""
+    "dev": "concurrently \"npm run client\" \"npm run server\""
   },
   "dependencies": {
     "jsonwebtoken": "^9.0.2",

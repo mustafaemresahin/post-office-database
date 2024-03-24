@@ -387,6 +387,79 @@ const server = http.createServer( async (req, res) => {
         return;
       });
     }
+    else if (req.url === "/api/sentPackages") {
+      let data = "";
+      req.on("data", (chunk) => {
+        data += chunk;
+      });
+      const currentDate = new Date();
+      const formattedDate = currentDate.toISOString().slice(0, 19).replace('T', ' ');
+
+      req.on("end", () => {
+        const body = JSON.parse(data);
+        const PackageID = uuidv4().substring(0,30);
+        const Weight = body.weight;
+        const Dimensions = body.length * body.width * body.height;
+        const Type = body.packageType;
+        const Status = 'Pending';
+        const DateSent = formattedDate;
+        const VehicleID = null; //we dont have vehicles yet so just leaving this blank, will prolly cause error
+        const destinationAddress = body.address;
+        const expedited = body.expeditedShipping;
+        const SenderID = body.userId;
+        const recipientFirstName = body.recipientFirstName;
+        const recipientLastName = body.recipientLastName;
+
+        //console.log({PackageID, SenderID, Weight, Dimensions, Type, Status, DateSent, VehicleID, destinationAddress, expedited, recipientFirstName, recipientLastName });
+
+        db.query(
+          "INSERT INTO package (PackageID, SenderID, Weight, Dimensions, Type, Status, DateSent, VehicleID, destination, expeditedShipping, recipientFirstName, recipientLastName) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )",
+          [PackageID, SenderID, Weight, Dimensions, Type, Status, DateSent, VehicleID, destinationAddress, expedited, recipientFirstName, recipientLastName],
+          (error) => 
+          {
+            if (error) {
+              console.log(error);
+              res.writeHead(500, {"Content-Type": "application/json"});
+              res.end(JSON.stringify({error: "Do we get this far?"}));
+              return;
+            } else {
+              res.writeHead(200, {"Content-Type": "application/json"});
+              res.end(JSON.stringify({ message: "Package submitted successfully" }));
+              return;
+            }
+          }
+        );
+        return;
+      });
+    }
+    
+    else if (req.url === "/api/sentPackages/pending") {
+      let data = "";
+      req.on("data", (chunk) => {
+          data += chunk;
+      });
+      req.on("end", () => {
+        const body = JSON.parse(data);
+        const userId = body.userId;
+        const Status = 'Pending';
+        db.query(
+          "SELECT * FROM package WHERE SenderID = ? AND Status = ?",
+          [userId, Status],
+          (error, result) => {
+            if (error) {
+              res.writeHead(500, { "Content-Type": "application/json" });
+              res.end(JSON.stringify({ error: error }));
+              return;
+            } else {
+              res.writeHead(200, { "Content-Type": "application/json" });
+              res.end(JSON.stringify({result }));
+              return;
+            }
+          },
+        );
+      });
+      return;
+    }
     
   }
   else if(req.method == "DELETE") {
