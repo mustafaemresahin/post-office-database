@@ -1,21 +1,22 @@
 .custom-header {
   background-color: #3d3d3d; /* Bootstrap primary color */
   color: #fff;
-  padding: 0.5rem 1rem;
+  padding: 0.2rem 0.1rem;
   position: fixed;
   top: 0;
-  justify-content: center; /* Center items horizontally */
-  align-items: center;
   width: 100%;
   z-index: 1030; /* Similar to Bootstrap's z-index for fixed navbars */
+  display: flex;
+  justify-content: center; /* Ensure the header content is centered */
+  align-items: center;
 }
 
 .container {
   display: flex;
-  justify-content: space-between;
+  justify-content: center; /* Center items within the container */
   align-items: center;
-  max-width: 860px;
-  margin: auto;
+  max-width: 1060px;
+  width: 100%; /* Ensure container takes full width for proper centering */
 }
 
 .header-brand {
@@ -26,24 +27,28 @@
 }
 
 .menu-toggle {
-  font-size: 1.25rem;
+  display: none;
+  font-size: 1.5rem;
   background: none;
   border: none;
   color: #fff;
-  display: none; /* Hidden by default, shown in smaller screens */
 }
 
 .header-nav {
   display: flex;
-  gap: 1px;
+  justify-content: center; /* Center navbar items */
+  width: 100%; /* Full width to ensure proper centering */
+  gap: 20px; /* Adjust the gap as needed */
 }
 
 .header-nav a {
   color: #fff;
   text-decoration: none;
-  padding: 0.5rem 1rem;
-  border-radius: 0.25rem; /* Rounded corners like Bootstrap buttons */
+  padding: 0.5rem 0.8rem;
+  border-radius: 0.25rem;
   transition: background-color 0.2s ease-in-out;
+  margin-top:10px;
+  margin-bottom:10px;
 }
 
 .header-nav a:hover {
@@ -54,8 +59,7 @@
   .header-nav {
     display: none; /* Hidden by default in smaller screens */
     flex-direction: column;
-    width: 100%;
-    padding: 0.5rem;
+    align-items: center; /* Ensure items are centered in the column layout */
   }
 
   .header-nav.show {
@@ -68,6 +72,6 @@
 }
 
 .activeLink {
-  background-color: #007bff; /* Change this color as desired to indicate active state */
-  color: #fff !important; /* Ensure text color is white for better visibility */
+  background-color: #007bff;
+  color: #fff !important;
 }
