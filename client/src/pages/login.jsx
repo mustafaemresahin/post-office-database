@@ -33,10 +33,13 @@ const LoginPage = () => {
   };
 
   return (
+    
     <div className="login-page">
       <div className="login-form-container">
         <div className="login-card"> {/* Wrap in login-card */}
-        <h1>Login</h1>
+        <div className='login'>
+          <h1>Login</h1>
+        </div>
           <div className="login-form">
             <form onSubmit={handleSubmit}>
               <div className="username-field">
@@ -61,19 +64,12 @@ const LoginPage = () => {
                   className="password-input"
                 />
               </div>
-              <div>
-                <label htmlFor="role">Role:</label>
-                <select
-                  id="role"
-                  name="role" // Add the name attribute to match the state key
-                  value={values.role} // Use values.role here
-                  onChange={handleChange} // Use the same handleChange for consistency
-                >
+              <div class="select-container">
+                <select id="role" name="role" value={values.role} onChange={handleChange}>
                   <option value="customer">Customer</option>
                   <option value="employee">Employee</option>
                   <option value="admin">Admin</option>
                 </select>
-
               </div>
               <div className="submit-button">
                 <button variant="primary" type="submit">
