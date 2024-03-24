@@ -1,15 +1,47 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { ShopContext } from "../context/shop-context";
 import { PRODUCTS } from "../products";
 import { CartItem } from "./cart-item";
 import { useNavigate } from "react-router-dom";
+import axios from 'axios';
 
 import "../css/cart.css";
 export const Cart = () => {
   const { cartItems, getTotalCartAmount, checkout } = useContext(ShopContext);
   const totalAmount = getTotalCartAmount();
+  const [pendingPackages, setPendingPackages] = useState([]);
+  const [userId, setUserId] = useState(null);
 
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    const id = localStorage.getItem('id');
+    if (!token) {
+      // If no token found, redirect to login page
+      navigate("/login");
+      return; // Exit early if no token
+    }
+  
+    axios.get('/api/users')
+      .then(response => {
+        const userData = response.data.find(user => user.UserID === id); // Find the user by id
+        if (userData) {
+          setUserId(id); // Set the found user into the users state
+          // Move axios.get request here
+          axios.post("/api/sentPackages/pending", {userId: id })
+            .then(packagesResponse => {
+              console.log('Pending packages:', packagesResponse.data); // Log the pending packages data
+              setPendingPackages(packagesResponse.data);
+            })
+            .catch(error => console.error("Error fetching pending packages:", error));
+        } else {
+          console.log('User not found');
+          // Handle the case where the user is not found
+        }
+      })
+      .catch(error => console.error('Error:', error));
+  }, []);
 
   return (
     <div className="cart">
@@ -24,7 +56,6 @@ export const Cart = () => {
           return null;
         })}
       </div>
-
       {totalAmount > 0 ? (
         <div className="checkout">
           <p> Subtotal: ${totalAmount} </p>
