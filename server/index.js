@@ -197,54 +197,22 @@ const server = http.createServer( async (req, res) => {
       );
       return;
     }
-// API endpoint for adding a vehicle
-else if (req.url === "/api/vehicleadd" && req.method === 'POST') {
-  let body = '';
-  req.on('data', (chunk) => {
-    body += chunk.toString();
-  });
-  req.on('end', () => {
-
-    const Vehicle = JSON.parse(body);
-    const VehicleID = uuidv4().substring(0, 10);
-    const Type = Vehicle.Type;
-    const Unit = Vehicle.Unit;
-
-    db.query(
-      "INSERT INTO Vehicles (VehicleID, Type, Unit) VALUES (?, ?, ?)",
-      [VehicleID, Type, Unit],
-      (error) => {
-        if (error) {
-          res.writeHead(500, { "Content-Type": "application/json" });
-          res.end(JSON.stringify({ error: error }));
-          return;
-        } else {
-          res.writeHead(201, { "Content-Type": "application/json" });
-          res.end(JSON.stringify({ message: 'Vehicle added successfully' }));
-          return;
+    else if (req.url === "/api/vehiclelist") {
+      db.query(
+        "SELECT * FROM vehicles",
+        (error, result) => {
+          if (error) {
+            res.writeHead(500, { "Content-Type": "application/json" });
+            res.end(JSON.stringify({ error: error }));
+            return;
+          } else {
+            res.writeHead(200, { "Content-Type": "application/json" });
+            res.end(JSON.stringify(result));
+            return;
+          }
         }
-      }
-    );
-  });
-}
-
-// API endpoint for listing vehicles
-else if (req.url === "/api/vehiclelist" && req.method === "GET") {
-  db.query(
-    "SELECT * FROM vehicles",
-    (error, result) => {
-      if (error) {
-        res.writeHead(500, { "Content-Type": "application/json" });
-        res.end(JSON.stringify({ error: error }));
-        return;
-      } else {
-        res.writeHead(200, { "Content-Type": "application/json" });
-        res.end(JSON.stringify(result));
-        return;
-      }
+      );
     }
-  );
-}
   }
   else if (req.method === "POST") {
     if (req.url === "/api/register") {
@@ -508,7 +476,35 @@ else if (req.url === "/api/vehiclelist" && req.method === "GET") {
       });
       return;
     }
+    else if (req.url === "/api/vehicleadd") {
+      let data = '';
+      req.on('data', (chunk) => {
+        data += chunk.toString();
+      });
+      req.on('end', () => {
     
+        const vehicle = JSON.parse(data);
+        const vehicleID = uuidv4().substring(0, 10);
+        const type = vehicle.Type;
+        const unit = vehicle.Unit;
+    
+        db.query(
+          "INSERT INTO Vehicles (VehicleID, Type, Unit) VALUES (?, ?, ?)",
+          [vehicleID, type, unit],
+          (error) => {
+            if (error) {
+              res.writeHead(500, { "Content-Type": "application/json" });
+              res.end(JSON.stringify({ error: error }));
+              return;
+            } else {
+              res.writeHead(201, { "Content-Type": "application/json" });
+              res.end(JSON.stringify({ message: 'Vehicle added successfully' }));
+              return;
+            }
+          }
+        );
+      });
+    }
   }
   else if(req.method == "DELETE") {
     const reqURL = url.parse(req.url, true);
