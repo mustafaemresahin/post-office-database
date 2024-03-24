@@ -5,7 +5,7 @@ import axios from 'axios';
 
 const LoginPage = () => {
   const navigate = useNavigate();
-  const [values, setValues] = useState({username:"",password:""});
+  const [values, setValues] = useState({username:"",password:"",role:"customer"});
 
   const handleSubmit = async (event) => {
     event.preventDefault(); // Prevent default form submission behavior
@@ -16,6 +16,7 @@ const LoginPage = () => {
       console.log('Login successful:', response.data);
       localStorage.setItem('token', response.data.token);
       localStorage.setItem('id', response.data.id);
+      localStorage.setItem('role', values.role);
       navigate('/profile');
       window.location.reload();
     } catch (error) {
@@ -59,6 +60,20 @@ const LoginPage = () => {
                   required
                   className="password-input"
                 />
+              </div>
+              <div>
+                <label htmlFor="role">Role:</label>
+                <select
+                  id="role"
+                  name="role" // Add the name attribute to match the state key
+                  value={values.role} // Use values.role here
+                  onChange={handleChange} // Use the same handleChange for consistency
+                >
+                  <option value="customer">Customer</option>
+                  <option value="employee">Employee</option>
+                  <option value="admin">Admin</option>
+                </select>
+
               </div>
               <div className="submit-button">
                 <button variant="primary" type="submit">

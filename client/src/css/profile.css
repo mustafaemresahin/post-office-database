@@ -1,74 +1,97 @@
-
-
-/*.profile-page {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 80vh;
-    padding: 2rem;
-    margin:20px;
-    background-color: #f2f2f2;
-  }
-
-  .profile-card {
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    border-radius: 8px;
-    background-color: #ffffff;
-    padding: 2rem;
-    max-width: 400px;
-    width: 100%;
-  }*/
-
-.profile-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-bottom: 20px;
+/* General styling for the page background and layout */
+.package-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh; /* Ensure it covers full viewport height */
+  padding: 20px;
+  background-color: #f7f7f7; /* Neutral background */
 }
 
-/*.profile-table header {
-    display:flex;
-    background-color: #f2f2f2;
-    padding: 8px;
-    border: 1px solid #ddd;
-    font-weight: bold;
-}*/
+/* Enhanced card design for profile information */
+.registration-card {
+  box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
+  border-radius: 10px; /* More pronounced rounded corners */
+  background-color: #ffffff;
+  padding: 20px;
+  max-width: 500px; /* Slightly larger to accommodate more content */
+  width: 100%;
+  margin: 20px; /* Ensure some space around the card */
+}
+
+/* Style adjustments for the table and its content */
+.profile-table {
+  width: 100%;
+  border-collapse: collapse; /* Remove gaps between table cells */
+}
+
+thead h1 {
+  color: #333;
+  font-weight: 600; /* Bold but not too heavy */
+  margin-bottom: 20px; /* More space below the title for separation */
+}
 
 .profile-element {
-    padding: 8px;
-    border: 1px solid #ddd;
-    background-color: #fff;
+  padding: 15px; /* More padding for a spacious look */
+  border-bottom: 2px solid #eee; /* Lighter and thicker bottom border for a softer look */
+  color: #555; /* Dark grey for text for better readability */
 }
 
-.profile-element.title {
-    font-weight: bold;
-    padding: 8px;
-    border: 1px solid #ddd;
-    background-color: #fff;
+/* Highlighting the role of the user more distinctly */
+.role-highlight {
+  font-weight: bold;
+  color: #007bff; /* Using a blue color to highlight the user's role */
 }
 
-.profile-table tbody tr {
-    display: flex;
+/* Button styles for a more modern appearance */
+.logout-button, .edit-button {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background-color 0.3s ease;
+  margin-right: 10px; /* Space between buttons */
 }
 
-.profile-table tbody tr .profile-element {
-    flex: 1;  /*Equal width for both columns */
+.logout-button {
+  background-color: #007bff; /* A vivid color for logout to indicate a distinct action */
+  color: white;
+}
+
+.logout-button:hover {
+  background-color: #0056b3; /* Lighter shade on hover */
+}
+
+.edit-button {
+  background-color: #007bff; /* Green for edit, suggesting a positive action */
+  color: white;
+}
+
+.edit-button:hover {
+  background-color: #0056b3; /* Lighter green on hover */
+}
+
+/* Ensuring responsiveness */
+@media (max-width: 768px) {
+  .registration-card {
+    margin: 10px;
+    padding: 15px;
+  }
+
+  .logout-button, .edit-button {
+    width: 100%; /* Full width for smaller screens */
+    margin: 10px 0; /* Stack the buttons vertically with space in between */
+  }
+}
+
+.buttons {
+    text-align: center;
+    padding-top: 30px;
 }
 
 .centered-header {
     text-align: center;
-}
-
-.logout-button {
-    padding: 10px 15px;
-    border: none;
-    border-radius: 5px;
-    background-color: #007bff;
-    color: white;
-    font-size: 1rem;
-    font-weight: 600;
-    cursor: pointer;
-    width: 100%;
-    transition: background-color 0.2s;
-    text-align: center;
-    margin: 5px auto;
+    width: 100%; /* Ensure it spans the full width of its container */
+    margin: 20px 0; /* Adjust top and bottom margins as needed */
   }
