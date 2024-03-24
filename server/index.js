@@ -318,11 +318,11 @@ const server = http.createServer( async (req, res) => {
       });
       req.on("end", () => {
         const body = JSON.parse(data);
-        console.log("server",body);
         const userId = body.userId;
+        const Status = 'Pending';
         db.query(
-          "SELECT * FROM packages WHERE SenderID = ? AND Status = ?",
-          [userId, 'Pending'],
+          "SELECT * FROM package WHERE SenderID = ? AND Status = ?",
+          [userId, Status],
           (error, result) => {
             if (error) {
               res.writeHead(500, { "Content-Type": "application/json" });
@@ -330,11 +330,11 @@ const server = http.createServer( async (req, res) => {
               return;
             } else {
               res.writeHead(200, { "Content-Type": "application/json" });
-              res.end(JSON.stringify(result));
+              res.end(JSON.stringify({result }));
               return;
             }
-          }
-        ); 
+          },
+        );
       });
       return;
     }
