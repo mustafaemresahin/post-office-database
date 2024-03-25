@@ -14,6 +14,37 @@ const Employee = () => {
     // }, []);
 
 
+    // const ProfilePage = () => {
+    //     const navigate = useNavigate();
+    //     const [user, setUser] = useState(null);
+    
+    //     const handleNavigation = (event, route) => {
+    //         event.preventDefault();
+    //         // Navigate to the specified route
+    //         navigate(route);
+    //     };
+    //     useEffect(() => {
+    //       const token = localStorage.getItem('token');
+    //       const id = localStorage.getItem('id');
+    //       if (!token) {
+    //         // If no token found, redirect to login page
+    //         navigate("/login");
+    //       }
+    //       else{
+    //         axios.get('/api/users')
+    //         .then(response => {
+    //             const userData = response.data.find(user => user.UserID === id); // Find the user by id
+    //             if (userData) {
+    //               setUser(userData); // Set the found user into the users state, as an array for consistency
+    //             } else {
+    //               console.log('User not found');
+    //               // Handle the case where the user is not found
+    //             }
+    //           })
+    //           .catch(error => console.error('Error:', error));
+    //       }
+    //     }, [navigate]);
+
 
     return (
         <div className='employee-container'>

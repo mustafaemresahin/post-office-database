@@ -1,30 +1,42 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import '../css/register.css';
 import '../css/package.css';
+import axios from 'axios';
 
 const ShippingForm = () => {
-  const [userData, setFormData] = useState({
+  const [userData, setUserData] = useState({
     firstname: '',
     lastname: '',
+    firstnamer: '',
+    lastnamer: '',
     email: '',
     username: '',
-    password: '',
     address: '',
+    addressr: '',
     phoneNumber: '',
   });
 
+  const navigate = useNavigate();
+
   const handleChange = (event) => {
-    const { name, value, type } = event.target;
-    setFormData((prevState) => ({
+    const { name, value } = event.target;
+    setUserData(prevState => ({
       ...prevState,
-      [name]: type === 'checkbox' ? event.target.checked : value,
+      [name]: value,
     }));
   };
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
-    console.log('Submitted data:', userData);
-    // TODO: Implement form submission logic here (e.g., send to server)
+
+    try {
+      const response = await axios.post('/api/add-package', userData);
+      console.log('Package added', response.data);
+      navigate('/Employee');
+    } catch (error) {
+      console.error('Package creation failed:', error);
+    }
   };
 
   return (
@@ -50,29 +62,29 @@ const ShippingForm = () => {
                 type="text"
                 id="lastname"
                 name="lastname"
-                value={userData.firstname}
+                value={userData.lastname}
                 onChange={handleChange}
                 required
               />
             </div>
             <div>
-              <label htmlFor="firstname">Receiver Name:</label>
+              <label htmlFor="firstnamer">Receiver Name:</label>
               <input
                   type="text"
-                  id="firstname"
-                  name="firstname"
-                  value={userData.firstname}
+                  id="firstnamer"
+                  name="firstnamer"
+                  value={userData.firstnamer}
                   onChange={handleChange}
                   required
               />
             </div>
             <div>
-              <label htmlFor="lastname">Receiver Surname:</label>
+              <label htmlFor="lastnamer">Receiver Surname:</label>
               <input
                 type="text"
-                id="lastname"
-                name="lastname"
-                value={userData.firstname}
+                id="lastnamer"
+                name="lastnamer"
+                value={userData.lastnamer}
                 onChange={handleChange}
                 required
               />
@@ -90,14 +102,26 @@ const ShippingForm = () => {
               />
             </div>
             <div>
-              <label htmlFor="address">Receiver Address:</label>
+              <label htmlFor="addressr">Receiver Address:</label>
               <input
                  type="text"
-                 id="address"
-                 name="address"
-                 value={userData.address}
+                 id="addressr"
+                 name="addressr"
+                 value={userData.addressr}
                  onChange={handleChange}
                  required
+              />
+            </div>
+
+            <div>
+              <label htmlFor="phoneNumber">Phone Number:</label>
+              <input
+                type="tel"
+                id="phoneNumber"
+                name="phoneNumber"
+                value={userData.phoneNumber}
+                onChange={handleChange}
+                required
               />
             </div>
             <button type="submit">

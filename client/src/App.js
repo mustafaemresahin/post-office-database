@@ -18,6 +18,7 @@ import Sidebar from './pages/sidebar';
 import Customer from './pages/Customer';
 import Employee from './pages/Employee';
 import ShippingForm from './pages/add-package';
+// import ShopContext  from './context/shop-context';
 
 const App = () => {
 
