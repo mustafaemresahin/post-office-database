@@ -12,22 +12,21 @@ function About() {
       <div className='about-us'>
     
           <div className='about-us-card'>
-
+            <h1>Welcome to our website!</h1>
             <h3>
 
-              Welcome to our website! This is your premier online resource for finding postal services worldwide. With our comprehensive and up-to-date listings, you can easily locate post offices in any country, city, or neighborhood, ensuring that your letters, parcels, and packages are sent or received without hassle.
+               This is your premier online resource for finding postal services worldwide. With our comprehensive and up-to-date listings, you can easily locate post offices in any country, city, or neighborhood, ensuring that your letters, parcels, and packages are sent or received without hassle.
 
-              Welcome to our website! We are a group 8
             </h3>
-            <p>Mustafa, Guillermo, Rayyan, Yla, Athena</p>
+            <p>Mustafa, Guillermo, Rayyan, Yla, Afina</p>
 
 
           
             <div className='button-holder'>
-        <button onClick={()=> {navigate("/Send%20Package")}}>Send Package</button>
+            <button onClick={()=> {navigate("/Send%20Package")}}>Send Package</button>
             <button onClick={()=>{window.location.href="/track"}}>Track Package</button>
-            <button onClick={()=>{window.location.href="/register"}}>register</button>
-            </div>
+            <button onClick={()=>{window.location.href="/register"}}>Register</button>
+          </div>
 
 
 

@@ -137,6 +137,38 @@ const server = http.createServer( async (req, res) => {
       });
       return;
     }
+    // Get Admin
+    else if (req.url === "/api/admin") 
+    {
+      db.query("SELECT * FROM admin", (error, result) => {
+        if (error) {
+          res.writeHead(500, { "Content-Type": "application/json" });
+          res.end(JSON.stringify({ error: error }));
+          return;
+        } else {
+          res.writeHead(200, { "Content-Type": "application/json" });
+          res.end(JSON.stringify(result));
+          return;
+        }
+      });
+      return;
+    }
+    // Get all Employees
+    else if (req.url === "/api/employees") 
+    {
+      db.query("SELECT * FROM employees", (error, result) => {
+        if (error) {
+          res.writeHead(500, { "Content-Type": "application/json" });
+          res.end(JSON.stringify({ error: error }));
+          return;
+        } else {
+          res.writeHead(200, { "Content-Type": "application/json" });
+          res.end(JSON.stringify(result));
+          return;
+        }
+      });
+      return;
+    }
     // Get ALl Customers
     else if (req.url === "/api/customers") 
     {
@@ -247,49 +279,184 @@ const server = http.createServer( async (req, res) => {
         const body = JSON.parse(data);
         const username = body.username;
         const password = body.password;
+        const role = body.role;
     
         // Here, make sure you are hashing and comparing passwords correctly if using hashing
         // If passwords are hashed, compare the hash of the provided password with the stored hash
-        db.query(
-          "SELECT * FROM customer_user WHERE CustomerUser = ?",
-          [username],
-          (error, results) => {
-            if (error) {
-              res.writeHead(500, { "Content-Type": "application/json" });
-              res.end(JSON.stringify({ error: 'Internal Server Error' }));
-              return;
-            } else {
-              if (results.length > 0) {
-                const user = results[0]; // Assuming user is found in the first result
-
-                const userRole = user.role;
-                // Check if the provided password matches the stored password
-                // If you're using hashed passwords, this is where bcrypt.compare would be used
-                if (user.CustomerPass === password) {
-                  // Generate token
-                  const token = generateToken(user);
-                  // Send user details and token in response
-                  res.writeHead(200, { 'Content-Type': 'application/json' });
-                  res.end(JSON.stringify({
-                    id: user.UserID,
-                    username: user.CustomerUser,
-                    email: user.Email,
-                    role: userRole,
-                    token: token
-                  }));
-                  return;
+        if (role === "admin") {
+          db.query(
+            "SELECT * FROM admin WHERE AdminUser = ?", // Make sure this table name is correct
+            [username],
+            (error, results) => {
+              if (error) {
+                res.writeHead(500, { "Content-Type": "application/json" });
+                res.end(JSON.stringify({ error: 'Internal Server Error' }));
+                return;
+              } else {
+                if (results.length > 0) {
+                  const user = results[0];
+                  
+                  // Since we're not concerned with security for this demo, we'll check the password directly
+                  if (user.AdminPass === password) { // Ensure your column names match your table's case exactly
+                    // Generate token
+                    const token = generateToken(user);
+                    // Send user details and token in response
+                    res.writeHead(200, { 'Content-Type': 'application/json' });
+                    res.end(JSON.stringify({
+                      id: user.AdminID,
+                      username: user.AdminUser,
+                      email: user.Email,
+                      token: token // Ensure generateToken is defined and returns a valid token
+                    }));
+                    return;
+                  } else {
+                    // Password does not match
+                    res.writeHead(401, { "Content-Type": "application/json" });
+                    res.end(JSON.stringify({ message: "Wrong username or password" }));
+                    return;
+                  }
                 } else {
-                  // Password does not match
+                  // No user found
                   res.writeHead(401, { "Content-Type": "application/json" });
                   res.end(JSON.stringify({ message: "Wrong username or password" }));
                   return;
                 }
-              } else {
-                // No user found
-                res.writeHead(401, { "Content-Type": "application/json" });
-                res.end(JSON.stringify({ message: "Wrong username or password" }));
-                return;
               }
+            }
+          );
+        }
+        else if(role === "Employee"){
+          db.query(
+            "SELECT * FROM employee WHERE CustomerUser = ?",
+            [username],
+            (error, results) => {
+              if (error) {
+                res.writeHead(500, { "Content-Type": "application/json" });
+                res.end(JSON.stringify({ error: 'Internal Server Error' }));
+                return;
+              } else {
+                if (results.length > 0) {
+                  const user = results[0]; // Assuming user is found in the first result
+  
+                  const userRole = user.role;
+                  // Check if the provided password matches the stored password
+                  // If you're using hashed passwords, this is where bcrypt.compare would be used
+                  if (user.CustomerPass === password) {
+                    // Generate token
+                    const token = generateToken(user);
+                    // Send user details and token in response
+                    res.writeHead(200, { 'Content-Type': 'application/json' });
+                    res.end(JSON.stringify({
+                      id: user.UserID,
+                      username: user.CustomerUser,
+                      email: user.Email,
+                      role: userRole,
+                      token: token
+                    }));
+                    return;
+                  } else {
+                    // Password does not match
+                    res.writeHead(401, { "Content-Type": "application/json" });
+                    res.end(JSON.stringify({ message: "Wrong username or password" }));
+                    return;
+                  }
+                } else {
+                  // No user found
+                  res.writeHead(401, { "Content-Type": "application/json" });
+                  res.end(JSON.stringify({ message: "Wrong username or password" }));
+                  return;
+                }
+              }
+            }
+          );
+        }
+        else{
+          db.query(
+            "SELECT * FROM customer_user WHERE CustomerUser = ?",
+            [username],
+            (error, results) => {
+              if (error) {
+                res.writeHead(500, { "Content-Type": "application/json" });
+                res.end(JSON.stringify({ error: 'Internal Server Error' }));
+                return;
+              } else {
+                if (results.length > 0) {
+                  const user = results[0]; // Assuming user is found in the first result
+  
+                  const userRole = user.role;
+                  // Check if the provided password matches the stored password
+                  // If you're using hashed passwords, this is where bcrypt.compare would be used
+                  if (user.CustomerPass === password) {
+                    // Generate token
+                    const token = generateToken(user);
+                    // Send user details and token in response
+                    res.writeHead(200, { 'Content-Type': 'application/json' });
+                    res.end(JSON.stringify({
+                      id: user.UserID,
+                      username: user.CustomerUser,
+                      email: user.Email,
+                      role: userRole,
+                      token: token
+                    }));
+                    return;
+                  } else {
+                    // Password does not match
+                    res.writeHead(401, { "Content-Type": "application/json" });
+                    res.end(JSON.stringify({ message: "Wrong username or password" }));
+                    return;
+                  }
+                } else {
+                  // No user found
+                  res.writeHead(401, { "Content-Type": "application/json" });
+                  res.end(JSON.stringify({ message: "Wrong username or password" }));
+                  return;
+                }
+              }
+            }
+          );
+        }
+        return;
+      });
+    }
+    else if (req.url === "/api/sentPackages") {
+      let data = "";
+      req.on("data", (chunk) => {
+        data += chunk;
+      });
+      const currentDate = new Date();
+      const formattedDate = currentDate.toISOString().slice(0, 19).replace('T', ' ');
+
+      req.on("end", () => {
+        const body = JSON.parse(data);
+        const PackageID = uuidv4().substring(0,30);
+        const Weight = body.weight;
+        const Dimensions = body.length * body.width * body.height;
+        const Type = body.packageType;
+        const Status = 'Pending';
+        const DateSent = formattedDate;
+        const VehicleID = null; //we dont have vehicles yet so just leaving this blank, will prolly cause error
+        const destinationAddress = body.address;
+        const expedited = body.expeditedShipping;
+        const SenderID = body.userId;
+        const recipientFirstName = body.recipientFirstName;
+        const recipientLastName = body.recipientLastName;
+
+        //console.log({PackageID, SenderID, Weight, Dimensions, Type, Status, DateSent, VehicleID, destinationAddress, expedited, recipientFirstName, recipientLastName });
+
+        db.query(
+          "INSERT INTO package (PackageID, SenderID, Weight, Dimensions, Type, Status, DateSent, VehicleID, destination, expeditedShipping, recipientFirstName, recipientLastName) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )",
+          [PackageID, SenderID, Weight, Dimensions, Type, Status, DateSent, VehicleID, destinationAddress, expedited, recipientFirstName, recipientLastName],
+          (error) => 
+          {
+            if (error) {
+              console.log(error);
+              res.writeHead(500, {"Content-Type": "application/json"});
+              res.end(JSON.stringify({error: "Do we get this far?"}));
+              return;
+            } else {
+              res.writeHead(200, {"Content-Type": "application/json"});
+              res.end(JSON.stringify({ message: "Package submitted successfully" }));
+              return;
             }
           }
         );
@@ -417,6 +584,34 @@ const server = http.createServer( async (req, res) => {
                 });
         });
     }
+    }
+    
+    else if (req.url === "/api/sentPackages/pending") {
+      let data = "";
+      req.on("data", (chunk) => {
+          data += chunk;
+      });
+      req.on("end", () => {
+        const body = JSON.parse(data);
+        const userId = body.userId;
+        const Status = 'Pending';
+        db.query(
+          "SELECT * FROM package WHERE SenderID = ? AND Status = ?",
+          [userId, Status],
+          (error, result) => {
+            if (error) {
+              res.writeHead(500, { "Content-Type": "application/json" });
+              res.end(JSON.stringify({ error: error }));
+              return;
+            } else {
+              res.writeHead(200, { "Content-Type": "application/json" });
+              res.end(JSON.stringify({result }));
+              return;
+            }
+          },
+        );
+      });
+      return;
     }
     
   }

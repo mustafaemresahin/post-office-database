@@ -10,7 +10,7 @@
 
 .login-form-container {
   width: 100%;
-  max-width: 420px;
+  max-width: 450px;
   margin: auto;
   padding: 20px;
 }
@@ -28,18 +28,14 @@
   flex-direction: column;
 }
 
-.username-field,
-.password-field {
-  margin-bottom: 20px;
-}
-
 .username-input,
 .password-input {
   width: 100%;
   padding: 10px;
   border: 1px solid #ddd;
   border-radius: 5px;
-  margin-top: 5px;
+  margin: 5px;
+  margin-bottom:30px;
 }
 
 .submit-button button {
@@ -50,7 +46,7 @@
   color: white;
   border-radius: 5px; 
   cursor: pointer; 
-  margin-top: 20px;
+  text-align: center;
 }
 
 .submit-button button:hover {
@@ -63,6 +59,7 @@
 
 .register-link p {
   color: #333; 
+  font-size: 14px;
 }
 
 .register-link a {
@@ -73,3 +70,41 @@
 .register-link a:hover {
   text-decoration: underline;
 }
+
+/* Container style for positioning - optional */
+.select-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Base style for the select element */
+select {
+  appearance: none; /* Removes default system appearance */
+  background-color: #f0f0f0; /* Light grey background */
+  border: 2px solid #007bff; /* Blue border */
+  padding: 10px 10px; /* Spacing inside the select box */
+  border-radius: 5px; /* Rounded corners */
+  cursor: pointer; /* Changes the cursor to indicate it's clickable */
+  outline: none; /* Removes the default focus outline */
+  transition: all 0.3s ease; /* Smooth transition for hover and focus */
+  max-width:80px;
+}
+
+/* Hover state */
+select:hover {
+  background-color: #e9e9e9; /* Slightly darker background on hover */
+}
+
+/* Focus state */
+select:focus {
+  border-color: #0056b3; /* Darker blue border to indicate focus */
+  box-shadow: 0 0 0 2px rgba(0, 86, 179, 0.25); /* Subtle shadow to highlight focus */
+}
+
+/* Style for the options */
+option {
+  background-color: white; /* White background for dropdown options */
+  color: #333; /* Dark text color for better readability */
+}
+

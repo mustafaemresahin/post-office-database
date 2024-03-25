@@ -136,7 +136,7 @@ img{
   margin: 10%;
   padding: 40px;
   text-align: center;
-
+  max-width: 800px;
 
 }
 
@@ -146,8 +146,13 @@ h3{
 
 image{
   height: 20px;
-  width: 40px;
+  width: 30px;
 }
 
+p {
+  font-size:18px;
+}
 
-
+button {
+  font-size: 20px;
+}

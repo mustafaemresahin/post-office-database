@@ -5,7 +5,7 @@ import axios from 'axios';
 
 const LoginPage = () => {
   const navigate = useNavigate();
-  const [values, setValues] = useState({username:"",password:""});
+  const [values, setValues] = useState({username:"",password:"",role:"customer"});
 
   const handleSubmit = async (event) => {
     event.preventDefault(); // Prevent default form submission behavior
@@ -16,6 +16,7 @@ const LoginPage = () => {
       console.log('Login successful:', response.data);
       localStorage.setItem('token', response.data.token);
       localStorage.setItem('id', response.data.id);
+      localStorage.setItem('role', values.role);
       navigate('/profile');
       window.location.reload();
     } catch (error) {
@@ -32,10 +33,13 @@ const LoginPage = () => {
   };
 
   return (
+    
     <div className="login-page">
       <div className="login-form-container">
         <div className="login-card"> {/* Wrap in login-card */}
-        <h1>Login</h1>
+        <div className='login'>
+          <h1>Login</h1>
+        </div>
           <div className="login-form">
             <form onSubmit={handleSubmit}>
               <div className="username-field">
@@ -59,6 +63,13 @@ const LoginPage = () => {
                   required
                   className="password-input"
                 />
+              </div>
+              <div class="select-container">
+                <select id="role" name="role" value={values.role} onChange={handleChange}>
+                  <option value="customer">Customer</option>
+                  <option value="employee">Employee</option>
+                  <option value="admin">Admin</option>
+                </select>
               </div>
               <div className="submit-button">
                 <button variant="primary" type="submit">
