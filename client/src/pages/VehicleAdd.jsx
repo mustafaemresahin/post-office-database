@@ -5,11 +5,11 @@ import '../css/vehicles.css';
 
 const VehicleAdd = () => {
   const [vehicleData, setVehicleData] = useState({
-   // make: '',
-    //model: '',
-    //year: '',
+    location: '',
+    status: '',
     type: '',
-    unit: ''
+    unit: '',
+    employeeID: ''
   });
 
   const handleChange = (e) => {
@@ -29,10 +29,13 @@ const VehicleAdd = () => {
         }
       });
       console.log('Vehicle added:', response.data);
-      // Optionally, reset the form after successful submission
+      // reset form after successful submit
       setVehicleData({
+        location:'',
+        status:'',
         type: '',
-        unit: ''
+        unit: '',
+        employeeID:''
       });
     } catch (error) {
       console.error('Error adding vehicle:', error);
@@ -43,21 +46,19 @@ const VehicleAdd = () => {
     <div className="registration-container">
     <div className="vehicle-card">
       <h2>Add Vehicle</h2>
-      <form onSubmit={handleSubmit}>
-{/*
-      <label htmlFor="year">Year:</label>
-        <input type="text" id="year" name="year" value={vehicleData.year} onChange={handleChange} />
-        <label htmlFor="make">Make:</label>
-        <input type="text" id="make" name="make" value={vehicleData.make} onChange={handleChange} />
-        <label htmlFor="model">Model:</label>
-        <input type="text" id="model" name="model" value={vehicleData.model} onChange={handleChange} />
-  */}
-  
+      <form onSubmit={handleSubmit}> 
+
+        <label htmlFor="location">Location:</label>
+        <input type="text" id="location" name="location" value={vehicleData.location} onChange={handleChange} />
+        <label htmlFor="status">Status:</label>
+        <input type="text" id="status" name="status" value={vehicleData.status} onChange={handleChange} />
         <label htmlFor="type">type:</label>
         <input type="text" id="type" name="type" value={vehicleData.type} onChange={handleChange} />
         <label htmlFor="unit">unit:</label>
         <input type="text" id="unit" name="unit" value={vehicleData.unit} onChange={handleChange} />
-  
+        <label htmlFor="employeeID">Employee ID:</label>
+        <input type="text" id="employeeID" name="employeeID" value={vehicleData.employeeID} onChange={handleChange} />
+
         <button type="submit">Add Vehicle</button>
       </form>
     </div>

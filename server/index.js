@@ -204,29 +204,55 @@ else if (req.url === "/api/vehicleadd" && req.method === 'POST') {
     body += chunk.toString();
   });
   req.on('end', () => {
+    const vehicle = JSON.parse(body);
+    const vehicleID = uuidv4().substring(0, 10);
+    const timestamp = new Date().toLocaleString(); // Current date and time in local time zone
+    const location = vehicle.location;
+    const status = vehicle.status;
+    const type = vehicle.type;
+    const unit = vehicle.unit;
+    const employeeID = vehicle.employeeID;
 
-    const Vehicle = JSON.parse(body);
-    const VehicleID = uuidv4().substring(0, 10);
-    const Type = Vehicle.Type;
-    const Unit = Vehicle.Unit;
-
+    // query to check employeeID
     db.query(
-      "INSERT INTO Vehicles (VehicleID, Type, Unit) VALUES (?, ?, ?)",
-      [VehicleID, Type, Unit],
-      (error) => {
+      "SELECT * FROM Employees WHERE EmployeeID = ?",
+      [employeeID],
+      (error, result) => {
         if (error) {
+          console.error('Database error:', error);
           res.writeHead(500, { "Content-Type": "application/json" });
-          res.end(JSON.stringify({ error: error }));
+          res.end(JSON.stringify({ error: 'Internal Server Error' }));
+          return;
+        } else if (result.length === 0) {
+          // if employeeID not found in employee table
+          res.writeHead(400, { "Content-Type": "application/json" });
+          res.end(JSON.stringify({ error: 'Invalid employeeID' }));
           return;
         } else {
-          res.writeHead(201, { "Content-Type": "application/json" });
-          res.end(JSON.stringify({ message: 'Vehicle added successfully' }));
-          return;
+          // if employeeID is valid, starts inserting vehicle
+          db.query(
+            "INSERT INTO Vehicles (VehicleID, Timestamp, Location, Status, Type, Unit, EmployeeID) VALUES (?, ?, ?, ?, ?, ?, ?)",
+            [vehicleID, timestamp, location, status, type, unit, employeeID],
+            (insertError) => {
+              if (insertError) {
+                console.error('Insertion error:', insertError);
+                res.writeHead(500, { "Content-Type": "application/json" });
+                res.end(JSON.stringify({ error: 'Failed to add vehicle' }));
+                return;
+              } else {
+                res.writeHead(201, { "Content-Type": "application/json" });
+                res.end(JSON.stringify({ message: 'Vehicle added successfully' }));
+                return;
+              }
+            }
+          );
         }
-      }
+     }
     );
   });
 }
+
+
 
 // API endpoint for listing vehicles
 else if (req.url === "/api/vehiclelist" && req.method === "GET") {
