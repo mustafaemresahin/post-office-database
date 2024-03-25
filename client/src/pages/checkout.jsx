@@ -5,14 +5,10 @@ import '../css/cart.css';
 import axios from 'axios';
 import { CartItem } from './cart-item';
 import { PRODUCTS } from "../products";
+import { useNavigate } from 'react-router-dom';
 
 
 function Checkout() {
-    // State variables to hold form data
-    // User info
-    // const { getCartItems } = useCart();
-    // const cartItems = getCartItems();
-    // const { cartItems, getTotalCartAmount, checkout } = useContext(ShopContext);
     const { cartItem, getTotalCartAmount } = useContext(ShopContext);
   const totalAmount = getTotalCartAmount();
     const [firstName, setFirstName] = useState('');
@@ -27,7 +23,7 @@ function Checkout() {
     const [expiration, setExpiration] = useState('');
     const [CVV, setCVV] = useState('');
     const [cartItems, setCartItems] = useState([]);
-
+    const navigate = useNavigate();
 
     
         useEffect(() => {
@@ -92,6 +88,7 @@ function Checkout() {
             if (response.status >= 200 && response.status < 300) {
                 // Handle successful checkout
                 alert("Checkout successful!");
+                navigate('/About');
                 // Reset form fields or redirect to success page here
             } else {
                 // Handle errors or unsuccessful checkout
