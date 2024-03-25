@@ -18,19 +18,19 @@ export const Cart = () => {
   const navigate = useNavigate();
 
 
-// useEffect(() => {
-//   async function fetchData() {
-//     try {
-//       // Make a request to your API endpoint to fetch cartItems
-//       const res = await axios.get('api/cart-items');
-//       updateCartItemCount(res.data);
-//     } catch (error) {
-//       console.error('Error fetching cartItems data: ', error);
-//     }
-//   }
+useEffect(() => {
+  async function fetchData() {
+    try {
+      // Make a request to your API endpoint to fetch cartItems
+      const res = await axios.get('api/cart-items');
+      updateCartItemCount(res.data);
+    } catch (error) {
+      console.error('Error fetching cartItems data: ', error);
+    }
+  }
 
-//   fetchData();
-// }, [updateCartItemCount]);
+  fetchData();
+}, [updateCartItemCount]);
 
   useEffect(() => {
     const token = localStorage.getItem('token');

@@ -42,7 +42,24 @@ export const ShopProvider = ({ children }) => {
     return inputCartItems.reduce((total, product) => {
       return product.quantity * product.pricePerItem + total;
     }, 0);
-  }
+  };
+
+  return (
+    <ShopContext.Provider
+      value={{
+        products,
+        addToCart,
+        getCartItems,
+        updateCartItems,
+        removeFromCart,
+        cartItems,
+        getTotalCartAmount: (cartItems) => getTotalCartAmount(cartItems || cartItems),
+      }}
+    >
+      {props.children}
+    </ShopContext.Provider>
+  );
+
 
   const totalQuantity = Object.values(cartItems).reduce((acc, quantity) => acc + quantity, 0);
 
