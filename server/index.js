@@ -473,7 +473,7 @@ const server = http.createServer( async (req, res) => {
         const body = JSON.parse(data);
         const PackageID = uuidv4().substring(0,30);
         const Weight = body.weight;
-        const Dimensions = body.length * body.width * body.height;
+        const Dimensions = (body.length * body.width * body.height).toFixed(4);
         const Type = body.packageType;
         const Status = 'Pending';
         const DateSent = formattedDate;
@@ -483,12 +483,21 @@ const server = http.createServer( async (req, res) => {
         const SenderID = body.userId;
         const recipientFirstName = body.recipientFirstName;
         const recipientLastName = body.recipientLastName;
+        const cost = Dimensions + Weight + expedited;
+        
+        if (Type === "parcel") {
+          cost += 5; // Additional cost for parcel
+        } else if (Type === "envelope") {
+          cost += 1; // Discount for envelope
+        } else if (Type === "oversized") {
+          cost += 10; // Additional cost for oversized
+        }
 
-        //console.log({PackageID, SenderID, Weight, Dimensions, Type, Status, DateSent, VehicleID, destinationAddress, expedited, recipientFirstName, recipientLastName });
+        //console.log({PackageID, SenderID, Weight, Dimensions, Type, Status, DateSent, VehicleID, destinationAddress, expedited, recipientFirstName, recipientLastName, cost});
 
         db.query(
-          "INSERT INTO package (PackageID, SenderID, Weight, Dimensions, Type, Status, DateSent, VehicleID, destination, expeditedShipping, recipientFirstName, recipientLastName) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )",
-          [PackageID, SenderID, Weight, Dimensions, Type, Status, DateSent, VehicleID, destinationAddress, expedited, recipientFirstName, recipientLastName],
+          "INSERT INTO package (PackageID, SenderID, Weight, Dimensions, Type, Status, DateSent, VehicleID, destination, expeditedShipping, recipientFirstName, recipientLastName, cost) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+          [PackageID, SenderID, Weight, Dimensions, Type, Status, DateSent, VehicleID, destinationAddress, expedited, recipientFirstName, recipientLastName, cost],
           (error) => 
           {
             if (error) {
@@ -505,34 +514,6 @@ const server = http.createServer( async (req, res) => {
         );
         return;
       });
-    }
-    
-    else if (req.url === "/api/sentPackages/pending") {
-      let data = "";
-      req.on("data", (chunk) => {
-          data += chunk;
-      });
-      req.on("end", () => {
-        const body = JSON.parse(data);
-        const userId = body.userId;
-        const Status = 'Pending';
-        db.query(
-          "SELECT * FROM package WHERE SenderID = ? AND Status = ?",
-          [userId, Status],
-          (error, result) => {
-            if (error) {
-              res.writeHead(500, { "Content-Type": "application/json" });
-              res.end(JSON.stringify({ error: error }));
-              return;
-            } else {
-              res.writeHead(200, { "Content-Type": "application/json" });
-              res.end(JSON.stringify({result }));
-              return;
-            }
-          },
-        );
-      });
-      return;
     }
     
   }
