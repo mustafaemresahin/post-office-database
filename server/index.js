@@ -198,8 +198,80 @@ const server = http.createServer( async (req, res) => {
       return;
     }
   }
+  else if (req.method == "PUT") {
+    const reqURL = url.parse(req.url, true);
+    const pathSegments = reqURL.pathname.split("/");
+ 
+ 
+    // Update A USEr
+    if (pathSegments.length === 3 && pathSegments[1] === "users"){
+      const UserID = pathSegments[2];
+ 
+      let data ="";
+      req.on("data", (chunk) => {
+        data+=chunk;
+      });
+      req.on("end", () => {
+        const body = JSON.parse(data);
+ 
+ 
+        db.query(
+          "UPDATE users SET 'Email' = ?, 'firstname'=?, 'lastname'=?, 'address'=?, 'phonenumber' =?,  WHERE 'UserID'=?",
+          [body.Email, body.firstname, body.lastname, body.address, body.phonenumber, UserID],
+          (error) => {
+            if (error) {
+              res.writeHead(500, { 'Content-Type': 'application/json' });
+              res.end(JSON.stringify({ error: 'Internal Server Error' }));
+          } else {
+              res.writeHead(200, { 'Content-Type': 'application/json' });
+              res.end(JSON.stringify({ message: 'User has been updated successfully' }));
+          }
+          }
+        )
+      })
+    }
+  }
+ 
   else if (req.method === "POST") {
-    if (req.url === "/api/register") {
+    if (req.url === "/api/adminAdd") {
+      let data = "";
+      req.on("data",(chunk) => {
+        let data ="";
+        data += chunk;
+      });
+      req.on("end", () => {
+        const body = JSON.parse(data);
+        const userid = uuidv4().substring(0,10);
+        const firstname = body.firstname;
+        const lastname = body.lastname; 
+        const username = body.username;
+        const password = body.password;
+        const phoneNumber = body.phoneNumber;
+        const email = body.email;
+        const dateSignup = formattedDate; 
+        const role = body.role;
+        const address = body.address;
+        
+
+        db.query(
+          "INSERT INTO customer_user (UserID, CustomerUser, CustomerPass, Email, firstname, lastname, address, phonenumber, dateSignedUp, role) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+          [userid, username, password, email, firstname, lastname, address, phoneNumber, dateSignup, role],
+            (error) => {
+                if (error) {
+                  console.log('Insertion error:' , error);
+                  res.writeHead(500, {"Content-Type": "application/json"});
+                  res.end(JSON.stringify({error: "Do we get this far?"}));
+                  return;
+                } else {
+                  res.writeHead(200, {"Content-Type": "application/json"});
+                  res.end(JSON.stringify({ message: "User has signed up successfully" }));
+                  return;
+                }
+              }
+        )
+      }); 
+    }
+    else if (req.url === "/api/register") {
       let data = "";
       req.on("data", (chunk) => {
           data += chunk;
@@ -466,11 +538,6 @@ const server = http.createServer( async (req, res) => {
     const reqURL = url.parse(req.url, true);
     const pathSegments = reqURL.pathname.split("/");
 
-    //Delete a user
-    if (req.method === "DELETE") {
-      const reqURL = url.parse(req.url, true);
-      const pathSegments = reqURL.pathname.split("/");
-
       // Delete A User
       if (pathSegments.length === 4 && pathSegments[2] === "users") {
           const UserID = pathSegments[3];
@@ -490,7 +557,7 @@ const server = http.createServer( async (req, res) => {
           );
       }
     }
-  }
+
 
   if (!req.url.startsWith("/api")) {
     // Serve static files or index.html for non-API requests

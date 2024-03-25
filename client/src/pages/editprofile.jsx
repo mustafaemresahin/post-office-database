@@ -3,20 +3,19 @@ import { useNavigate } from 'react-router-dom';
 import '../css/register.css';
 import '../css/package.css';
 import '../css/profile.css';
+import axios from 'axios'; 
 
 const EditProfile = () => {
 
     const navigate = useNavigate();
 
     const [formData, setFormData] = useState({
+        UserID: '',
         Email: '',
-        FirstName: '',
-        LastName: '',
-        Address: '',
-        "City,State": '',
-        Country:'',
-        ZipCode:'',
-        PhoneNumber:''
+        firstame: '',
+        lastname: '',
+        address: '',
+        phonenumber:''
       });
 
       useEffect(() => {
@@ -35,11 +34,17 @@ const EditProfile = () => {
         }));
       };
     
-      const handleSubmit = (event) => {
+      const handleSubmit = async (event) => {
         event.preventDefault();
         console.log('Submitted data:', formData);
-        navigate('/profile');
         // TODO: Implement form submission logic here (e.g., send to server)
+        try {
+            const response = await axios.put('/api/users', formData);
+            console.log('Registration successful:', response.data);
+            navigate('/login');
+          } catch (error) {
+            console.error('Registration failed:', error);
+          }
       };
 
     return (
@@ -59,36 +64,36 @@ const EditProfile = () => {
                                 />
                             </div>
                             <div>
-                                <label htmlFor="FirstName">New first name:</label>
+                                <label htmlFor="firstname">New first name:</label>
                                 <input
                                 type="string"
-                                id="FirstName"
-                                name="FirstName"
-                                value={formData.FirstName}
+                                id="firstName"
+                                name="firstName"
+                                value={formData.firstname}
                                 onChange={handleChange}
                                 />
                             </div>
                             <div>
-                                <label htmlFor="LastName">New last name:</label>
+                                <label htmlFor="lastname">New last name:</label>
                                 <input
                                 type="string"
-                                id="LastName"
-                                name="LastName"
-                                value={formData.LastName}
+                                id="lastname"
+                                name="lastname"
+                                value={formData.lastname}
                                 onChange={handleChange}
                                 />
                             </div>
                             <div>
-                                <label htmlFor="Address">New address:</label>
+                                <label htmlFor="address">New address:</label>
                                 <input
                                 type="string"
-                                id="Address"
-                                name="Address"
-                                value={formData.Address}
+                                id="address"
+                                name="address"
+                                value={formData.address}
                                 onChange={handleChange}
                                 />
                             </div>
-                            <div>
+                            {/* <div>
                                 <label htmlFor="City,State">New city, state:</label>
                                 <input
                                 type="string"
@@ -97,8 +102,8 @@ const EditProfile = () => {
                                 value={formData['City,State']}
                                 onChange={handleChange}
                                 />
-                            </div>
-                            <div>
+                            </div> */}
+                            {/* <div>
                                 <label htmlFor="Country">New country:</label>
                                 <input
                                 type="string"
@@ -107,8 +112,8 @@ const EditProfile = () => {
                                 value={formData.Country}
                                 onChange={handleChange}
                                 />
-                            </div>
-                            <div>
+                            </div> */}
+                            {/* <div>
                                 <label htmlFor="ZipCode">New zipcode:</label>
                                 <input
                                 type="number"
@@ -117,14 +122,14 @@ const EditProfile = () => {
                                 value={formData.ZipCode}
                                 onChange={handleChange}
                                 />
-                            </div>
+                            </div> */}
                             <div>
-                                <label htmlFor="PhoneNumber">New phone number:</label>
+                                <label htmlFor="phonenumber">New phone number:</label>
                                 <input
                                 type="number"
-                                id="PhoneNumber"
-                                name="PhoneNumber"
-                                value={formData.PhoneNumber}
+                                id="phonenumber"
+                                name="phonenumber"
+                                value={formData.phonenumber}
                                 onChange={handleChange}
                                 />
                             </div>
