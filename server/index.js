@@ -239,6 +239,8 @@ const server = http.createServer( async (req, res) => {
         let data ="";
         data += chunk;
       });
+      const currentDate = new Date();
+      const formattedDate = currentDate.toISOString().slice(0, 19).replace('T', ' ');
       req.on("end", () => {
         const body = JSON.parse(data);
         const userid = uuidv4().substring(0,10);

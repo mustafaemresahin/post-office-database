@@ -20,39 +20,21 @@ function Customer() {
         username: '',
         password: '',
         address: '',
-        phoneNumber: '',
+        phoneNumber: ''
     })
 
 const handleAddChange = (event) => {
-    event.preventDefault();
-    const fieldName = event.target.getAttribute('name');
-    const fieldValue = event.target.value;
-
-    const newFormData = {...addFormData};
-    newFormData[fieldName] = fieldValue;
-
-    setAddFormData(newFormData);
-};
+    const { name, value } = event.target;
+    setAddFormData(prevState => ({
+      ...prevState,
+      [name]: value,
+    }));
+  };
 
 const navigate = useNavigate();
 
 const handleAddSubmit = async (event) => {
     event.preventDefault();
-    // axios.post('/api/users',addFormData);
-    // console.log('Adding successful');
-    // navigate ("/customer");
-    // const newData = {
-    // Email: addFormData.Email,
-    // CustomerUser: addFormData.CustomerUser ,
-    // firstname: addFormData.firstname,
-    // lastname:addFormData.lastname,
-    // address: addFormData.address,
-    // phonenumber:addFormData.phonenumber,
-    // role: addFormData.role
-    // };
-    // const newDatas = [...data, newData];
-    // setData(newDatas);
-
     try {
         const response = await axios.post('/api/adminAdd', addFormData);
         console.log('Added Users successful:', response.data);
@@ -117,9 +99,6 @@ const handleAddSubmit = async (event) => {
                     })}
                 </tbody>
             </table>
-
-            
-
             <h2>Add new user</h2>
             <form onSubmit={handleAddSubmit}>
 
@@ -200,72 +179,6 @@ const handleAddSubmit = async (event) => {
                 required
               />
             </div>
-                {/* <input
-                    type="text"
-                    name="username"
-                    required="required"
-                    placeholder="Enter a username..."
-                    value={addFormData.username}
-                    onChange={handleAddChange}
-
-                />
-                <input
-                type="text"
-                name="password"
-                required="required"
-                placeholder="Enter a password..."
-                value={addFormData.password}
-                onChange={handleAddChange}
-
-            />
-            <input
-                    type="email"
-                    name="email"
-                    required="required"
-                    placeholder="Enter an email..."
-                    value = {addFormData.email}
-                    onChange={handleAddChange}
-                />
-                <input
-                    type="text"
-                    name="firstname"
-                    required="required"
-                    placeholder="Enter first name.."
-                    value = {addFormData.firstname}
-                    onChange={handleAddChange}
-                />
-                <input
-                    type="text"
-                    name="lastname"
-                    required="required"
-                    placeholder="Enter last name.."
-                    value = {addFormData.lastname}
-                    onChange={handleAddChange}
-                />
-                <input
-                    type="text"
-                    name="address"
-                    required="required"
-                    placeholder="Enter an address.."
-                    value = {addFormData.address}
-                    onChange={handleAddChange}
-                />
-                <input
-                    type="text"
-                    name="phoneNumber"
-                    required="required"
-                    placeholder="Enter a phone number.."
-                    value = {addFormData.phoneNumber}
-                    onChange={handleAddChange}
-                />
-                <input
-                    type="text"
-                    name="role"
-                    required="required"
-                    placeholder="Enter the role"
-                    value = {addFormData.role}
-                    onChange={handleAddChange}
-                /> */}
                 <button type="submit">Add</button>
             </form>
         </div>
