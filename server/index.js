@@ -28,7 +28,7 @@ const generateToken = (user) => {
   );
 };
 
-const db = mysql.createConnection(
+const db = mysql.createPool(
 {
     host: 'post-office-web-database.mysql.database.azure.com',
     user: 'postofficeadmin',
@@ -39,7 +39,7 @@ const db = mysql.createConnection(
 });
 
 // connect to database
-db.connect((err) => {
+db.getConnection((err) => {
   if (err) {
       console.log('Not connected to database');
       throw err;
@@ -227,7 +227,23 @@ const server = http.createServer( async (req, res) => {
       return;
     }
 
-
+    // get ALL vehicles
+  else if (req.url === "/api/vehiclelist") {
+    db.query(
+    "SELECT * FROM vehicles",
+    (error, result) => {
+      if (error) {
+        res.writeHead(500, { "Content-Type": "application/json" });
+        res.end(JSON.stringify({ error: error }));
+        return;
+      } else {
+        res.writeHead(200, { "Content-Type": "application/json" });
+        res.end(JSON.stringify(result));
+        return;
+      }
+    }
+  );
+}
   }
   else if (req.method === "POST") {
     if (req.url === "/api/register") {
@@ -268,7 +284,7 @@ const server = http.createServer( async (req, res) => {
           );
           return;
       });
-    }
+    } 
     else if (req.url === "/api/login") {
       let data = "";
       req.on("data", (chunk) => {
@@ -471,128 +487,6 @@ const server = http.createServer( async (req, res) => {
         );
         return;
       });
-    }
-
-    else if(req.url === "/api/add-package"){
-
-
-      let data = "";
-      req.on("data", (chunk) => {
-          data += chunk;
-      });
-      const currentDate = new Date();
-      const formattedDate = currentDate.toISOString().slice(0, 19).replace('T', ' ');
-      req.on("end", () => {
-          const body = JSON.parse(data);
-          const userid = uuidv4().substring(0,10);
-          const firstname = body.firstname;
-          const lastname = body.lastname; 
-          const username = body.username;
-          const password = body.password;
-          const phoneNumber = body.phoneNumber;
-          const email = body.email;
-          const dateSignup = formattedDate; 
-          const role = 'User';
-          const address = body.address;
-          
-          db.query(
-            "INSERT INTO customer_user (UserID, CustomerUser, CustomerPass, Email, firstname, lastname, address, phonenumber, dateSignedUp, role) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
-              [userid, username, password, email, firstname, lastname, address, phoneNumber, dateSignup, role],
-              (error) => {
-                  if (error) {
-                    console.log(error);
-                    res.writeHead(500, {"Content-Type": "application/json"});
-                    res.end(JSON.stringify({error: "Do we get this far?"}));
-                    return;
-                  } else {
-                    res.writeHead(200, {"Content-Type": "application/json"});
-                    res.end(JSON.stringify({ message: "User has signed up successfully" }));
-                    return;
-                  }
-              }
-          );
-          return;
-      });
-
-
-
-    }
-
-
-
-    if (req.url === "/api/checkout") {
-      {
-        let data = '';
-        req.on('data', chunk => {
-            data += chunk;
-        });
-        const currentDate = new Date();
-        const formattedDate = currentDate.toISOString().slice(0, 19).replace('T', ' ');
-        req.on('end', () => {
-            const checkoutData = JSON.parse(data);
-            const items = checkoutData.Items; // Array of { ItemID, quantity, pricePerItem }
-            const firstname = checkoutData.firstname;
-            const lastname = checkoutData.lastname; 
-            const email = checkoutData.email;
-            const address = checkoutData.address;  
-            const city = checkoutData.city; 
-            const zip = checkoutData.zip; 
-            const transactionID = uuidv4().substring(0,10);
-            const totalPrice = calculateTotalPrice(items).toFixed(2);
-            // const ItemID = checkoutData.item[itemID];
-            // const quantity = checkoutData.Items[quantity];
-            // const pricePerItem = checkoutData.Items[pricePerItem];
-            const transactionType = "Purchase";
-            const PaymentType = "Credit Card";
-            const Date = formattedDate;
-    
-            // Process each item in the order
-            const processItems = items.map(item => {
-                return new Promise((resolve, reject) => {
-                    // Step 1: Check stock
-                    const stockSql = "SELECT Inventory FROM StoreItem WHERE ItemId = ?";
-                    db.query(stockSql, [item.itemID], (error, results) => {
-                        if (error) reject(error);
-                        // else if (!results.length || results[0].amountInStock > item.quantity) reject(new Error("Insufficient stock"));
-                        else {
-                            // Step 2: Insert into `transaction`
-                            const transactionSql = ("INSERT INTO transaction (TransactionID, TransactionType, Date, TotalAmount, ItemID, PaymentType) VALUES (?, ?, ?, ?, ?, ?)",
-                        [transactionID, transactionType, Date, totalPrice,item.itemID, item.paymentType  ]);
-                            
-      
-                            const totalAmount = item.quantity * item.pricePerItem; // Assuming this calculation matches your needs
-                            const transactionValues = [uuidv4().substring(0,10), 'Sale', totalAmount, item.itemID, checkoutData.PaymentType];
-                            db.query(transactionSql, transactionValues, error => {
-                                if (error) reject(error);
-                                else {
-                                    // Step 3: Deduct stock
-                                    const deductStockSql = "UPDATE StoreItem SET Inventory = Inventory - ? WHERE ItemId = ?";
-                                    db.query(deductStockSql, [item.quantity, item.itemID], error => {
-                                        if (error) reject(error);
-                                        else resolve();
-                                    });
-                                }
-                            });
-                        }
-                    });
-                });
-            });
-    
-            Promise.all(processItems)
-                .then(() => {
-                    // All items processed successfully, order complete
-                    res.writeHead(200, {"Content-Type": "application/json"});
-                    res.end(JSON.stringify({ message: "Checkout successful" }));
-                    
-                })
-                .catch(error => {
-                    // Handle any errors (e.g., item out of stock, database errors)
-                    console.error(error);
-                    res.writeHead(500, {"Content-Type": "application/json"});
-                    res.end(JSON.stringify({ error: "Checkout failed", detail: error.message }));
-                });
-        });
-    }
     }
     
   }

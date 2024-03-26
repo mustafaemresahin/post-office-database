@@ -80,6 +80,10 @@ const Header = () => {
           {isEmployee && <NavLink to="/Employee" className={({ isActive }) => isActive ? "activeLink" : ""}>Employee</NavLink>}
           {!isLoggedIn && <NavLink to="/login" className={({ isActive }) => isActive ? "activeLink" : ""}>Login/Signup</NavLink>}
           {isLoggedIn && <NavLink to="/Profile" className={({ isActive }) => isActive ? "activeLink" : ""}>Logged in as {name}</NavLink>}
+          <NavLink to="/vehicles" className={({ isActive }) => isActive ? "activeLink" : ""}>Vehicles</NavLink>
+          <NavLink to="/addvehicles" className={({ isActive }) => isActive ? "activeLink" : ""}>Add Vehicles</NavLink>
+
+
         </nav>
       </div>
     </header>

@@ -1,0 +1,31 @@
+.vehicle-card {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    background-color: #ffffff;
+    padding: 2rem;
+    max-width: 800px;
+    width: 100%;
+  }
+
+.tr-padded{
+  padding: 20px;
+}
+
+.vehicle-card {
+  margin-bottom: 20px; /* Add some space below the table */
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th, td {
+  border: 1px solid #ddd; /* Add borders to table cells */
+  padding: 8px; /* Add padding to table cells */
+  text-align: left; /* Align text to the left */
+}
+
+th {
+  background-color: #f2f2f2; /* Light gray background for table headers */
+}
