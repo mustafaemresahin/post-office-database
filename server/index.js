@@ -22,18 +22,20 @@ const generateToken = (user) => {
   );
 };
 
-const db = mysql.createConnection(
-{
-    host: 'post-office-web-database.mysql.database.azure.com',
-    user: 'postofficeadmin',
-    password: 'D@tabase123',
-    database: 'mydb',
-    port: 3306,
-    //ssl: {ca: fs.readFileSync('C:\\Users\\rayya.DESKTOP-92F6ECR\\.ssh\\DigiCertGlobalRootCA.crt.pem')}
+const db = mysql.createPool({
+  host: 'post-office-web-database.mysql.database.azure.com',
+  user: 'postofficeadmin',
+  password: 'D@tabase123',
+  database: 'mydb',
+  port: 3306,
+  // You can add connection pool specific options here (refer to official docs)
+  // connectionLimit: 10, // Maximum number of connections in the pool (default: 10)
+  // queueLimit: 0, // Maximum number of queued requests for the pool (default: 0 - no limit)
+  // waitForConnections: true, // Whether to wait for a connection if the pool is full (default: true)
 });
 
 // connect to database
-db.connect((err) => {
+db.getConnection((err) => {
   if (err) {
       console.log('Not connected to database');
       throw err;
