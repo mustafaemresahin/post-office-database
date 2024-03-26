@@ -18,6 +18,7 @@ import Sidebar from './pages/sidebar';
 import Customer from './pages/Customer';
 import Employee from './pages/Employee';
 import ShippingForm from './pages/add-package';
+import AdminPackage from './pages/adminpackage';
 
 const App = () => {
 
@@ -43,6 +44,8 @@ const App = () => {
 
           <Route path="/Employee" element={<Employee />} />
           <Route path="/add-package" element={<ShippingForm />} />
+
+          <Route path="/adminpackage" element={<AdminPackage />} />
 
         </Routes>
         </ShopContextProvider>

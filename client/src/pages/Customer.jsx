@@ -44,6 +44,16 @@ const handleAddSubmit = async (event) => {
       }
     };
 
+    const updateUser = async () => {
+      axios.put("/api/users" + UserID)
+      .then((response) => {
+          console.log(response);
+          window.location.reload();
+      }).catch((error) => {
+          console.log(error);
+      });
+  };
+
     // Delete A User
     const deleteUser = async (UserID) => {
         axios.delete('https://post-office-database-web-795a025bc915.herokuapp.com/api/users', + UserID)
@@ -76,11 +86,11 @@ const handleAddSubmit = async (event) => {
                     </tr>
                 </thead>
                 <tbody>
-                    {data.map((user) => {
+                    {data && data.map((user) => {
                         return (
                             <tr key={user.UserID} className="user-tr">
                                 <td>{user.UserID}</td>
-                                <td>{user.CustomerUser}</td>
+                             <td>{user.CustomerUser}</td>
                                 <td>{user.Email}</td>
                                 <td>{user.firstname}</td>
                                 <td>{user.lastname}</td>
@@ -89,9 +99,9 @@ const handleAddSubmit = async (event) => {
                                 <td>{user.role}</td>
                                 <td>
                                  <button className='btnedit'>Read</button>
-                                    <button className='btnedit'>Edit</button>
+                                    <button onClick={() => updateUser(user.UserID) }className='btnedit'>Edit</button>
                                     <button onClick={() => {
-                                            deleteUser(user.userid)}
+                                            deleteUser(user.UserID)}
                                         } className="btn-delete"> Delete </button>
                                 </td>
                             </tr>
