@@ -7,11 +7,25 @@ import {useNavigate} from 'react-router-dom';
 function Customer() {
     const [data, setData] = useState([])
 
+    // useEffect(() => {
+    //     axios.get('/api/users')
+    //         .then(res => setData(res.data))
+    //         .catch(err => console.log(err));
+    // }, [])
+
     useEffect(() => {
-        axios.get('/api/users')
-            .then(res => setData(res.data))
-            .catch(err => console.log(err));
-    }, [])
+      const fetchData = async () => {
+        try {
+          const response = await axios.get('/api/users');
+          setData(response.data);
+        } catch (error) {
+          console.error('Error users:', error);
+        }
+      };
+  
+      fetchData();
+    }, []);
+
     
     const [addFormData, setAddFormData] = useState({
         firstname: '',
@@ -36,7 +50,7 @@ const navigate = useNavigate();
 const handleAddSubmit = async (event) => {
     event.preventDefault();
     try {
-        const response = await axios.post('/api/adminAdd', addFormData);
+        const response = await axios.post('/api/adminAdd',  JSON.stringify(addFormData));
         console.log('Added Users successful:', response.data);
         navigate('/login');
       } catch (error) {

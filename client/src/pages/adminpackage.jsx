@@ -9,10 +9,19 @@ function AdminPackage() {
     const navigate = useNavigate();
 
     useEffect(() => {
-        axios.get('/api/package')
-        .then(res=>setPack(res.pack))
-        .catch(err => console.log(err));
-    },[])
+        const fetchPackage = async () => {
+          try {
+            const response = await axios.get('/api/package');
+            setPack(response.data);
+          } catch (error) {
+            console.error('Error fetching vehicles:', error);
+          }
+        };
+    
+        fetchPackage();
+      }, []);
+    
+
 
     return (
         <div className="admin_pack">
@@ -57,11 +66,9 @@ function AdminPackage() {
                             </tr>
                         )
                    })}
-                    
                 </tbody>
             </table>
         </div>
-        
     )
 }
 
