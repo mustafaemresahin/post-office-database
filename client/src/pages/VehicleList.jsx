@@ -78,6 +78,7 @@ const VehiclesTable = () => {
           </thead>
           <tbody>
           {vehicles && vehicles.map((user) => {
+          
                         return (
                             <tr key={user.VehicleID} className="user-tr">
                                 <td>{user.VehicleID}</td>
@@ -87,15 +88,14 @@ const VehiclesTable = () => {
                                 <td>{user.Type}</td>
                                 <td>{user.Unit}</td>
                                 <td>{user.EmployeeID}</td>
-                                {/* <td>
-                                 <button className='btnedit'>Read</button>
-                                    <button onClick={() => updateUser(user.UserID) }className='btnedit'>Edit</button>
-                                    <button onClick={() => {
-                                            deleteUser(user.UserID)}
-                                        } className="btn-delete"> Delete </button>
-                                </td> */}
+                                <td>
+                                  <button onClick={("/addvehicles")}>Add</button>
+                                  <button>Edit </button>
+                                  <button>Delete</button>
+                                </td>
                             </tr>
                         )
+                    
                     })}
             {/* {vehicles.map(vehicle => (
               <React.Fragment key={vehicle.id}>

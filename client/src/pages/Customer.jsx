@@ -71,7 +71,7 @@ const handleAddSubmit = async (event) => {
 
     // Delete A User
     const deleteUser = async (UserID) => {
-        axios.delete('https://post-office-database-web-795a025bc915.herokuapp.com/api/users/' + UserID)
+        axios.delete('/api/users/' + UserID)
         .then((response) => {
             console.log(response);
             window.location.reload();

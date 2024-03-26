@@ -8,7 +8,7 @@ import axios from 'axios';
 const EditProfile = () => {
 
     const navigate = useNavigate();
-    const [userId, setUserId] = useState(null);
+
     const [formData, setFormData] = useState({
         UserID: '',
         Email: '',
@@ -20,24 +20,10 @@ const EditProfile = () => {
 
       useEffect(() => {
         const token = localStorage.getItem('token');
-        const id = localStorage.getItem('id');
         if (!token) {
           // If no token found, redirect to login page
           navigate("/login");
         }
-        else{
-            axios.get('/api/users')
-            .then(response => {
-                const userData = response.data.find(user => user.UserID === id); // Find the user by id
-                if (userData) {
-                  setUserId(id); // Set the found user into the users state, as an array for consistency
-                } else {
-                  console.log('User not found');
-                  // Handle the case where the user is not found
-                }
-              })
-              .catch(error => console.error('Error:', error));
-          }
       }, [navigate]);
     
       const handleChange = (event) => {
@@ -53,7 +39,7 @@ const EditProfile = () => {
         console.log('Submitted data:', formData);
         // TODO: Implement form submission logic here (e.g., send to server)
         try {
-            const response = await axios.put('/api/users/' + userId, formData);
+            const response = await axios.put('/api/users', formData);
             console.log('Registration successful:', response.data);
             navigate('/login');
           } catch (error) {
