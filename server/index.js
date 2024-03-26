@@ -198,7 +198,7 @@ const server = http.createServer( async (req, res) => {
       return;
     }
 
-    // API endpoint for listing vehicles
+    // get ALL vehicles
   else if (req.url === "/api/vehiclelist") {
     db.query(
     "SELECT * FROM vehicles",
@@ -478,7 +478,7 @@ const server = http.createServer( async (req, res) => {
       });
       return;
     }
-    // API endpoint for adding a vehicle
+    // API for adding a vehicle
     else if (req.url === "/api/vehicleadd") {
       let body = '';
       req.on('data', (chunk) => {
