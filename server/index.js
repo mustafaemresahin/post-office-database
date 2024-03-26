@@ -22,7 +22,7 @@ const generateToken = (user) => {
   );
 };
 
-const db = mysql.createConnection(
+const db = mysql.createPool(
 {
     host: 'post-office-web-database.mysql.database.azure.com',
     user: 'postofficeadmin',
@@ -33,7 +33,7 @@ const db = mysql.createConnection(
 });
 
 // connect to database
-db.connect((err) => {
+db.getConnection((err) => {
   if (err) {
       console.log('Not connected to database');
       throw err;
