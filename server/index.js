@@ -198,7 +198,7 @@ const server = http.createServer( async (req, res) => {
       return;
     }
   }
-  else if (req.method == "PUT") {
+  else if (req.method === "PUT") {
     const reqURL = url.parse(req.url, true);
     const pathSegments = reqURL.pathname.split("/");
  
