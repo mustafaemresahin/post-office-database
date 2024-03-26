@@ -19,6 +19,8 @@ import Customer from './pages/Customer';
 import Employee from './pages/Employee';
 import ShippingForm from './pages/add-package';
 import AdminPackage from './pages/adminpackage';
+import VehiclesTable from './pages/VehicleList';
+import VehicleAdd from './pages/VehicleAdd';
 
 const App = () => {
 
@@ -44,6 +46,11 @@ const App = () => {
 
           <Route path="/Employee" element={<Employee />} />
           <Route path="/add-package" element={<ShippingForm />} />
+          <Route path="/vehicles" element={<VehiclesTable />} />
+          <Route path="/addvehicles" element={<VehicleAdd />} />
+
+
+          <Route path="/adminpackage" element={<AdminPackage />} />
 
           <Route path="/adminpackage" element={<AdminPackage />} />
 

@@ -197,6 +197,24 @@ const server = http.createServer( async (req, res) => {
       );
       return;
     }
+
+    // get ALL vehicles
+  else if (req.url === "/api/vehiclelist") {
+    db.query(
+    "SELECT * FROM vehicles",
+    (error, result) => {
+      if (error) {
+        res.writeHead(500, { "Content-Type": "application/json" });
+        res.end(JSON.stringify({ error: error }));
+        return;
+      } else {
+        res.writeHead(200, { "Content-Type": "application/json" });
+        res.end(JSON.stringify(result));
+        return;
+      }
+    }
+  );
+}
   }
   else if (req.method === "PUT") {
     const reqURL = url.parse(req.url, true);
@@ -311,7 +329,7 @@ const server = http.createServer( async (req, res) => {
           );
           return;
       });
-    }
+    } 
     else if (req.url === "/api/login") {
       let data = "";
       req.on("data", (chunk) => {
@@ -516,6 +534,61 @@ const server = http.createServer( async (req, res) => {
       });
     }
     
+    // API for adding a vehicle
+    else if (req.url === "/api/vehicleadd") {
+      let body = '';
+      req.on('data', (chunk) => {
+        body += chunk.toString();
+      });
+      req.on('end', () => {
+        const vehicle = JSON.parse(body);
+        const vehicleID = uuidv4().substring(0, 10);
+        const timestamp = new Date().toISOString().slice(0, 19).replace('T', ' ');
+        const location = vehicle.location;
+        const status = vehicle.status;
+        const type = vehicle.type;
+        const unit = vehicle.unit;
+        const employeeID = vehicle.employeeID;
+    
+        // query to check employeeID
+        db.query(
+          "SELECT * FROM employee WHERE EmployeeID = ?",
+          [employeeID],
+          (error, result) => {
+            if (error) {
+              console.error('Database error:', error);
+              res.writeHead(500, { "Content-Type": "application/json" });
+              res.end(JSON.stringify({ error: 'Employee query Error' }));
+              return;
+            } else if (result.length === 0) {
+              // if employeeID not found in employee table
+              res.writeHead(400, { "Content-Type": "application/json" });
+              res.end(JSON.stringify({ error: 'Invalid employeeID' }));
+              return;
+            } else {
+              // if employeeID is valid, starts inserting vehicle
+              db.query(
+                "INSERT INTO vehicles (VehicleID, Timestamp, Location, Status, Type, Unit, EmployeeID) VALUES (?, ?, ?, ?, ?, ?, ?)",
+                [vehicleID, timestamp, location, status, type, unit, employeeID],
+                (insertError) => {
+                  if (insertError) {
+                    console.error('Insertion error:', insertError);
+                    res.writeHead(500, { "Content-Type": "application/json" });
+                    res.end(JSON.stringify({ error: 'Failed to add vehicle' }));
+                    return;
+                  } else {
+                    res.writeHead(201, { "Content-Type": "application/json" });
+                    res.end(JSON.stringify({ message: 'Vehicle added successfully' }));
+                    return;
+                  }
+                }
+              );
+            }
+         }
+        );
+      });
+    }
+
   }
   else if(req.method == "DELETE") {
     const reqURL = url.parse(req.url, true);
