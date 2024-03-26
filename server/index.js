@@ -234,7 +234,7 @@ const server = http.createServer( async (req, res) => {
  
  
         db.query(
-          "UPDATE users SET 'Email' = ?, 'firstname'=?, 'lastname'=?, 'address'=?, 'phonenumber' =?,  WHERE 'UserID'=?",
+          "UPDATE users SET 'Email' = ?, 'firstname'= ?, 'lastname'= ?, 'address'= ?, 'phonenumber' = ?,  WHERE 'UserID'= ?",
           [body.Email, body.firstname, body.lastname, body.address, body.phonenumber, UserID],
           (error) => {
             if (error) {
@@ -590,7 +590,7 @@ const server = http.createServer( async (req, res) => {
     }
 
   }
-  else if(req.method == "DELETE") {
+  else if(req.method === "DELETE") {
     const reqURL = url.parse(req.url, true);
     const pathSegments = reqURL.pathname.split("/");
 

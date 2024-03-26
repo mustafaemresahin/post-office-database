@@ -6,6 +6,7 @@ import {useNavigate} from 'react-router-dom';
 
 function Customer() {
     const [data, setData] = useState([])
+    const [userId, setUserId] = useState(null);
 
     useEffect(() => {
         axios.get('/api/users')
@@ -45,7 +46,7 @@ const handleAddSubmit = async (event) => {
     };
 
     const updateUser = async () => {
-      axios.put("/api/users" + UserID)
+      axios.put("/api/users/" + userId)
       .then((response) => {
           console.log(response);
           window.location.reload();
@@ -56,7 +57,7 @@ const handleAddSubmit = async (event) => {
 
     // Delete A User
     const deleteUser = async (UserID) => {
-        axios.delete('https://post-office-database-web-795a025bc915.herokuapp.com/api/users', + UserID)
+        axios.delete('https://post-office-database-web-795a025bc915.herokuapp.com/api/users/' + UserID)
         .then((response) => {
             console.log(response);
             window.location.reload();
