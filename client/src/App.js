@@ -48,10 +48,6 @@ const App = () => {
           <Route path="/add-package" element={<ShippingForm />} />
           <Route path="/vehicles" element={<VehiclesTable />} />
           <Route path="/addvehicles" element={<VehicleAdd />} />
-
-
-          <Route path="/adminpackage" element={<AdminPackage />} />
-
           <Route path="/adminpackage" element={<AdminPackage />} />
 
         </Routes>
