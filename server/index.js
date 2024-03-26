@@ -451,33 +451,6 @@ const server = http.createServer( async (req, res) => {
       });
     }
     
-    else if (req.url === "/api/sentPackages/pending") {
-      let data = "";
-      req.on("data", (chunk) => {
-          data += chunk;
-      });
-      req.on("end", () => {
-        const body = JSON.parse(data);
-        const userId = body.userId;
-        const Status = 'Pending';
-        db.query(
-          "SELECT * FROM package WHERE SenderID = ? AND Status = ?",
-          [userId, Status],
-          (error, result) => {
-            if (error) {
-              res.writeHead(500, { "Content-Type": "application/json" });
-              res.end(JSON.stringify({ error: error }));
-              return;
-            } else {
-              res.writeHead(200, { "Content-Type": "application/json" });
-              res.end(JSON.stringify({result }));
-              return;
-            }
-          },
-        );
-      });
-      return;
-    }
     // API for adding a vehicle
     else if (req.url === "/api/vehicleadd") {
       let body = '';
