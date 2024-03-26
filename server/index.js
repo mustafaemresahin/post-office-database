@@ -22,7 +22,7 @@ const generateToken = (user) => {
   );
 };
 
-const db = mysql.createConnection(
+const db = mysql.createPool(
 {
     host: 'post-office-web-database.mysql.database.azure.com',
     user: 'postofficeadmin',
@@ -33,7 +33,7 @@ const db = mysql.createConnection(
 });
 
 // connect to database
-db.connect((err) => {
+db.getConnection((err) => {
   if (err) {
       console.log('Not connected to database');
       throw err;
@@ -417,7 +417,7 @@ const server = http.createServer( async (req, res) => {
         const body = JSON.parse(data);
         const PackageID = uuidv4().substring(0,30);
         const Weight = body.weight;
-        const Dimensions = body.length * body.width * body.height;
+        const Dimensions = (body.length * body.width * body.height).toFixed(4);
         const Type = body.packageType;
         const Status = 'Pending';
         const DateSent = formattedDate;
@@ -427,12 +427,21 @@ const server = http.createServer( async (req, res) => {
         const SenderID = body.userId;
         const recipientFirstName = body.recipientFirstName;
         const recipientLastName = body.recipientLastName;
+        const cost = Dimensions + Weight + expedited;
+        
+        if (Type === "parcel") {
+          cost += 5; // Additional cost for parcel
+        } else if (Type === "envelope") {
+          cost += 1; // Discount for envelope
+        } else if (Type === "oversized") {
+          cost += 10; // Additional cost for oversized
+        }
 
-        //console.log({PackageID, SenderID, Weight, Dimensions, Type, Status, DateSent, VehicleID, destinationAddress, expedited, recipientFirstName, recipientLastName });
+        //console.log({PackageID, SenderID, Weight, Dimensions, Type, Status, DateSent, VehicleID, destinationAddress, expedited, recipientFirstName, recipientLastName, cost});
 
         db.query(
-          "INSERT INTO package (PackageID, SenderID, Weight, Dimensions, Type, Status, DateSent, VehicleID, destination, expeditedShipping, recipientFirstName, recipientLastName) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )",
-          [PackageID, SenderID, Weight, Dimensions, Type, Status, DateSent, VehicleID, destinationAddress, expedited, recipientFirstName, recipientLastName],
+          "INSERT INTO package (PackageID, SenderID, Weight, Dimensions, Type, Status, DateSent, VehicleID, destination, expeditedShipping, recipientFirstName, recipientLastName, cost) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+          [PackageID, SenderID, Weight, Dimensions, Type, Status, DateSent, VehicleID, destinationAddress, expedited, recipientFirstName, recipientLastName, cost],
           (error) => 
           {
             if (error) {
