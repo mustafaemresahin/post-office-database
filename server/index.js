@@ -488,7 +488,140 @@ const server = http.createServer( async (req, res) => {
         return;
       });
     }
+
+   
+
+
+    if (req.url === "/api/checkout") {
+      {
+        let data = '';
+        req.on('data', chunk => {
+            data += chunk;
+        });
+        const currentDate = new Date();
+        const formattedDate = currentDate.toISOString().slice(0, 19).replace('T', ' ');
+        req.on('end', () => {
+            const checkoutData = JSON.parse(data);
+            const items = checkoutData.Items; // Array of { ItemID, quantity, pricePerItem }
+            const firstname = checkoutData.firstname;
+            const lastname = checkoutData.lastname; 
+            const email = checkoutData.email;
+            const address = checkoutData.address;  
+            const city = checkoutData.city; 
+            const zip = checkoutData.zip; 
+            const transactionID = uuidv4().substring(0,10);
+            const totalPrice = calculateTotalPrice(items).toFixed(2);
+            // const ItemID = checkoutData.item[itemID];
+            // const quantity = checkoutData.Items[quantity];
+            // const pricePerItem = checkoutData.Items[pricePerItem];
+            const transactionType = "Purchase";
+            const PaymentType = "Credit Card";
+            const Date = formattedDate;
     
+            // Process each item in the order
+            const processItems = items.map(item => {
+                return new Promise((resolve, reject) => {
+                    // Step 1: Check stock
+                    const stockSql = "SELECT Inventory FROM storeitem WHERE ItemId = ?";
+                    db.query(stockSql, [item.itemID], (error, results) => {
+                        if (error) reject(error);
+                        // else if (!results.length || results[0].amountInStock > item.quantity) reject(new Error("Insufficient stock"));
+                        else {
+                            // Step 2: Insert into `transaction`
+                            const transactionSql = ("INSERT INTO transaction (TransactionID, TransactionType, Date, TotalAmount, ItemID, PaymentType) VALUES (?, ?, ?, ?, ?, ?)",
+                        [transactionID, transactionType, Date, totalPrice,item.itemID, item.paymentType  ]);
+                            
+      
+                            const totalAmount = item.quantity * item.pricePerItem; // Assuming this calculation matches your needs
+                            const transactionValues = [uuidv4().substring(0,10), 'Sale', totalAmount, item.itemID, checkoutData.PaymentType];
+                            db.query(transactionSql, transactionValues, error => {
+                                if (error) reject(error);
+                                else {
+                                    // Step 3: Deduct stock
+                                    const deductStockSql = "UPDATE storeitem SET Inventory = Inventory - ? WHERE ItemId = ?";
+                                    db.query(deductStockSql, [item.quantity, item.itemID], error => {
+                                        if (error) reject(error);
+                                        else resolve();
+                                    });
+                                }
+                            });
+                        }
+                    });
+                });
+            });
+    
+            Promise.all(processItems)
+                .then(() => {
+                    // All items processed successfully, order complete
+                    res.writeHead(200, {"Content-Type": "application/json"});
+                    res.end(JSON.stringify({ message: "Checkout successful" }));
+                    
+                })
+                .catch(error => {
+                    // Handle any errors (e.g., item out of stock, database errors)
+                    console.error(error);
+                    res.writeHead(500, {"Content-Type": "application/json"});
+                    res.end(JSON.stringify({ error: "Checkout failed", detail: error.message }));
+                });
+        });
+    }
+    }
+    
+    // API for adding a vehicle
+    else if (req.url === "/api/vehicleadd") {
+      let body = '';
+      req.on('data', (chunk) => {
+        body += chunk.toString();
+      });
+      req.on('end', () => {
+        const vehicle = JSON.parse(body);
+        const vehicleID = uuidv4().substring(0, 10);
+        const timestamp = new Date().toISOString().slice(0, 19).replace('T', ' ');
+        const location = vehicle.location;
+        const status = vehicle.status;
+        const type = vehicle.type;
+        const unit = vehicle.unit;
+        const employeeID = vehicle.employeeID;
+    
+        // query to check employeeID
+        db.query(
+          "SELECT * FROM employee WHERE EmployeeID = ?",
+          [employeeID],
+          (error, result) => {
+            if (error) {
+              console.error('Database error:', error);
+              res.writeHead(500, { "Content-Type": "application/json" });
+              res.end(JSON.stringify({ error: 'Employee query Error' }));
+              return;
+            } else if (result.length === 0) {
+              // if employeeID not found in employee table
+              res.writeHead(400, { "Content-Type": "application/json" });
+              res.end(JSON.stringify({ error: 'Invalid employeeID' }));
+              return;
+            } else {
+              // if employeeID is valid, starts inserting vehicle
+              db.query(
+                "INSERT INTO vehicles (VehicleID, Timestamp, Location, Status, Type, Unit, EmployeeID) VALUES (?, ?, ?, ?, ?, ?, ?)",
+                [vehicleID, timestamp, location, status, type, unit, employeeID],
+                (insertError) => {
+                  if (insertError) {
+                    console.error('Insertion error:', insertError);
+                    res.writeHead(500, { "Content-Type": "application/json" });
+                    res.end(JSON.stringify({ error: 'Failed to add vehicle' }));
+                    return;
+                  } else {
+                    res.writeHead(201, { "Content-Type": "application/json" });
+                    res.end(JSON.stringify({ message: 'Vehicle added successfully' }));
+                    return;
+                  }
+                }
+              );
+            }
+         }
+        );
+      });
+    }
+
   }
   else if(req.method == "DELETE") {
     const reqURL = url.parse(req.url, true);
