@@ -14,11 +14,11 @@ import EditProfile from './pages/editprofile';
 import { ShopContextProvider } from "./context/shop-context";
 // import { AuthProvider } from './context/AuthContext'; // Import your AuthProvider
 import Checkout from './pages/checkout';
-import Sidebar from './pages/sidebar';
-import Customer from './pages/Customer';
+import AdminDash from './pages/adminDash';
+import AdminUser from './pages/adminUser';
 import Employee from './pages/Employee';
 import ShippingForm from './pages/add-package';
-import AdminPackage from './pages/adminpackage';
+import AdminPack from './pages/adminPack';
 import VehiclesTable from './pages/VehicleList';
 import VehicleAdd from './pages/VehicleAdd';
 
@@ -41,14 +41,13 @@ const App = () => {
           <Route path ="/Cart" element={<Cart />} />
           <Route path="/Checkout" element={<Checkout/>} />
           <Route path="/editprofile" element={<EditProfile />} />
-          <Route path="/sidebar" element={<Sidebar />} />
-          <Route path="/customer" element={<Customer />} />
-
+          <Route path="/adminDash" element={<AdminDash />} />
           <Route path="/Employee" element={<Employee />} />
           <Route path="/add-package" element={<ShippingForm />} />
           <Route path="/vehicles" element={<VehiclesTable />} />
           <Route path="/addvehicles" element={<VehicleAdd />} />
-          <Route path="/adminpackage" element={<AdminPackage />} />
+          <Route path="/adminPack" element={<AdminPack />} />
+          <Route path="/adminUser" element={<AdminUser />} />
 
         </Routes>
         </ShopContextProvider>

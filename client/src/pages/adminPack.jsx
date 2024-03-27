@@ -1,10 +1,10 @@
 import axios from 'axios'
 import React, { useEffect, useState } from 'react'
-import '../css/customer.css';
+import '../css/adminUser.css';
 import {useNavigate} from 'react-router-dom';
 
 
-function AdminPackage() {
+function AdminPack() {
     const [pack, setPack] = useState([])
     const navigate = useNavigate();
 
@@ -72,4 +72,4 @@ function AdminPackage() {
     )
 }
 
-export default AdminPackage;
+export default AdminPack;

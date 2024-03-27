@@ -1,10 +1,10 @@
 import axios from 'axios'
 import React, { useEffect, useState } from 'react'
-import '../css/customer.css';
+import '../css/adminUser.css';
 import {useNavigate} from 'react-router-dom';
 
 
-function Customer() {
+function AdminUser() {
     const [data, setData] = useState([])
     const [userId, setUserId] = useState(null);
 
@@ -210,4 +210,4 @@ const handleAddSubmit = async (event) => {
     )
 }
 
-export default Customer;
+export default AdminUser;
