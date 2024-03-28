@@ -51,16 +51,21 @@ export const Cart = () => {
   return (
     <div className="cart">
       <div>
-        <h1>Your Cart Items</h1>
+        <h1 className="cartHeader">Your Cart Items</h1>
       </div>
-      <div className="cart">
-        {PRODUCTS.map((product) => {
-          if (cartItems[product.id] !== 0) {
-            return <CartItem data={product} />;
-          }
-          return null;
-        })}
+      <div>
+        {PRODUCTS.some(product => cartItems[product.id] !== 0) ? (
+          PRODUCTS.map(product => {
+            if (cartItems[product.id] !== 0) {
+              return <CartItem key={product.id} data={product} />;
+            }
+            return null;
+          })
+        ) : (
+          <div>Cart Empty</div>
+        )}
       </div>
+
       {isLoading ? (
         <p>Loading pending packages...</p>
       ) : unreceivedPackages.length > 0 ? (
