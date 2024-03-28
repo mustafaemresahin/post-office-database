@@ -314,22 +314,36 @@ const server = http.createServer( async (req, res) => {
           db.query(
             "INSERT INTO customer_user (UserID, CustomerUser, CustomerPass, Email, firstname, lastname, address, phonenumber, dateSignedUp, role) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
               [userid, username, password, email, firstname, lastname, address, phoneNumber, dateSignup, role],
-              (error) => {
+              (error, results) => {
                   if (error) {
                     console.log(error);
                     res.writeHead(500, {"Content-Type": "application/json"});
-                    res.end(JSON.stringify({error: "Do we get this far?"}));
+                    res.end(JSON.stringify({error: "Error occurred while signing up"}));
                     return;
                   } else {
-                    res.writeHead(200, {"Content-Type": "application/json"});
-                    res.end(JSON.stringify({ message: "User has signed up successfully" }));
-                    return;
+                    const cartID = uuidv4().substring(0,20);
+                    db.query(
+                      "INSERT INTO cart (UserID, CartID) VALUES (?, ?)",
+                      [userid, cartID],
+                      (cartError, cartResults) => {
+                        if (cartError) {
+                          console.log(cartError);
+                          res.writeHead(500, {"Content-Type": "application/json"});
+                          res.end(JSON.stringify({error: "Error occurred while creating cart"}));
+                          return;
+                        } else {
+                          res.writeHead(200, {"Content-Type": "application/json"});
+                          res.end(JSON.stringify({ message: "User has signed up successfully" }));
+                          return;
+                        }
+                      }
+                    );
                   }
               }
           );
           return;
       });
-    } 
+    }     
     else if (req.url === "/api/login") {
       let data = "";
       req.on("data", (chunk) => {
