@@ -517,9 +517,12 @@ const server = http.createServer( async (req, res) => {
 
   }
   else if(req.method == "DELETE") {
-    const reqURL = url.parse(req.url, true);
-    const pathSegments = reqURL.pathname.split("/");
-    return;
+    //const reqURL = url.parse(req.url, true);
+    //const pathSegments = reqURL.pathname.split("/");
+    //return;
+    if (req.url === "api/vehicledelete"){
+
+    }
   }
   if (!req.url.startsWith("/api")) {
     // Serve static files or index.html for non-API requests
