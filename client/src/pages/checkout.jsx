@@ -1,9 +1,11 @@
 import React, { useContext, useEffect, useState } from "react";
 import '../css/checkout.css'; // Import your CSS file for styling
-import '../css/cart.css';
 import axios from 'axios';
 import { ShopContext } from "../context/shop-context";
+import { PRODUCTS } from "../products";
+import { CartItem } from "./cart-item";
 import { useNavigate } from "react-router-dom";
+import _ from 'lodash';
 
 function Checkout() {
     // State variables to hold form data
@@ -127,7 +129,34 @@ function Checkout() {
             <div style={{ display: 'flex'}}>
                 <div className="cartItem">
                     <div className="description">
-                        <h1>cart item goes here</h1>
+                    <div className="description">
+                        <p>Shopping Cart</p>
+                        {PRODUCTS.some(product => cartItems[product.id] !== 0) ? (
+                        PRODUCTS.map(product => {
+                            if (cartItems[product.id] !== 0) {
+                            return <CartItem key={product.id} data={product} />;
+                            }
+                            return null;
+                        })
+                        ) : (
+                        <p>Cart Empty</p>
+                        )}
+                        <p>Packages</p>
+                        {unreceivedPackages.length > 0 ? (
+                        <div className="pending-packages">
+                            <ul>
+                            {_.uniqBy(unreceivedPackages, 'PackageID').map((pendingpackage) => (
+                                <li key={pendingpackage.PackageID}> {/* Corrected key prop */}
+                                Package ID: {pendingpackage.PackageID},
+                                Cost: {pendingpackage.cost}
+                                </li>
+                            ))}
+                            </ul>
+                        </div>
+                        ) : (
+                        <p>No pending packages found.</p>
+                        )}
+                    </div>
                     </div>
                 </div>
                 <div className="checkout-confirm">
