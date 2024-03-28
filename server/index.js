@@ -88,7 +88,6 @@ const serveFile = (filePath, contentType, response) => {
 const server = http.createServer( async (req, res) => {
   // Handle Cors Function To Allow Axios
   handleCors(req, res);
-
   // GET Requests 
   if (req.method === "GET") {
     
@@ -199,22 +198,22 @@ const server = http.createServer( async (req, res) => {
     }
 
     // get ALL vehicles
-  else if (req.url === "/api/vehiclelist") {
-    db.query(
-    "SELECT * FROM vehicles",
-    (error, result) => {
-      if (error) {
-        res.writeHead(500, { "Content-Type": "application/json" });
-        res.end(JSON.stringify({ error: error }));
-        return;
-      } else {
-        res.writeHead(200, { "Content-Type": "application/json" });
-        res.end(JSON.stringify(result));
-        return;
-      }
+    else if (req.url === "/api/vehiclelist") {
+      db.query(
+      "SELECT * FROM vehicles",
+      (error, result) => {
+        if (error) {
+          res.writeHead(500, { "Content-Type": "application/json" });
+          res.end(JSON.stringify({ error: error }));
+          return;
+        } else {
+          res.writeHead(200, { "Content-Type": "application/json" });
+          res.end(JSON.stringify(result));
+          return;
+        }
     }
   );
-}
+    }
   }
   else if (req.method === "PUT") {
     const reqURL = url.parse(req.url, true);
@@ -254,7 +253,6 @@ const server = http.createServer( async (req, res) => {
     if (req.url === "/api/adminAdd") {
       let data = "";
       req.on("data",(chunk) => {
-        let data ="";
         data += chunk;
       });
       const currentDate = new Date();
@@ -489,19 +487,20 @@ const server = http.createServer( async (req, res) => {
 
       req.on("end", () => {
         const body = JSON.parse(data);
-        const PackageID = uuidv4().substring(0,30);
-        const Weight = body.weight;
-        const Dimensions = (body.length * body.width * body.height).toFixed(4);
+        const PackageID = uuidv4().substring(0,10);
+        const Weight = parseFloat(body.weight);
+        const dimensionsStr = `${body.length} x ${body.width} x ${body.height}`;
         const Type = body.packageType;
         const Status = 'Pending';
         const DateSent = formattedDate;
         const VehicleID = null; //we dont have vehicles yet so just leaving this blank, will prolly cause error
         const destinationAddress = body.address;
         const expedited = body.expeditedShipping;
-        const SenderID = body.userId;
+        const SenderID = "595b8a0b-c";
         const recipientFirstName = body.recipientFirstName;
         const recipientLastName = body.recipientLastName;
-        const cost = Dimensions + Weight + expedited;
+        let cost = 0;
+        cost = parseFloat(dimensionsStr) + parseFloat(Weight) + parseFloat(expedited);
         
         if (Type === "parcel") {
           cost += 5; // Additional cost for parcel
@@ -515,7 +514,7 @@ const server = http.createServer( async (req, res) => {
 
         db.query(
           "INSERT INTO package (PackageID, SenderID, Weight, Dimensions, Type, Status, DateSent, VehicleID, destination, expeditedShipping, recipientFirstName, recipientLastName, cost) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
-          [PackageID, SenderID, Weight, Dimensions, Type, Status, DateSent, VehicleID, destinationAddress, expedited, recipientFirstName, recipientLastName, cost],
+          [PackageID, SenderID, Weight, dimensionsStr, Type, Status, DateSent, VehicleID, destinationAddress, expedited, recipientFirstName, recipientLastName, cost],
           (error) => 
           {
             if (error) {
