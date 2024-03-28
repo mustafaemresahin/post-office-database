@@ -588,6 +588,35 @@ const server = http.createServer( async (req, res) => {
       });
     }
 
+    else if (req.url === "/api/package/delete"){
+      let body = '';
+      req.on('data', (chunk) => {
+        body += chunk.toString();
+      });
+      req.on('end', () => {
+        const data = JSON.parse(body);
+        const packageID = data.packageID;
+    
+        // query to check employeeID
+        db.query(
+          "DELETE FROM package WHERE PackageID = ?",
+          [packageID],
+          (error) => {
+            if (error) {
+              console.error('Package deletion error:', insertError);
+              res.writeHead(500, { "Content-Type": "application/json" });
+              res.end(JSON.stringify({ error: 'Failed to remove package' }));
+              return;
+            } else {
+              res.writeHead(201, { "Content-Type": "application/json" });
+              res.end(JSON.stringify({ message: 'Package deleted successfully' }));
+              return;
+            }
+          }
+        );
+      });
+    }
+
   }
   else if(req.method === "DELETE") {
     const reqURL = url.parse(req.url, true);
