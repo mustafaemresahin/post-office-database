@@ -60,19 +60,44 @@ const VehiclesTable = () => {
   };
 
   return (
-    <div className="registration-container">
-      <div className="vehicle-card">
+    <div className='d-flex flex-column justify-content-center align-itmes-center bg-light vh-100'>
+      <div className='w-75 rounded bg-white border shadow p-4'>
+        <div className='d-flex justify-content-end'>
         <h1>Vehicle List</h1>
-        <table>
+        <table className='table table-striped'>
           <thead>
             <tr>
-              <th>ID</th>
-              <th>Name</th>
-              <th>Actions</th>
+              <th>VehicleID</th>
+              <th>TimeStamp</th>
+              <th>Location</th>
+              <th>Status</th>
+              <th>Type</th>
+              <th>Unit</th>
+              <td>EmployeeID</td>
             </tr>
           </thead>
           <tbody>
-            {vehicles.map(vehicle => (
+          {vehicles && vehicles.map((user) => {
+          
+                        return (
+                            <tr key={user.VehicleID} className="user-tr">
+                                <td>{user.VehicleID}</td>
+                                <td>{user.Timestamp}</td>
+                                <td>{user.Location}</td>
+                                <td>{user.Status}</td>
+                                <td>{user.Type}</td>
+                                <td>{user.Unit}</td>
+                                <td>{user.EmployeeID}</td>
+                                <td>
+                                  <button onClick={("/addvehicles")}>Add</button>
+                                  <button>Edit </button>
+                                  <button>Delete</button>
+                                </td>
+                            </tr>
+                        )
+                    
+                    })}
+            {/* {vehicles.map(vehicle => (
               <React.Fragment key={vehicle.id}>
                 <tr onClick={() => toggleRowExpansion(vehicle.id)}>
                   <td>{vehicle.id}</td>
@@ -83,9 +108,10 @@ const VehiclesTable = () => {
                 </tr>
                 {renderAdditionalInfo(vehicle)}
               </React.Fragment>
-            ))}
+            ))} */}
           </tbody>
         </table>
+      </div>
       </div>
     </div>
   );

@@ -64,7 +64,7 @@ const LoginPage = () => {
                   className="password-input"
                 />
               </div>
-              <div class="select-container">
+              <div className="select-container">
                 <select id="role" name="role" value={values.role} onChange={handleChange}>
                   <option value="customer">Customer</option>
                   <option value="employee">Employee</option>
