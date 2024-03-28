@@ -41,3 +41,15 @@ button {
   border-radius: 10px;
   cursor: pointer;
 }
+
+.packageRemove {
+  background-color: rgb(218, 44, 78);
+  font-size: 12px;
+  padding:5px;
+  margin-bottom:10px;
+  margin:10px;
+}
+
+.packageRemove:hover {
+  background-color: rgb(221, 0, 44);
+}
