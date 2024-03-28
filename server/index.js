@@ -489,7 +489,7 @@ const server = http.createServer( async (req, res) => {
 
       req.on("end", () => {
         const body = JSON.parse(data);
-        const PackageID = uuidv4().substring(0,10);
+        const PackageID = uuidv4().substring(0,20);
         const Weight = parseFloat(body.weight);
         const dimensionsStr = `${body.length} x ${body.width} x ${body.height}`;
         const Type = body.packageType;
