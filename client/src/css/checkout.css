@@ -65,3 +65,11 @@ button {
 button:hover {
     background-color: #0056b3;
 }
+
+.pending-packages {
+    font-size:18px;
+}
+
+.description {
+    font-size:8px;
+}

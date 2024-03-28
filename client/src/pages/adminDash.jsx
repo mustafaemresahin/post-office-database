@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import '../css/sidebar.css';
+import '../css/adminDash.css';
 import { Link } from "react-router-dom"
 
 
@@ -44,22 +44,22 @@ function Sidebar({ openSidebarToggle, OpenSidebar }) {
 
       <ul className='sidebar-list'>
         <li className='sidebar-list-item'>
-          <a href="/sidebar">
+          <a href="/adminDash">
             Dashboard
           </a>
         </li>
         <li className='sidebar-list-item'>
-          <a href="/products">
-            Products
+          <a href="/adminPack">
+            Packages
           </a>
         </li>
         <li className='sidebar-list-item'>
-          <a href="/categories">
-            Categories
+          <a href="/vehicles">
+            Vehicles
           </a>
         </li>
         <li className='sidebar-list-item'>
-          <a href="/customer">
+          <a href="/adminUser">
             Customers
           </a>
         </li>

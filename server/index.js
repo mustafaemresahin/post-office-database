@@ -90,7 +90,6 @@ const serveFile = (filePath, contentType, response) => {
 const server = http.createServer( async (req, res) => {
   // Handle Cors Function To Allow Axios
   handleCors(req, res);
-
   // GET Requests 
   if (req.method === "GET") {
     
@@ -201,25 +200,98 @@ const server = http.createServer( async (req, res) => {
     }
 
     // get ALL vehicles
-  else if (req.url === "/api/vehiclelist") {
-    db.query(
-    "SELECT * FROM vehicles",
-    (error, result) => {
-      if (error) {
-        res.writeHead(500, { "Content-Type": "application/json" });
-        res.end(JSON.stringify({ error: error }));
-        return;
-      } else {
-        res.writeHead(200, { "Content-Type": "application/json" });
-        res.end(JSON.stringify(result));
-        return;
-      }
+    else if (req.url === "/api/vehiclelist") {
+      db.query(
+      "SELECT * FROM vehicles",
+      (error, result) => {
+        if (error) {
+          res.writeHead(500, { "Content-Type": "application/json" });
+          res.end(JSON.stringify({ error: error }));
+          return;
+        } else {
+          res.writeHead(200, { "Content-Type": "application/json" });
+          res.end(JSON.stringify(result));
+          return;
+        }
     }
   );
-}
+    }
   }
+  else if (req.method === "PUT") {
+    const reqURL = url.parse(req.url, true);
+    const pathSegments = reqURL.pathname.split("/");
+ 
+ 
+    // Update A USEr
+    if (pathSegments.length === 3 && pathSegments[1] === "users"){
+      const UserID = pathSegments[2];
+ 
+      let data ="";
+      req.on("data", (chunk) => {
+        data+=chunk;
+      });
+      req.on("end", () => {
+        const body = JSON.parse(data);
+ 
+ 
+        db.query(
+          "UPDATE users SET 'Email' = ?, 'firstname'= ?, 'lastname'= ?, 'address'= ?, 'phonenumber' = ?,  WHERE 'UserID'= ?",
+          [body.Email, body.firstname, body.lastname, body.address, body.phonenumber, UserID],
+          (error) => {
+            if (error) {
+              res.writeHead(500, { 'Content-Type': 'application/json' });
+              res.end(JSON.stringify({ error: 'Internal Server Error' }));
+          } else {
+              res.writeHead(200, { 'Content-Type': 'application/json' });
+              res.end(JSON.stringify({ message: 'User has been updated successfully' }));
+          }
+          }
+        )
+      })
+    }
+  }
+ 
   else if (req.method === "POST") {
-    if (req.url === "/api/register") {
+    if (req.url === "/api/adminAdd") {
+      let data = "";
+      req.on("data",(chunk) => {
+        data += chunk;
+      });
+      const currentDate = new Date();
+      const formattedDate = currentDate.toISOString().slice(0, 19).replace('T', ' ');
+      req.on("end", () => {
+        const body = JSON.parse(data);
+        const userid = uuidv4().substring(0,10);
+        const firstname = body.firstname;
+        const lastname = body.lastname; 
+        const username = body.username;
+        const password = body.password;
+        const phoneNumber = body.phoneNumber;
+        const email = body.email;
+        const dateSignup = formattedDate; 
+        const role = body.role;
+        const address = body.address;
+        
+
+        db.query(
+          "INSERT INTO customer_user (UserID, CustomerUser, CustomerPass, Email, firstname, lastname, address, phonenumber, dateSignedUp, role) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+          [userid, username, password, email, firstname, lastname, address, phoneNumber, dateSignup, role],
+            (error) => {
+                if (error) {
+                  console.log('Insertion error:' , error);
+                  res.writeHead(500, {"Content-Type": "application/json"});
+                  res.end(JSON.stringify({error: "Do we get this far?"}));
+                  return;
+                } else {
+                  res.writeHead(200, {"Content-Type": "application/json"});
+                  res.end(JSON.stringify({ message: "User has signed up successfully" }));
+                  return;
+                }
+              }
+        )
+      }); 
+    }
+    else if (req.url === "/api/register") {
       let data = "";
       req.on("data", (chunk) => {
           data += chunk;
@@ -417,19 +489,20 @@ const server = http.createServer( async (req, res) => {
 
       req.on("end", () => {
         const body = JSON.parse(data);
-        const PackageID = uuidv4().substring(0,30);
-        const Weight = body.weight;
-        const Dimensions = (body.length * body.width * body.height).toFixed(4);
+        const PackageID = uuidv4().substring(0,10);
+        const Weight = parseFloat(body.weight);
+        const dimensionsStr = `${body.length} x ${body.width} x ${body.height}`;
         const Type = body.packageType;
         const Status = 'Pending';
         const DateSent = formattedDate;
         const VehicleID = null; //we dont have vehicles yet so just leaving this blank, will prolly cause error
         const destinationAddress = body.address;
         const expedited = body.expeditedShipping;
-        const SenderID = body.userId;
+        const SenderID = "595b8a0b-c";
         const recipientFirstName = body.recipientFirstName;
         const recipientLastName = body.recipientLastName;
-        const cost = Dimensions + Weight + expedited;
+        let cost = 0;
+        cost = parseFloat(dimensionsStr) + parseFloat(Weight) + parseFloat(expedited);
         
         if (Type === "parcel") {
           cost += 5; // Additional cost for parcel
@@ -443,7 +516,7 @@ const server = http.createServer( async (req, res) => {
 
         db.query(
           "INSERT INTO package (PackageID, SenderID, Weight, Dimensions, Type, Status, DateSent, VehicleID, destination, expeditedShipping, recipientFirstName, recipientLastName, cost) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
-          [PackageID, SenderID, Weight, Dimensions, Type, Status, DateSent, VehicleID, destinationAddress, expedited, recipientFirstName, recipientLastName, cost],
+          [PackageID, SenderID, Weight, dimensionsStr, Type, Status, DateSent, VehicleID, destinationAddress, expedited, recipientFirstName, recipientLastName, cost],
           (error) => 
           {
             if (error) {
@@ -517,12 +590,61 @@ const server = http.createServer( async (req, res) => {
       });
     }
 
+    else if (req.url === "/api/package/delete"){
+      let body = '';
+      req.on('data', (chunk) => {
+        body += chunk.toString();
+      });
+      req.on('end', () => {
+        const data = JSON.parse(body);
+        const packageID = data.packageID;
+    
+        // query to check employeeID
+        db.query(
+          "DELETE FROM package WHERE PackageID = ?",
+          [packageID],
+          (error) => {
+            if (error) {
+              console.error('Package deletion error:', insertError);
+              res.writeHead(500, { "Content-Type": "application/json" });
+              res.end(JSON.stringify({ error: 'Failed to remove package' }));
+              return;
+            } else {
+              res.writeHead(201, { "Content-Type": "application/json" });
+              res.end(JSON.stringify({ message: 'Package deleted successfully' }));
+              return;
+            }
+          }
+        );
+      });
+    }
+
   }
-  else if(req.method == "DELETE") {
+  else if(req.method === "DELETE") {
     const reqURL = url.parse(req.url, true);
     const pathSegments = reqURL.pathname.split("/");
-    return;
-  }
+
+      // Delete A User
+      if (pathSegments.length === 4 && pathSegments[2] === "users") {
+          const UserID = pathSegments[3];
+
+          db.query(
+              "DELETE FROM customer_user WHERE UserID = ?",
+              [UserID],
+              (error) => {
+                  if (error) {
+                      res.writeHead(500, {"Content-Type": "application/json"});
+                      res.end(JSON.stringify({error: error}));
+                  } else {
+                      res.writeHead(200, {"Content-Type": "application/json"});
+                      res.end(JSON.stringify({ message: "User has been deleted successfully" }));
+                  }
+              }
+          );
+      }
+    }
+
+
   if (!req.url.startsWith("/api")) {
     // Serve static files or index.html for non-API requests
     const basePath = path.join(__dirname, '../client/build');

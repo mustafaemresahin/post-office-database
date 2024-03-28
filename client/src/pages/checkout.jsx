@@ -1,6 +1,11 @@
-import React, { useState } from 'react';
+import React, { useContext, useEffect, useState } from "react";
 import '../css/checkout.css'; // Import your CSS file for styling
-import '../css/cart.css';
+import axios from 'axios';
+import { ShopContext } from "../context/shop-context";
+import { PRODUCTS } from "../products";
+import { CartItem } from "./cart-item";
+import { useNavigate } from "react-router-dom";
+import _ from 'lodash';
 
 function Checkout() {
     // State variables to hold form data
@@ -22,6 +27,44 @@ function Checkout() {
         e.preventDefault();
         // Logic for handling form submission goes here
     };
+
+    const { cartItems, getTotalCartAmount, checkout } = useContext(ShopContext);
+    const totalAmount = getTotalCartAmount();
+    const [unreceivedPackages, setUnreceivedPackages] = useState([]);
+    const [isLoading, setIsLoading] = useState(true);
+
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        const token = localStorage.getItem('token');
+        const id = localStorage.getItem('id');
+        if (!token) {
+        navigate("/login");
+        return;
+        }
+    
+        const fetchUserData = async () => {
+        try {
+            axios.get('/api/package')
+            .then(response => {
+                const packageData = response.data.filter(pkg => pkg.SenderID === id); // Find the package by id
+                if (!packageData) {
+                console.log('No packages');
+                }
+                else{
+                setUnreceivedPackages(packageData);
+                console.log(packageData);
+                }
+            })
+            .catch(error => console.error('Error:', error));
+        } catch (error) {
+            console.error('Error:', error);
+        }
+        };
+    
+        fetchUserData();
+        setIsLoading(false);
+    }, [navigate]);
 
     return (
   
@@ -86,13 +129,48 @@ function Checkout() {
             <div style={{ display: 'flex'}}>
                 <div className="cartItem">
                     <div className="description">
-                        <h1>cart item goes here</h1>
+                    <div className="description">
+                        <p>Shopping Cart</p>
+                        {PRODUCTS.some(product => cartItems[product.id] !== 0) ? (
+                        PRODUCTS.map(product => {
+                            if (cartItems[product.id] !== 0) {
+                            return <CartItem key={product.id} data={product} />;
+                            }
+                            return null;
+                        })
+                        ) : (
+                        <p>Cart Empty</p>
+                        )}
+                        <p>Packages</p>
+                        {unreceivedPackages.length > 0 ? (
+                        <div className="pending-packages">
+                            <ul>
+                            {_.uniqBy(unreceivedPackages, 'PackageID').map((pendingpackage) => (
+                                <li key={pendingpackage.PackageID}> {/* Corrected key prop */}
+                                Package ID: {pendingpackage.PackageID},
+                                Cost: {pendingpackage.cost}
+                                </li>
+                            ))}
+                            </ul>
+                        </div>
+                        ) : (
+                        <p>No pending packages found.</p>
+                        )}
+                    </div>
                     </div>
                 </div>
                 <div className="checkout-confirm">
                 <div className="confirm-header">Cart Totals</div>
-            <div className="confirm-total">Subtotal: $50.00</div>
-            <div className="confirm-total">Total: $60.00</div>
+                {totalAmount > 0 || unreceivedPackages.length > 0 ? (
+                    <div className="checkout">
+                    <p>Subtotal from cart: ${totalAmount} </p>
+                    <p>Pending package fees: ${unreceivedPackages.reduce((sum, pendingpackage) => sum + parseFloat(pendingpackage.cost || 0), 0)}</p>
+                    <p>Total: ${totalAmount + (unreceivedPackages.reduce((sum, pendingpackage) => sum + parseFloat(pendingpackage.cost || 0), 0))}</p>
+                    <button onClick={() => navigate("/shop")}> Continue Shopping </button>
+                    </div>
+                ) : (
+                    <h1> Your Shopping Cart is Empty</h1>
+                )}
             <button type ="submit">Place order</button>
                 </div>
             </div>

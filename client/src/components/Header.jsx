@@ -75,15 +75,15 @@ const Header = () => {
           <NavLink to="/Shop" className={({ isActive }) => isActive ? "activeLink" : ""}>Shop</NavLink>
           <NavLink to="/Cart" className={({ isActive }) => isActive ? "activeLink" : ""}>Cart</NavLink>
           <NavLink to="/track" className={({ isActive }) => isActive ? "activeLink" : ""}>Track Package</NavLink>
-          {isAdmin && <NavLink to="/sidebar" className={({ isActive }) => isActive ? "activeLink" : ""}>Admin</NavLink>}
+          {isAdmin && <NavLink to="/adminDash" className={({ isActive }) => isActive ? "activeLink" : ""}>Admin</NavLink>}
           {isAdmin && <NavLink to="/Employee" className={({ isActive }) => isActive ? "activeLink" : ""}>Employee</NavLink>}
           {isEmployee && <NavLink to="/Employee" className={({ isActive }) => isActive ? "activeLink" : ""}>Employee</NavLink>}
+          {isAdmin && <NavLink to="/vehicles" className={({ isActive }) => isActive ? "activeLink" : ""}>Vehicles</NavLink>}
+          {isEmployee && <NavLink to="/vehicles" className={({ isActive }) => isActive ? "activeLink" : ""}>Vehicles</NavLink>}
+          {isAdmin && <NavLink to="/addvehicles" className={({ isActive }) => isActive ? "activeLink" : ""}>Add Vehicles</NavLink>}
+          {isEmployee && <NavLink to="/addvehicles" className={({ isActive }) => isActive ? "activeLink" : ""}>Add Vehicles</NavLink>}
           {!isLoggedIn && <NavLink to="/login" className={({ isActive }) => isActive ? "activeLink" : ""}>Login/Signup</NavLink>}
           {isLoggedIn && <NavLink to="/Profile" className={({ isActive }) => isActive ? "activeLink" : ""}>Logged in as {name}</NavLink>}
-          <NavLink to="/vehicles" className={({ isActive }) => isActive ? "activeLink" : ""}>Vehicles</NavLink>
-          <NavLink to="/addvehicles" className={({ isActive }) => isActive ? "activeLink" : ""}>Add Vehicles</NavLink>
-
-
         </nav>
       </div>
     </header>
