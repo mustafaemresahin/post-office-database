@@ -40,13 +40,31 @@ export const Cart = () => {
       } catch (error) {
         console.error('Error:', error);
       }
-    };
+    };    
   
     fetchUserData();
     setIsLoading(false);
   }, [navigate]);
   
-
+  const removePackage = async (packageID) => {
+    try {
+      const response = await axios.post('/api/package/delete', { packageID }, {
+        headers: {
+          'Content-Type': 'application/json',
+          // Include the token in the request if your API requires authentication
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+        }
+      });
+      console.log('Package deletion successful:', response.data);
+      
+      // Update the UI to reflect the package removal without reloading the page
+      setUnreceivedPackages(currentPackages => currentPackages.filter(pkg => pkg.PackageID !== packageID));
+      
+      // navigate('/cart'); // This might not be necessary unless you want to force a reload of the cart page
+    } catch (error) {
+      console.error('Package deletion failed:', error);
+    }
+  };
 
   return (
     <div className="cart">
@@ -62,48 +80,53 @@ export const Cart = () => {
             return null;
           })
         ) : (
-          <div>Cart Empty</div>
+          <div>Your Shopping Cart is Empty.</div>
         )}
       </div>
-
+      <h1>Pending Packages</h1>
       {isLoading ? (
-        <p>Loading pending packages...</p>
-      ) : unreceivedPackages.length > 0 ? (
-        <div className="pending-packages">
-          <h1>Pending Packages</h1>
-          <ul>
-            {_.uniqBy(unreceivedPackages, 'PackageID').map((pendingpackage) => (
-              <li key={pendingpackage.PackageID}> {/* Corrected key prop */}
-                Package ID: {pendingpackage.PackageID},
-                Cost: {pendingpackage.cost}
-              </li>
-            ))}
-          </ul>
-        </div>
-      ) : (
-        <p>No pending packages found.</p>
-      )}
+        <p>Loading...</p>
+            ) : unreceivedPackages.length > 0 ? (
+              <div className="pending-packages">
+                <ul>
+                {_.uniqBy(unreceivedPackages, 'PackageID').map((pendingpackage) => (
+                  <li key={pendingpackage.PackageID}>
+                    Package ID: {pendingpackage.PackageID},
+                    Cost: {pendingpackage.cost}
+                    <button 
+                      className="packageRemove" 
+                      onClick={() => removePackage(pendingpackage.PackageID)}
+                    >
+                      Remove
+                    </button>
+                  </li>
+                ))}
+                </ul>
+              </div>
+            ) : (
+              <p>No pending packages found.</p>
+            )}
 
       
-      {totalAmount > 0 || unreceivedPackages.length > 0 ? (
-        <div className="checkout">
-          <p>Subtotal from cart: ${totalAmount} </p>
-          <p>Pending package fees: ${unreceivedPackages.reduce((sum, pendingpackage) => sum + parseFloat(pendingpackage.cost || 0), 0)}</p>
-          <p>Total: ${totalAmount + (unreceivedPackages.reduce((sum, pendingpackage) => sum + parseFloat(pendingpackage.cost || 0), 0))}</p>
-          <button onClick={() => navigate("/shop")}> Continue Shopping </button>
-          <button
-            onClick={() => {
-              checkout();
-              navigate("/checkout");
-            }}
-          >
-            {" "}
-            Checkout{" "}
-          </button>
-        </div>
-      ) : (
-        <h1> Your Shopping Cart is Empty</h1>
-      )}
+            {totalAmount > 0 || unreceivedPackages.length > 0 ? (
+              <div className="checkout">
+                <p>Subtotal from cart: ${totalAmount} </p>
+                <p>Pending package fees: ${unreceivedPackages.reduce((sum, pendingpackage) => sum + parseFloat(pendingpackage.cost || 0), 0)}</p>
+                <p>Total: ${totalAmount + (unreceivedPackages.reduce((sum, pendingpackage) => sum + parseFloat(pendingpackage.cost || 0), 0))}</p>
+                <button onClick={() => navigate("/shop")}> Continue Shopping </button>
+                <button
+                  onClick={() => {
+                    checkout();
+                    navigate("/checkout");
+                  }}
+                >
+                  {" "}
+                  Checkout{" "}
+                </button>
+              </div>
+            ) : (
+              ""
+            )}
     </div>
   );
 };
