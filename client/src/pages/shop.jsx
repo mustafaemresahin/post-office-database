@@ -5,16 +5,18 @@ import '../css/shop.css';
 
 
 export const Shop = () => {
-      return  (
-       <div className="shopTitle">
+    return (
+      <div className="shopTitle">
         <br></br>
-           <div>
-               <h3>Post Office Shop</h3>
-           </div>
-           <div className ="products"> {PRODUCTS.map((product) => (
-               <Product data= {product} />
-           ))}
-               </div>
-           </div>
-      );
-};
+        <div>
+          <h3>Post Office Shop</h3>
+        </div>
+        <div className="products">
+          {PRODUCTS.map((product) => (
+            <Product key={product.id} data={product} />
+          ))}
+        </div>
+      </div>
+    );
+  };
+  

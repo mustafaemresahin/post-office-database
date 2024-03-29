@@ -1,30 +1,30 @@
-import React, { useState, useContext, useEffect } from 'react';
-import { ShopContext } from '../context/shop-context';
-import '../css/checkout.css';
-import '../css/cart.css';
+import React, { useContext, useEffect, useState } from "react";
+import '../css/checkout.css'; // Import your CSS file for styling
 import axios from 'axios';
-import { CartItem } from './cart-item';
+import { ShopContext } from "../context/shop-context";
 import { PRODUCTS } from "../products";
-import { useNavigate } from 'react-router-dom';
-
+import { CartItem } from "./cart-item";
+import { useNavigate } from "react-router-dom";
+import _ from 'lodash';
 
 function Checkout() {
-    const { cartItems, getTotalCartAmount } = useContext(ShopContext);
-    const totalAmount = getTotalCartAmount();
     const [firstName, setFirstName] = useState('');
-    // Include other state variables here...
-    const navigate = useNavigate();
-    const [lastName, setLastName] = useState(''); // Missing state for lastName
-    const [email, setEmail] = useState(''); // Missing state for email
-    const [address, setAddress] = useState(''); // Missing state for address
-    const [city, setCity] = useState(''); // Missing state for city
-    const [zip, setZip] = useState(''); // Missing state for zip
-    // Payment info
-    const [cardNumber, setCardNumber] = useState(''); // Missing state for cardNumber
-    const [cardHolder, setCardHolder] = useState(''); // Missing state for cardHolder
-    const [expiration, setExpiration] = useState(''); // Missing state for expiration
-    const [CVV, setCVV] = useState(''); // Missing state for CVV
+    const [lastName, setLastName] = useState(''); 
+    const [email, setEmail] = useState(''); 
+    const [address, setAddress] = useState(''); 
+    const [city, setCity] = useState(''); 
+    const [zip, setZip] = useState(''); 
+    const [cardNumber, setCardNumber] = useState(''); 
+    const [cardHolder, setCardHolder] = useState(''); 
+    const [expiration, setExpiration] = useState(''); 
+    const [CVV, setCVV] = useState(''); 
     const [userId, setUserId] = useState(null);
+    const { cartItems, getTotalCartAmount, checkout } = useContext(ShopContext);
+    const totalAmount = getTotalCartAmount();
+    const [unreceivedPackages, setUnreceivedPackages] = useState([]);
+    const [isLoading, setIsLoading] = useState(true);
+
+    const navigate = useNavigate();
 
     
 
@@ -111,8 +111,39 @@ function Checkout() {
         }
     };
 
+    
 
-    // JSX for the checkout form
+    useEffect(() => {
+        const token = localStorage.getItem('token');
+        const id = localStorage.getItem('id');
+        if (!token) {
+        navigate("/login");
+        return;
+        }
+    
+        const fetchUserData = async () => {
+        try {
+            axios.get('/api/package')
+            .then(response => {
+                const packageData = response.data.filter(pkg => pkg.SenderID === id); // Find the package by id
+                if (!packageData) {
+                console.log('No packages');
+                }
+                else{
+                setUnreceivedPackages(packageData);
+                console.log(packageData);
+                }
+            })
+            .catch(error => console.error('Error:', error));
+        } catch (error) {
+            console.error('Error:', error);
+        }
+        };
+    
+        fetchUserData();
+        setIsLoading(false);
+    }, [navigate]);
+
     return (
 
     <div className="checkout-container">
@@ -198,8 +229,58 @@ function Checkout() {
           return null;
         })}
                       </div>
-                      </div>
+                      {/* </div> */}
 
+            {/*input form ends here */}
+            <div style={{ display: 'flex'}}>
+                <div className="cartItem">
+                    <div className="description">
+                    <div className="description">
+                        <p>Shopping Cart</p>
+                        {PRODUCTS.some(product => cartItems[product.id] !== 0) ? (
+                        PRODUCTS.map(product => {
+                            if (cartItems[product.id] !== 0) {
+                            return <CartItem key={product.id} data={product} />;
+                            }
+                            return null;
+                        })
+                        ) : (
+                        <p>Cart Empty</p>
+                        )}
+                        <p>Packages</p>
+                        {unreceivedPackages.length > 0 ? (
+                        <div className="pending-packages">
+                            <ul>
+                            {_.uniqBy(unreceivedPackages, 'PackageID').map((pendingpackage) => (
+                                <li key={pendingpackage.PackageID}> {/* Corrected key prop */}
+                                Package ID: {pendingpackage.PackageID},
+                                Cost: {pendingpackage.cost}
+                                </li>
+                            ))}
+                            </ul>
+                        </div>
+                        ) : (
+                        <p>No pending packages found.</p>
+                        )}
+                    </div>
+                    </div>
+                </div>
+                <div className="checkout-confirm">
+                <div className="confirm-header">Cart Totals</div>
+                {totalAmount > 0 || unreceivedPackages.length > 0 ? (
+                    <div className="checkout">
+                    <p>Subtotal from cart: ${totalAmount} </p>
+                    <p>Pending package fees: ${unreceivedPackages.reduce((sum, pendingpackage) => sum + parseFloat(pendingpackage.cost || 0), 0)}</p>
+                    <p>Total: ${totalAmount + (unreceivedPackages.reduce((sum, pendingpackage) => sum + parseFloat(pendingpackage.cost || 0), 0))}</p>
+                    <button onClick={() => navigate("/shop")}> Continue Shopping </button>
+                    </div>
+                ) : (
+                    <h1> Your Shopping Cart is Empty</h1>
+                )}
+            <button type ="submit">Place order</button>
+                </div>
+            </div>
+        </div>
 
     );
 };
