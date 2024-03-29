@@ -8,6 +8,7 @@ const ShippingForm = () => {
   const navigate = useNavigate();
   //const { addToCart } = useContext(ShopContext);
   const [userId, setUserId] = useState(null);
+  const [cartId, setCartId] = useState(null);
   const [formData, setFormData] = useState({
     length: '',
     width: '',
@@ -31,7 +32,8 @@ const ShippingForm = () => {
       .then(response => {
           const userData = response.data.find(user => user.UserID === id); // Find the user by id
           if (userData) {
-            setUserId(id); // Set the found user into the users state, as an array for consistency
+            setUserId(id);
+            setCartId(userData.CartID); // Set the found user into the users state, as an array for consistency
           } else {
             console.log('User not found');
             // Handle the case where the user is not found
@@ -54,7 +56,8 @@ const ShippingForm = () => {
     try {
       const formDataWithUserId = {
         ...formData,
-        userId: userId // Include user ID in formData
+        userId: userId, // Include user ID in formData
+        cartId: cartId
       };
       // Send POST request to package endpoint
       const response = await axios.post("/api/sentPackages",formDataWithUserId ); 

@@ -13,7 +13,6 @@ export const Cart = () => {
   const totalAmount = getTotalCartAmount();
   const [unreceivedPackages, setUnreceivedPackages] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState(null); // Add state for error
 
   const navigate = useNavigate();
 
@@ -29,9 +28,9 @@ export const Cart = () => {
       try {
         axios.get('/api/package')
         .then(response => {
-            const packageData = response.data.filter(pkg => pkg.SenderID === id); // Find the package by id
+            const packageData = response.data.filter(pkg => pkg.SenderID === id && pkg.Status === 'Pending'); // Find the package by id
             if (!packageData) {
-              console.log('No packages');
+              console.log('No pending packages');
             }
             else{
               setUnreceivedPackages(packageData);
@@ -48,9 +47,9 @@ export const Cart = () => {
     setIsLoading(false);
   }, [navigate]);
   
-  const removePackage = async (packageID) => {
+  const deleteCartItem = async (packageID) => {
     try {
-      const response = await axios.post('/api/package/delete', { packageID }, {
+      const response = await axios.delete('/api/cart_item/delete/'+ packageID, {
         headers: {
           'Content-Type': 'application/json',
           // Include the token in the request if your API requires authentication
@@ -67,6 +66,7 @@ export const Cart = () => {
       console.error('Package deletion failed:', error);
     }
   };
+
 
   return (
     <div className="cart">
@@ -97,7 +97,7 @@ export const Cart = () => {
                     Cost: {pendingpackage.cost}
                     <button 
                       className="packageRemove" 
-                      onClick={() => removePackage(pendingpackage.PackageID)}
+                      onClick={() => deleteCartItem(pendingpackage.PackageID)}
                     >
                       Remove
                     </button>

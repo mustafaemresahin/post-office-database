@@ -202,7 +202,24 @@ const server = http.createServer( async (req, res) => {
     // get ALL vehicles
     else if (req.url === "/api/vehiclelist") {
       db.query(
-      "SELECT * FROM vehicles",
+        "SELECT * FROM vehicles",
+        (error, result) => {
+          if (error) {
+            res.writeHead(500, { "Content-Type": "application/json" });
+            res.end(JSON.stringify({ error: error }));
+            return;
+          } else {
+            res.writeHead(200, { "Content-Type": "application/json" });
+            res.end(JSON.stringify(result));
+            return;
+          }
+        }
+      );
+      return;
+    }
+    else if (req.url === "/api/cart_items") 
+    {
+      db.query("SELECT * FROM cart_items", 
       (error, result) => {
         if (error) {
           res.writeHead(500, { "Content-Type": "application/json" });
@@ -213,8 +230,25 @@ const server = http.createServer( async (req, res) => {
           res.end(JSON.stringify(result));
           return;
         }
+      });
+      return;
     }
-  );
+    else if (req.url === "/api/cart") {
+      db.query(
+        "SELECT * FROM cart",
+        (error, result) => {
+          if (error) {
+            res.writeHead(500, { "Content-Type": "application/json" });
+            res.end(JSON.stringify({ error: error }));
+            return;
+          } else {
+            res.writeHead(200, { "Content-Type": "application/json" });
+            res.end(JSON.stringify(result));
+            return;
+          }
+        }
+      );
+      return;
     }
   }
   else if (req.method === "PUT") {
@@ -291,14 +325,16 @@ const server = http.createServer( async (req, res) => {
         )
       }); 
     }
-    else if (req.url === "/api/register") {
+    else if (req.url === "/api/register") 
+    {
       let data = "";
       req.on("data", (chunk) => {
           data += chunk;
       });
       const currentDate = new Date();
       const formattedDate = currentDate.toISOString().slice(0, 19).replace('T', ' ');
-      req.on("end", () => {
+      req.on("end", () => 
+      {
           const body = JSON.parse(data);
           const userid = uuidv4().substring(0,10);
           const firstname = body.firstname;
@@ -310,35 +346,24 @@ const server = http.createServer( async (req, res) => {
           const dateSignup = formattedDate; 
           const role = 'User';
           const address = body.address;
+          const CartID = uuidv4.substring(0,20);
           
-          db.query(
-            "INSERT INTO customer_user (UserID, CustomerUser, CustomerPass, Email, firstname, lastname, address, phonenumber, dateSignedUp, role) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
-              [userid, username, password, email, firstname, lastname, address, phoneNumber, dateSignup, role],
-              (error, results) => {
-                  if (error) {
-                    console.log(error);
-                    res.writeHead(500, {"Content-Type": "application/json"});
-                    res.end(JSON.stringify({error: "Error occurred while signing up"}));
-                    return;
-                  } else {
-                    const cartID = uuidv4().substring(0,20);
-                    db.query(
-                      "INSERT INTO cart (UserID, CartID) VALUES (?, ?)",
-                      [userid, cartID],
-                      (cartError, cartResults) => {
-                        if (cartError) {
-                          console.log(cartError);
-                          res.writeHead(500, {"Content-Type": "application/json"});
-                          res.end(JSON.stringify({error: "Error occurred while creating cart"}));
-                          return;
-                        } else {
-                          res.writeHead(200, {"Content-Type": "application/json"});
-                          res.end(JSON.stringify({ message: "User has signed up successfully" }));
-                          return;
-                        }
-                      }
-                    );
-                  }
+          db.query
+          (
+            "INSERT INTO customer_user (UserID, CustomerUser, CustomerPass, Email, firstname, lastname, address, phonenumber, dateSignedUp, role, CartID) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+              [userid, username, password, email, firstname, lastname, address, phoneNumber, dateSignup, role, CartID],
+              (error) => 
+              {
+                if (error) {
+                  console.log(error);
+                  res.writeHead(500, {"Content-Type": "application/json"});
+                  res.end(JSON.stringify({error: "Do we get this far?"}));
+                  return;
+                } else {
+                  res.writeHead(200, {"Content-Type": "application/json"});
+                  res.end(JSON.stringify({ message: "User has signed up successfully" }));
+                  return;
+                }
               }
           );
           return;
@@ -500,7 +525,7 @@ const server = http.createServer( async (req, res) => {
       });
       const currentDate = new Date();
       const formattedDate = currentDate.toISOString().slice(0, 19).replace('T', ' ');
-
+    
       req.on("end", () => {
         const body = JSON.parse(data);
         const PackageID = uuidv4().substring(0,20);
@@ -512,9 +537,10 @@ const server = http.createServer( async (req, res) => {
         const VehicleID = null; //we dont have vehicles yet so just leaving this blank, will prolly cause error
         const destinationAddress = body.address;
         const expedited = body.expeditedShipping;
-        const SenderID = "595b8a0b-c";
+        const SenderID = body.userId;
         const recipientFirstName = body.recipientFirstName;
         const recipientLastName = body.recipientLastName;
+        const CartID = body.cartId
         let cost = 0;
         cost = parseFloat(dimensionsStr) + parseFloat(Weight) + parseFloat(expedited);
         
@@ -525,9 +551,7 @@ const server = http.createServer( async (req, res) => {
         } else if (Type === "oversized") {
           cost += 10; // Additional cost for oversized
         }
-
-        //console.log({PackageID, SenderID, Weight, Dimensions, Type, Status, DateSent, VehicleID, destinationAddress, expedited, recipientFirstName, recipientLastName, cost});
-
+    
         db.query(
           "INSERT INTO package (PackageID, SenderID, Weight, Dimensions, Type, Status, DateSent, VehicleID, destination, expeditedShipping, recipientFirstName, recipientLastName, cost) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
           [PackageID, SenderID, Weight, dimensionsStr, Type, Status, DateSent, VehicleID, destinationAddress, expedited, recipientFirstName, recipientLastName, cost],
@@ -536,19 +560,33 @@ const server = http.createServer( async (req, res) => {
             if (error) {
               console.log(error);
               res.writeHead(500, {"Content-Type": "application/json"});
-              res.end(JSON.stringify({error: "Do we get this far?"}));
+              res.end(JSON.stringify({error: "Error occurred while submitting package"}));
               return;
             } else {
-              res.writeHead(200, {"Content-Type": "application/json"});
-              res.end(JSON.stringify({ message: "Package submitted successfully" }));
-              return;
+              // Insert into cart_items table
+              const CartItemID = uuidv4().substring(0,20); 
+              db.query(
+                "INSERT INTO cart_items (CartItemID, CartID, PackageID, Quantity) VALUES (?, ?, ?, ?)",
+                [CartItemID, CartID, PackageID, 1],
+                (cartError) => {
+                  if (cartError) {
+                    console.log(cartError);
+                    res.writeHead(500, {"Content-Type": "application/json"});
+                    res.end(JSON.stringify({error: "Error occurred while adding package to cart"}));
+                    return;
+                  } else {
+                    res.writeHead(200, {"Content-Type": "application/json"});
+                    res.end(JSON.stringify({ message: "Package submitted successfully and added to cart" }));
+                    return;
+                  }
+                }
+              );
             }
           }
         );
         return;
       });
-    }
-    
+    }    
     // API for adding a vehicle
     else if (req.url === "/api/vehicleadd") {
       let body = '';
@@ -604,59 +642,54 @@ const server = http.createServer( async (req, res) => {
       });
     }
 
-    else if (req.url === "/api/package/delete"){
-      let body = '';
-      req.on('data', (chunk) => {
-        body += chunk.toString();
-      });
-      req.on('end', () => {
-        const data = JSON.parse(body);
-        const packageID = data.packageID;
-    
-        // query to check employeeID
-        db.query(
-          "DELETE FROM package WHERE PackageID = ?",
-          [packageID],
-          (error) => {
-            if (error) {
-              console.error('Package deletion error:', insertError);
-              res.writeHead(500, { "Content-Type": "application/json" });
-              res.end(JSON.stringify({ error: 'Failed to remove package' }));
-              return;
-            } else {
-              res.writeHead(201, { "Content-Type": "application/json" });
-              res.end(JSON.stringify({ message: 'Package deleted successfully' }));
-              return;
-            }
-          }
-        );
-      });
-    }
-
   }
   else if(req.method === "DELETE") {
     const reqURL = url.parse(req.url, true);
     const pathSegments = reqURL.pathname.split("/");
 
       // Delete A User
-      if (pathSegments.length === 4 && pathSegments[2] === "users") {
-          const UserID = pathSegments[3];
+    if (pathSegments.length === 4 && pathSegments[2] === "users") {
+        const UserID = pathSegments[3];
 
-          db.query(
-              "DELETE FROM customer_user WHERE UserID = ?",
-              [UserID],
-              (error) => {
-                  if (error) {
-                      res.writeHead(500, {"Content-Type": "application/json"});
-                      res.end(JSON.stringify({error: error}));
-                  } else {
-                      res.writeHead(200, {"Content-Type": "application/json"});
-                      res.end(JSON.stringify({ message: "User has been deleted successfully" }));
-                  }
-              }
-          );
-      }
+      db.query(
+        "DELETE FROM customer_user WHERE UserID = ?",
+        [UserID],
+        (error) => 
+        {
+          if (error) {
+              res.writeHead(500, {"Content-Type": "application/json"});
+              res.end(JSON.stringify({error: error}));
+          } else {
+              res.writeHead(200, {"Content-Type": "application/json"});
+              res.end(JSON.stringify({ message: "User has been deleted successfully" }));
+            }
+        }
+      );
     }
+    else if (pathSegments.length === 5 && pathSegments[2] === "cart_item") {
+      const PackageID = pathSegments[4];
+    
+      db.query("DELETE FROM cart_items WHERE PackageID = ?", [PackageID], (error) => {
+        if (error) {
+          // Handle cart_items deletion error
+          res.writeHead(500, { "Content-Type": "application/json" });
+          res.end(JSON.stringify({ error: error}));
+        } else {
+          db.query("DELETE FROM package WHERE PackageID = ?", [PackageID], (packageError) => {
+            if (packageError) {
+              // Handle package deletion error
+              res.writeHead(500, { "Content-Type": "application/json" });
+              res.end(JSON.stringify({ error: 'Failed to remove package' }));
+            } else {
+              // Both deletions successful
+              res.writeHead(200, {"Content-Type": "application/json"});
+              res.end(JSON.stringify({ message: "cart_item and package deleted successfully" }));
+            }
+          });
+        }
+      });
+    }    
+  }
 
 
   if (!req.url.startsWith("/api")) {
