@@ -1,4 +1,5 @@
 import React, { createContext, useState } from 'react';
+import { PRODUCTS } from "../products";
 
 export const ShopContext = createContext();
 
@@ -6,6 +7,7 @@ export const ShopProvider = ({ children }) => {
   const [cartItems, setCartItems] = useState({});
 
   const addToCart = (id) => {
+    console.log(`Adding item to cart: ${id}`);
     setCartItems(prevItems => ({
       ...prevItems,
       [id]: (prevItems[id] || 0) + 1
@@ -13,6 +15,7 @@ export const ShopProvider = ({ children }) => {
   };
 
   const removeFromCart = (id) => {
+    console.log(`Removing item from cart: ${id}`);
     setCartItems(prevItems => {
       const newItems = { ...prevItems };
       if (newItems[id]) {
@@ -38,19 +41,21 @@ export const ShopProvider = ({ children }) => {
     });
   };
 
-  const getTotalCartAmount = (inputCartItems) => {
-    return inputCartItems.reduce((total, product) => {
-      return product.quantity * product.pricePerItem + total;
+  const getTotalCartAmount = () => {
+    return Object.entries(cartItems).reduce((total, [id, quantity]) => {
+      const product = PRODUCTS.find(p => p.id === id); // Assuming 'products' is defined and accessible
+      return total + (quantity * (product ? product.price : 0));
     }, 0);
   };
+  
 
   return (
     <ShopContext.Provider
       value={{
-        products,
+        PRODUCTS,
         addToCart,
-        getCartItems,
-        updateCartItems,
+        setCartItems,
+        updateCartItemCount,
         removeFromCart,
         cartItems,
         getTotalCartAmount: (cartItems) => getTotalCartAmount(cartItems || cartItems),

@@ -19,21 +19,6 @@ export const Cart = () => {
 
   const navigate = useNavigate();
 
-
-useEffect(() => {
-  async function fetchData() {
-    try {
-      // Make a request to your API endpoint to fetch cartItems
-      const res = await axios.get('api/cart-items');
-      updateCartItemCount(res.data);
-    } catch (error) {
-      console.error('Error fetching cartItems data: ', error);
-    }
-  }
-
-  fetchData();
-}, [updateCartItemCount]);
-
   useEffect(() => {
     const token = localStorage.getItem('token');
     const id = localStorage.getItem('id');
@@ -85,15 +70,15 @@ useEffect(() => {
           return null;
         })}
       </div>
-      {isLoading ? (
+       {isLoading ? (
         <p>Loading pending packages...</p>
       ) : unreceivedPackages.length > 0 ? (
         <div className="pending-packages">
           <h1>Pending Packages</h1>
           <ul>
             {_.uniqBy(unreceivedPackages, 'PackageID').map((pendingpackage) => (
-              <li key={pendingpackage.id}> {/* Use a key prop for performance */}
-                Package ID: {pendingpackage.PackageID}, 
+              <li key={pendingpackage.id}> Use a key prop for performance 
+                 Package ID: {pendingpackage.PackageID}, 
                 Cost: {pendingpackage.cost}
               </li>
             ))}
@@ -101,9 +86,9 @@ useEffect(() => {
         </div>
       ) : (
         <p>No pending packages found.</p>
-      )}
+      )} 
       
-      {totalAmount > 0 || unreceivedPackages.length > 0 ? (
+       {totalAmount > 0 || unreceivedPackages.length > 0 ? (
         <div className="checkout">
           <p>Subtotal from cart: ${totalAmount} </p>
           <p>Pending package fees: ${unreceivedPackages.reduce((sum, pendingpackage) => sum + parseFloat(pendingpackage.cost || 0), 0)}</p>
@@ -121,7 +106,7 @@ useEffect(() => {
         </div>
       ) : (
         <h1> Your Shopping Cart is Empty</h1>
-      )}
+      )} 
     </div>
   );
 };
