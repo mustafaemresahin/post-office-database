@@ -7,6 +7,7 @@ const { v4: uuidv4 } = require('uuid');
 const jwt = require('jsonwebtoken');
 const path = require('path');
 const fs = require('fs');
+const util = require('util');
 
 const calculateTotalPrice = (items) => {
   return items.reduce((total, item) => {
@@ -37,7 +38,7 @@ const db = mysql.createPool(
     port: 3306,
     //ssl: {ca: fs.readFileSync('C:\\Users\\rayya.DESKTOP-92F6ECR\\.ssh\\DigiCertGlobalRootCA.crt.pem')}
 });
-
+db.queryAsync = util.promisify(db.query).bind(db);
 // connect to database
 db.getConnection((err) => {
   if (err) {
@@ -244,6 +245,7 @@ const server = http.createServer( async (req, res) => {
     }
   );
 }
+
   }
   else if (req.method === "PUT") {
     const reqURL = url.parse(req.url, true);
@@ -564,83 +566,108 @@ const server = http.createServer( async (req, res) => {
     }
 
    
+//-----------------------------------
+//API for completing order
+    else if (req.url === "/api/checkout") {
+
+      let data = "";
+      req.on("data", (chunk) => {
+        data += chunk;
+      });
+
+    req.on('end', async () => {
+        try {
+            const body = JSON.parse(data); // Assume the token is sent in the request body
+            const SenderID = body.userId;
+            if (!SenderID) {
+                throw new Error('Invalid or expired token');
+            }
+
+            // Fetch the CartID for the authenticated user
+            const cartQuery = 'SELECT CartID FROM customer_user WHERE UserID = ?';
+            const cartResult = await db.queryAsync(cartQuery, [SenderID]);
+            if (cartResult.length === 0) {
+                throw new Error('No cart found for user');
+            }
+            const cartId = cartResult[0].CartID;
 
 
-    if (req.url === "/api/checkout") {
-      {
-        let data = '';
-        req.on('data', chunk => {
-            data += chunk;
-        });
-        const currentDate = new Date();
-        const formattedDate = currentDate.toISOString().slice(0, 19).replace('T', ' ');
-        req.on('end', () => {
-            const checkoutData = JSON.parse(data);
-            const items = checkoutData.Items; // Array of { ItemID, quantity, pricePerItem }
-            const firstname = checkoutData.firstname;
-            const lastname = checkoutData.lastname; 
-            const email = checkoutData.email;
-            const address = checkoutData.address;  
-            const city = checkoutData.city; 
-            const zip = checkoutData.zip; 
+
+            // Fetch cart items, calculate total, etc.
+            const cartItemsQuery = 'SELECT * FROM cart_items WHERE CartID = ?';
+            const cartItems = await db.queryAsync(cartItemsQuery, [cartId]);
+            const ItemId = cartItems.CartItemID;
+            const Quantity =  cartItems.Quantity;
+
+
+
+            const totalCost = await processCheckout(cartItems, SenderID, cartId);
             const transactionID = uuidv4().substring(0,10);
-            const totalPrice = calculateTotalPrice(items).toFixed(2);
-            // const ItemID = checkoutData.item[itemID];
-            // const quantity = checkoutData.Items[quantity];
-            // const pricePerItem = checkoutData.Items[pricePerItem];
-            const transactionType = "Purchase";
-            const PaymentType = "Credit Card";
-            const Date = formattedDate;
-    
-            // Process each item in the order
-            const processItems = items.map(item => {
-                return new Promise((resolve, reject) => {
-                    // Step 1: Check stock
-                    const stockSql = "SELECT Inventory FROM storeitem WHERE ItemId = ?";
-                    db.query(stockSql, [item.itemID], (error, results) => {
-                        if (error) reject(error);
-                        // else if (!results.length || results[0].amountInStock > item.quantity) reject(new Error("Insufficient stock"));
-                        else {
-                            // Step 2: Insert into `transaction`
-                            const transactionSql = ("INSERT INTO transaction (TransactionID, TransactionType, Date, TotalAmount, ItemID, PaymentType) VALUES (?, ?, ?, ?, ?, ?)",
-                        [transactionID, transactionType, Date, totalPrice,item.itemID, item.paymentType  ]);
-                            
-      
-                            const totalAmount = item.quantity * item.pricePerItem; // Assuming this calculation matches your needs
-                            const transactionValues = [uuidv4().substring(0,10), 'Sale', totalAmount, item.itemID, checkoutData.PaymentType];
-                            db.query(transactionSql, transactionValues, error => {
-                                if (error) reject(error);
-                                else {
-                                    // Step 3: Deduct stock
-                                    const deductStockSql = "UPDATE storeitem SET Inventory = Inventory - ? WHERE ItemId = ?";
-                                    db.query(deductStockSql, [item.quantity, item.itemID], error => {
-                                        if (error) reject(error);
-                                        else resolve();
-                                    });
-                                }
-                            });
-                        }
-                    });
-                });
-            });
-    
-            Promise.all(processItems)
-                .then(() => {
-                    // All items processed successfully, order complete
-                    res.writeHead(200, {"Content-Type": "application/json"});
-                    res.end(JSON.stringify({ message: "Checkout successful" }));
-                    
-                })
-                .catch(error => {
-                    // Handle any errors (e.g., item out of stock, database errors)
-                    console.error(error);
-                    res.writeHead(500, {"Content-Type": "application/json"});
-                    res.end(JSON.stringify({ error: "Checkout failed", detail: error.message }));
-                });
-        });
-    }
-    }
-    
+            const currentDate = new Date();
+            const formattedDate = currentDate.toISOString().slice(0, 19).replace('T', ' ');
+           
+
+            // Here, insert logic to process cart items, calculate totals, check stock, and so on
+            async function processCheckout(cartItems, SenderID, cartId) {
+              let totalCost = 0.0;
+              const stockUpdates = [];
+          
+              // Iterate over each item in the cart to calculate total and check stock
+              for (const item of cartItems) {
+                  const productQuery = 'SELECT Inventory FROM storeitem WHERE ItemID = ?';
+                  const product = await db.queryAsync(productQuery, [item.CartItemID]);
+
+                  if (product.length === 0) {
+                      throw new Error(`Product with ID ${item.CartItemID} not found`);
+                  }
+
+          
+                  if (product[0].Inventory < item.Quantity) {
+                      throw new Error(`Insufficient stock for product ID ${item.CartItemID}`);
+                  }
+                  console.log(item.Quantity);
+          
+                  // Calculate total cost
+                  totalCost += product[0].Cost * item.Quantity;
+          
+                  // Prepare stock update for later
+                  stockUpdates.push({
+                      ProductID: item.ProductID,
+                      NewStock: product[0].Stock - item.Quantity,
+                  });
+              }
+          
+              // Update stock levels in the database
+              for (const update of stockUpdates) {
+                  const stockUpdateQuery = 'UPDATE storeitem SET Inventory = ? WHERE ItemID = ?';
+                  await db.queryAsync(stockUpdateQuery, [update.NewStock, update.ProductID]);
+              }
+          
+              // Insert transaction record
+              // const transactionQuery = 'INSERT INTO transaction (TransactionID, CartID, TransactionDate, TotalAmount, TransactionType) VALUES (?, ?, ?, ?, ?)';
+              // await db.queryAsync(transactionQuery, [userId, cartId, totalCost]);
+          
+              return totalCost; // Return total cost for further processing or response
+          }
+          
+
+            // Finally, insert a transaction record (this is simplified)
+
+            const transactionQuery = 'INSERT INTO transaction (TransactionID, CartID, TransactionDate, TotalAmount, TransactionType) VALUES (?, ?, ?, ?, ?)';
+            await db.queryAsync(transactionQuery, [transactionID, cartId, formattedDate, totalCost, "Payment"] );
+
+            // Respond to the client
+            res.writeHead(200, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify({ message: 'Checkout successful' }));
+        } catch (error) {
+            console.error(error);
+            res.writeHead(500, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify({ error: error.message }));
+        }
+    });
+}
+
+
     // API for adding a vehicle
     else if (req.url === "/api/vehicleadd") {
       let body = '';
