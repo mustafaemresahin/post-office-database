@@ -641,6 +641,31 @@ const server = http.createServer( async (req, res) => {
               }
           );
       }
+
+      else if (pathSegments.length === 5 && pathSegments[2] === "cart_item") {
+        const PackageID = pathSegments[4];
+      
+        db.query("DELETE FROM cart_items WHERE PackageID = ?", [PackageID], (error) => {
+          if (error) {
+            // Handle cart_items deletion error
+            res.writeHead(500, { "Content-Type": "application/json" });
+            res.end(JSON.stringify({ error: error}));
+          } else {
+            db.query("DELETE FROM package WHERE PackageID = ?", [PackageID], (packageError) => {
+              if (packageError) {
+                // Handle package deletion error
+                res.writeHead(500, { "Content-Type": "application/json" });
+                res.end(JSON.stringify({ error: 'Failed to remove package' }));
+              } else {
+                // Both deletions successful
+                res.writeHead(200, {"Content-Type": "application/json"});
+                res.end(JSON.stringify({ message: "cart_item and package deleted successfully" }));
+              }
+            });
+          }
+        });
+      }  
+      
       // api for deleting vehicles
       else if (req.url.startsWith("/api/vehicledelete/")) {
         const parts = req.url.split('/');
