@@ -1,4 +1,4 @@
-import React, { createContext, useState } from "react";
+import React, { createContext, useState, useEffect } from "react";
 import { PRODUCTS } from "../products";
 
 export const ShopContext = createContext(null);
@@ -14,6 +14,10 @@ const getDefaultCart = () => {
 export const ShopContextProvider = (props) => {
   const [cartItems, setCartItems] = useState(getDefaultCart());
 
+  useEffect(() => {
+    console.log("Cart Items Updated:", cartItems);
+  }, [cartItems]);
+
   const getTotalCartAmount = () => {
     let totalAmount = 0;
     for (const item in cartItems) {
@@ -26,19 +30,32 @@ export const ShopContextProvider = (props) => {
   };
 
   const addToCart = (itemId) => {
-    setCartItems((prev) => ({ ...prev, [itemId]: prev[itemId] + 1 }));
+    setCartItems((prev) => {
+      const updatedCart = { ...prev, [itemId]: prev[itemId] + 1 };
+      console.log("Item Added to Cart:", itemId, "Updated Cart:", updatedCart);
+      return updatedCart;
+    });
   };
 
   const removeFromCart = (itemId) => {
-    setCartItems((prev) => ({ ...prev, [itemId]: prev[itemId] - 1 }));
+    setCartItems((prev) => {
+      const updatedCart = { ...prev, [itemId]: prev[itemId] - 1 };
+      console.log("Item Removed from Cart:", itemId, "Updated Cart:", updatedCart);
+      return updatedCart;
+    });
   };
 
   const updateCartItemCount = (newAmount, itemId) => {
-    setCartItems((prev) => ({ ...prev, [itemId]: newAmount }));
+    setCartItems((prev) => {
+      const updatedCart = { ...prev, [itemId]: newAmount };
+      console.log("Cart Item Count Updated:", itemId, "New Amount:", newAmount, "Updated Cart:", updatedCart);
+      return updatedCart;
+    });
   };
 
   const checkout = () => {
     setCartItems(getDefaultCart());
+    console.log("Cart Items Cleared - Checkout Complete");
   };
 
   const contextValue = {
