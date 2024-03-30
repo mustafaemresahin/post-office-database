@@ -673,7 +673,7 @@ const server = http.createServer( async (req, res) => {
 
 
             const totalCost = await processCheckout(cartItems, SenderID, cartId);
-            const transactionID = uuidv4().substring(0,10);
+            const transactionID = uuidv4().substring(0,20);
             const currentDate = new Date();
             const formattedDate = currentDate.toISOString().slice(0, 19).replace('T', ' ');
            
