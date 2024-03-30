@@ -7,6 +7,13 @@ const { v4: uuidv4 } = require('uuid');
 const jwt = require('jsonwebtoken');
 const path = require('path');
 const fs = require('fs');
+const util = require('util');
+
+const calculateTotalPrice = (items) => {
+  return items.reduce((total, item) => {
+    return total + item.quantity * item.pricePerItem;
+  }, 0);
+};
 
 const generateToken = (user) => {
   return jwt.sign(
@@ -22,16 +29,18 @@ const generateToken = (user) => {
   );
 };
 
-const db = mysql.createPool(
-{
-    host: 'post-office-web-database.mysql.database.azure.com',
-    user: 'postofficeadmin',
-    password: 'D@tabase123',
-    database: 'mydb',
-    port: 3306,
-    //ssl: {ca: fs.readFileSync('C:\\Users\\rayya.DESKTOP-92F6ECR\\.ssh\\DigiCertGlobalRootCA.crt.pem')}
+const db = mysql.createPool({
+  host: 'post-office-web-database.mysql.database.azure.com',
+  user: 'postofficeadmin',
+  password: 'D@tabase123',
+  database: 'mydb',
+  port: 3306,
+  // You can add connection pool specific options here (refer to official docs)
+  // connectionLimit: 10, // Maximum number of connections in the pool (default: 10)
+  // queueLimit: 0, // Maximum number of queued requests for the pool (default: 0 - no limit)
+  // waitForConnections: true, // Whether to wait for a connection if the pool is full (default: true)
 });
-
+db.queryAsync = util.promisify(db.query).bind(db);
 // connect to database
 db.getConnection((err) => {
   if (err) {
@@ -88,6 +97,30 @@ const serveFile = (filePath, contentType, response) => {
 const server = http.createServer( async (req, res) => {
   // Handle Cors Function To Allow Axios
   handleCors(req, res);
+
+  //cart-items
+  if (req.url === '/api/cart-item'){ 
+    let cartItems = [];
+    if(req.method === 'POST') {
+    let body = '';
+    req.on('data', chunk => body += chunk.toString());
+
+    req.on('end', () => {
+      const item = JSON.parse(body);
+      cartItems.push(item);
+
+      res.writeHead(201, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ message: 'Item added' }));
+    });
+  }
+  // Route to fetch cart items
+  else if (req.method === 'GET') {
+    res.writeHead(200, { 'Content-Type': 'application/json' });
+    res.end(JSON.stringify(cartItems));
+  }
+}
+
+
   // GET Requests 
   if (req.method === "GET") {
     
@@ -198,9 +231,43 @@ const server = http.createServer( async (req, res) => {
     }
 
     // get ALL vehicles
+  else if (req.url === "/api/vehiclelist") {
+    db.query(
+    "SELECT * FROM vehicles",
+    (error, result) => {
+      if (error) {
+        res.writeHead(500, { "Content-Type": "application/json" });
+        res.end(JSON.stringify({ error: error }));
+        return;
+      } else {
+        res.writeHead(200, { "Content-Type": "application/json" });
+        res.end(JSON.stringify(result));
+        return;
+      }
+    }
+  );
+}
+
     else if (req.url === "/api/vehiclelist") {
       db.query(
-      "SELECT * FROM vehicles",
+        "SELECT * FROM vehicles",
+        (error, result) => {
+          if (error) {
+            res.writeHead(500, { "Content-Type": "application/json" });
+            res.end(JSON.stringify({ error: error }));
+            return;
+          } else {
+            res.writeHead(200, { "Content-Type": "application/json" });
+            res.end(JSON.stringify(result));
+            return;
+          }
+        }
+      );
+      return;
+    }
+    else if (req.url === "/api/cart_items") 
+    {
+      db.query("SELECT * FROM cart_items", 
       (error, result) => {
         if (error) {
           res.writeHead(500, { "Content-Type": "application/json" });
@@ -211,8 +278,25 @@ const server = http.createServer( async (req, res) => {
           res.end(JSON.stringify(result));
           return;
         }
+      });
+      return;
     }
-  );
+    else if (req.url === "/api/cart") {
+      db.query(
+        "SELECT * FROM cart",
+        (error, result) => {
+          if (error) {
+            res.writeHead(500, { "Content-Type": "application/json" });
+            res.end(JSON.stringify({ error: error }));
+            return;
+          } else {
+            res.writeHead(200, { "Content-Type": "application/json" });
+            res.end(JSON.stringify(result));
+            return;
+          }
+        }
+      );
+      return;
     }
   }
   else if (req.method === "PUT") {
@@ -289,14 +373,16 @@ const server = http.createServer( async (req, res) => {
         )
       }); 
     }
-    else if (req.url === "/api/register") {
+    else if (req.url === "/api/register") 
+    {
       let data = "";
       req.on("data", (chunk) => {
           data += chunk;
       });
       const currentDate = new Date();
       const formattedDate = currentDate.toISOString().slice(0, 19).replace('T', ' ');
-      req.on("end", () => {
+      req.on("end", () => 
+      {
           const body = JSON.parse(data);
           const userid = uuidv4().substring(0,10);
           const firstname = body.firstname;
@@ -308,26 +394,29 @@ const server = http.createServer( async (req, res) => {
           const dateSignup = formattedDate; 
           const role = 'User';
           const address = body.address;
+          const CartID = uuidv4.substring(0,20);
           
-          db.query(
-            "INSERT INTO customer_user (UserID, CustomerUser, CustomerPass, Email, firstname, lastname, address, phonenumber, dateSignedUp, role) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
-              [userid, username, password, email, firstname, lastname, address, phoneNumber, dateSignup, role],
-              (error) => {
-                  if (error) {
-                    console.log(error);
-                    res.writeHead(500, {"Content-Type": "application/json"});
-                    res.end(JSON.stringify({error: "Do we get this far?"}));
-                    return;
-                  } else {
-                    res.writeHead(200, {"Content-Type": "application/json"});
-                    res.end(JSON.stringify({ message: "User has signed up successfully" }));
-                    return;
-                  }
+          db.query
+          (
+            "INSERT INTO customer_user (UserID, CustomerUser, CustomerPass, Email, firstname, lastname, address, phonenumber, dateSignedUp, role, CartID) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+              [userid, username, password, email, firstname, lastname, address, phoneNumber, dateSignup, role, CartID],
+              (error) => 
+              {
+                if (error) {
+                  console.log(error);
+                  res.writeHead(500, {"Content-Type": "application/json"});
+                  res.end(JSON.stringify({error: "Do we get this far?"}));
+                  return;
+                } else {
+                  res.writeHead(200, {"Content-Type": "application/json"});
+                  res.end(JSON.stringify({ message: "User has signed up successfully" }));
+                  return;
+                }
               }
           );
           return;
       });
-    } 
+    }     
     else if (req.url === "/api/login") {
       let data = "";
       req.on("data", (chunk) => {
@@ -484,10 +573,10 @@ const server = http.createServer( async (req, res) => {
       });
       const currentDate = new Date();
       const formattedDate = currentDate.toISOString().slice(0, 19).replace('T', ' ');
-
+    
       req.on("end", () => {
         const body = JSON.parse(data);
-        const PackageID = uuidv4().substring(0,10);
+        const PackageID = uuidv4().substring(0,20);
         const Weight = parseFloat(body.weight);
         const dimensionsStr = `${body.length} x ${body.width} x ${body.height}`;
         const Type = body.packageType;
@@ -496,9 +585,10 @@ const server = http.createServer( async (req, res) => {
         const VehicleID = null; //we dont have vehicles yet so just leaving this blank, will prolly cause error
         const destinationAddress = body.address;
         const expedited = body.expeditedShipping;
-        const SenderID = "595b8a0b-c";
+        const SenderID = body.userId;
         const recipientFirstName = body.recipientFirstName;
         const recipientLastName = body.recipientLastName;
+        const CartID = body.cartId
         let cost = 0;
         cost = parseFloat(dimensionsStr) + parseFloat(Weight) + parseFloat(expedited);
         
@@ -509,9 +599,7 @@ const server = http.createServer( async (req, res) => {
         } else if (Type === "oversized") {
           cost += 10; // Additional cost for oversized
         }
-
-        //console.log({PackageID, SenderID, Weight, Dimensions, Type, Status, DateSent, VehicleID, destinationAddress, expedited, recipientFirstName, recipientLastName, cost});
-
+    
         db.query(
           "INSERT INTO package (PackageID, SenderID, Weight, Dimensions, Type, Status, DateSent, VehicleID, destination, expeditedShipping, recipientFirstName, recipientLastName, cost) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
           [PackageID, SenderID, Weight, dimensionsStr, Type, Status, DateSent, VehicleID, destinationAddress, expedited, recipientFirstName, recipientLastName, cost],
@@ -520,19 +608,134 @@ const server = http.createServer( async (req, res) => {
             if (error) {
               console.log(error);
               res.writeHead(500, {"Content-Type": "application/json"});
-              res.end(JSON.stringify({error: "Do we get this far?"}));
+              res.end(JSON.stringify({error: "Error occurred while submitting package"}));
               return;
             } else {
-              res.writeHead(200, {"Content-Type": "application/json"});
-              res.end(JSON.stringify({ message: "Package submitted successfully" }));
-              return;
+              // Insert into cart_items table
+              const CartItemID = uuidv4().substring(0,20); 
+              db.query(
+                "INSERT INTO cart_items (CartItemID, CartID, PackageID, Quantity) VALUES (?, ?, ?, ?)",
+                [CartItemID, CartID, PackageID, 1],
+                (cartError) => {
+                  if (cartError) {
+                    console.log(cartError);
+                    res.writeHead(500, {"Content-Type": "application/json"});
+                    res.end(JSON.stringify({error: "Error occurred while adding package to cart"}));
+                    return;
+                  } else {
+                    res.writeHead(200, {"Content-Type": "application/json"});
+                    res.end(JSON.stringify({ message: "Package submitted successfully and added to cart" }));
+                    return;
+                  }
+                }
+              );
             }
           }
         );
         return;
       });
     }
-    
+
+   
+//-----------------------------------
+//API for completing order
+    else if (req.url === "/api/checkout") {
+
+      let data = "";
+      req.on("data", (chunk) => {
+        data += chunk;
+      });
+
+    req.on('end', async () => {
+        try {
+            const body = JSON.parse(data); // Assume the token is sent in the request body
+            const SenderID = body.userId;
+            if (!SenderID) {
+                throw new Error('Invalid or expired token');
+            }
+
+            // Fetch the CartID for the authenticated user
+            const cartQuery = 'SELECT CartID FROM customer_user WHERE UserID = ?';
+            const cartResult = await db.queryAsync(cartQuery, [SenderID]);
+            if (cartResult.length === 0) {
+                throw new Error('No cart found for user');
+            }
+            const cartId = cartResult[0].CartID;
+
+
+
+            // Fetch cart items, calculate total, etc.
+            const cartItemsQuery = 'SELECT * FROM cart_items WHERE CartID = ?';
+            const cartItems = await db.queryAsync(cartItemsQuery, [cartId]);
+            const ItemId = cartItems.CartItemID;
+            const Quantity =  cartItems.Quantity;
+
+
+
+
+            async function processCheckout(cartItems, SenderID, cartId) {
+              let totalCost = 0.0;
+              const stockUpdates = [];
+          
+              // Iterate over each item in the cart to calculate total and check stock
+              for (const item of cartItems) {
+                console.log(`Item ID: ${item.CartItemID}, Quantity: ${item.Quantity}`);
+                  const productQuery = 'SELECT Inventory FROM storeitem WHERE ItemID = ?';
+                  const product = await db.queryAsync(productQuery, [item.CartItemID]);
+                  console.log(product[0].Cost);
+
+                  if (product.length === 0) {
+                      throw new Error(`Product with ID ${item.CartItemID} not found`);
+                  }
+
+          
+                  if (product[0].Inventory < item.Quantity) {
+                      throw new Error(`Insufficient stock for product ID ${item.CartItemID}`);
+                  }
+                  console.log(item.Quantity);
+          
+                  // Calculate total cost
+                  totalCost += product[0].Cost * item.Quantity;
+
+                  stockUpdates.push({
+                      ProductID: item.CartItemID,
+                      NewStock: product[0].Inventory - item.Quantity,
+                  });
+              }
+          
+              // Update stock levels in the database
+              for (const update of stockUpdates) {
+                  const stockUpdateQuery = 'UPDATE storeitem SET Inventory = ? WHERE ItemID = ?';
+                  await db.queryAsync(stockUpdateQuery, [update.NewStock, update.ProductID]);
+              }
+          
+          
+              return totalCost; // Return total cost for further processing or response
+          }
+          const totalCost =  await processCheckout(cartItems, SenderID, cartId);
+          const transactionID = uuidv4().substring(0,10);
+          const currentDate = new Date();
+          const formattedDate = currentDate.toISOString().slice(0, 19).replace('T', ' ');
+          
+
+            //  insert a transaction record 
+
+            const transactionQuery = 'INSERT INTO transaction (TransactionID, CartID, TransactionDate, TotalAmount, TransactionType) VALUES (?, ?, ?, ?, ?)';
+            await db.queryAsync(transactionQuery, [transactionID, cartId, formattedDate, totalCost, "Payment"] );
+
+            // Respond to the client
+            res.writeHead(200, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify({ message: 'Checkout successful' }));
+        } catch (error) {
+            console.error(error);
+            res.writeHead(500, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify({ error: error.message }));
+        }
+    });
+}
+
+
+    }    
     // API for adding a vehicle
     else if (req.url === "/api/vehicleadd") {
       let body = '';
@@ -588,44 +791,14 @@ const server = http.createServer( async (req, res) => {
       });
     }
 
-    else if (req.url === "/api/package/delete"){
-      let body = '';
-      req.on('data', (chunk) => {
-        body += chunk.toString();
-      });
-      req.on('end', () => {
-        const data = JSON.parse(body);
-        const packageID = data.packageID;
-    
-        // query to check employeeID
-        db.query(
-          "DELETE FROM package WHERE PackageID = ?",
-          [packageID],
-          (error) => {
-            if (error) {
-              console.error('Package deletion error:', insertError);
-              res.writeHead(500, { "Content-Type": "application/json" });
-              res.end(JSON.stringify({ error: 'Failed to remove package' }));
-              return;
-            } else {
-              res.writeHead(201, { "Content-Type": "application/json" });
-              res.end(JSON.stringify({ message: 'Package deleted successfully' }));
-              return;
-            }
-          }
-        );
-      });
-    }
-
-
-  }
+  // }
   else if(req.method === "DELETE") {
     const reqURL = url.parse(req.url, true);
     const pathSegments = reqURL.pathname.split("/");
 
       // Delete A User
-      if (pathSegments.length === 4 && pathSegments[2] === "users") {
-          const UserID = pathSegments[3];
+    if (pathSegments.length === 4 && pathSegments[2] === "users") {
+        const UserID = pathSegments[3];
 
           db.query(
               "DELETE FROM customer_user WHERE UserID = ?",
@@ -714,7 +887,8 @@ const server = http.createServer( async (req, res) => {
     return; // Important to return here to avoid further processing
   }
   
-});
+}
+);
 
 const port = process.env.PORT || 4000; // Use environment variable or default port
 server.listen(port, () => {

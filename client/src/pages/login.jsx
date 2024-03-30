@@ -5,7 +5,7 @@ import axios from 'axios';
 
 const LoginPage = () => {
   const navigate = useNavigate();
-  const [values, setValues] = useState({username:"",password:"",role:"customer"});
+  const [values, setValues] = useState({username:"",password:"",role:"User"});
 
   const handleSubmit = async (event) => {
     event.preventDefault(); // Prevent default form submission behavior
