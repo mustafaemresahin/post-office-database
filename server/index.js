@@ -672,21 +672,17 @@ const server = http.createServer( async (req, res) => {
 
 
 
-            const totalCost = await processCheckout(cartItems, SenderID, cartId);
-            const transactionID = uuidv4().substring(0,10);
-            const currentDate = new Date();
-            const formattedDate = currentDate.toISOString().slice(0, 19).replace('T', ' ');
-           
 
-            // Here, insert logic to process cart items, calculate totals, check stock, and so on
             async function processCheckout(cartItems, SenderID, cartId) {
               let totalCost = 0.0;
               const stockUpdates = [];
           
               // Iterate over each item in the cart to calculate total and check stock
               for (const item of cartItems) {
+                console.log(`Item ID: ${item.CartItemID}, Quantity: ${item.Quantity}`);
                   const productQuery = 'SELECT Inventory FROM storeitem WHERE ItemID = ?';
                   const product = await db.queryAsync(productQuery, [item.CartItemID]);
+                  console.log(product[0].Cost);
 
                   if (product.length === 0) {
                       throw new Error(`Product with ID ${item.CartItemID} not found`);
@@ -700,11 +696,10 @@ const server = http.createServer( async (req, res) => {
           
                   // Calculate total cost
                   totalCost += product[0].Cost * item.Quantity;
-          
-                  // Prepare stock update for later
+
                   stockUpdates.push({
-                      ProductID: item.ProductID,
-                      NewStock: product[0].Stock - item.Quantity,
+                      ProductID: item.CartItemID,
+                      NewStock: product[0].Inventory - item.Quantity,
                   });
               }
           
@@ -714,15 +709,16 @@ const server = http.createServer( async (req, res) => {
                   await db.queryAsync(stockUpdateQuery, [update.NewStock, update.ProductID]);
               }
           
-              // Insert transaction record
-              // const transactionQuery = 'INSERT INTO transaction (TransactionID, CartID, TransactionDate, TotalAmount, TransactionType) VALUES (?, ?, ?, ?, ?)';
-              // await db.queryAsync(transactionQuery, [userId, cartId, totalCost]);
           
               return totalCost; // Return total cost for further processing or response
           }
+          const totalCost =  await processCheckout(cartItems, SenderID, cartId);
+          const transactionID = uuidv4().substring(0,10);
+          const currentDate = new Date();
+          const formattedDate = currentDate.toISOString().slice(0, 19).replace('T', ' ');
           
 
-            // Finally, insert a transaction record (this is simplified)
+            //  insert a transaction record 
 
             const transactionQuery = 'INSERT INTO transaction (TransactionID, CartID, TransactionDate, TotalAmount, TransactionType) VALUES (?, ?, ?, ?, ?)';
             await db.queryAsync(transactionQuery, [transactionID, cartId, formattedDate, totalCost, "Payment"] );
