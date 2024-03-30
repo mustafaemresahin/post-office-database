@@ -5,7 +5,6 @@ import '../css/vehicles.css';
 
 const VehiclesTable = () => {
   const [vehicles, setVehicles] = useState([]);
-  const [expandedRows, setExpandedRows] = useState([]);
 
   useEffect(() => {
     const fetchVehicles = async () => {
@@ -20,39 +19,14 @@ const VehiclesTable = () => {
     fetchVehicles();
   }, []);
 
-  const toggleRowExpansion = (rowId) => {
-    if (expandedRows.includes(rowId)) {
-      setExpandedRows(expandedRows.filter(id => id !== rowId));
-    } else {
-      setExpandedRows([...expandedRows, rowId]);
-    }
-  };
 
-  const renderAdditionalInfo = (vehicle) => {
-    if (expandedRows.includes(vehicle.id)) {
-      return (
-        <tr className="tr-padded" key={vehicle.id + '-info'}>
-          <td colSpan="4">
-            {/*
-            <p>Make: {vehicle.make}</p>
-            <p>Model: {vehicle.model}</p>
-      <p>Year: {vehicle.year}</p> */}
-              <p>type: {vehicle.type}</p>
-              <p>unit: {vehicle.unit}</p> 
-          </td>
-        </tr>
-      );
-    }
-    return null;
-  };
-
-  //not done
+  //done
   const handleDeleteVehicle = async (vehicleId) => {
     try {
-      // Send DELETE request vehicle
-      await axios.delete(`/api/vehicles/${vehicleId}`);
+      // Send DELETE request to delete the vehicle with the specified ID
+      await axios.delete(`/api/vehicledelete/${vehicleId}`);
       // Refresh list after deletion
-      const updatedVehicles = vehicles.filter(vehicle => vehicle.id !== vehicleId);
+      const updatedVehicles = vehicles.filter(vehicle => vehicle.VehicleID !== vehicleId);
       setVehicles(updatedVehicles);
     } catch (error) {
       console.error('Error deleting vehicle:', error);
@@ -89,10 +63,9 @@ const VehiclesTable = () => {
                                 <td>{user.Unit}</td>
                                 <td>{user.EmployeeID}</td>
                                 <td>
-                                  <button onClick={("/addvehicles")}>Add</button>
+                                  {/*<button onClick={("/addvehicles")}>Add</button>*/}
                                   <button>Edit </button>
-                                  <button>Delete</button>
-                                </td>
+                                  <button onClick={() => handleDeleteVehicle(user.VehicleID)}>Delete</button>                                </td>
                             </tr>
                         )
                     

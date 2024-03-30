@@ -617,6 +617,29 @@ const server = http.createServer( async (req, res) => {
       });
     }
 
+  //   else if (req.url.startsWith("/api/vehicledelete/")) {
+  //     const parts = req.url.split('/');
+  //     const vehicleID = parts[parts.length - 1];
+  
+  //     db.query(
+  //         "DELETE FROM vehicles WHERE vehicleID = ?",
+  //         [vehicleID],
+  //         (error) => {
+  //             if (error) {
+  //                 console.error('Vehicle deletion error:', error); // Corrected to use 'error'
+  //                 res.writeHead(500, { "Content-Type": "application/json" });
+  //                 res.end(JSON.stringify({ error: 'Failed to remove vehicle' }));
+  //                 return;
+  //             } else {
+  //                 res.writeHead(201, { "Content-Type": "application/json" });
+  //                 res.end(JSON.stringify({ message: 'Vehicle deleted successfully' }));
+  //                 return;
+  //             }
+  //         }
+  //     );
+  // }
+    
+
   }
   else if(req.method === "DELETE") {
     const reqURL = url.parse(req.url, true);
@@ -640,6 +663,28 @@ const server = http.createServer( async (req, res) => {
               }
           );
       }
+      // api for deleting vehicles
+      else if (req.url.startsWith("/api/vehicledelete/")) {
+        const parts = req.url.split('/');
+        const vehicleID = parts[parts.length - 1];
+    
+        db.query(
+            "DELETE FROM vehicles WHERE vehicleID = ?",
+            [vehicleID],
+            (error) => {
+                if (error) {
+                    console.error('Vehicle deletion error:', error); // Corrected to use 'error'
+                    res.writeHead(500, { "Content-Type": "application/json" });
+                    res.end(JSON.stringify({ error: 'Failed to remove vehicle' }));
+                    return;
+                } else {
+                    res.writeHead(201, { "Content-Type": "application/json" });
+                    res.end(JSON.stringify({ message: 'Vehicle deleted successfully' }));
+                    return;
+                }
+            }
+        );
+    }
     }
 
 
