@@ -1,25 +1,25 @@
-import product1 from './pages/assets/1.png';
-import product2 from './pages/assets/2.png';
-import product3 from './pages/assets/3.png'
+import axios from 'axios';
 
+// Define an empty array to store the products
+let PRODUCTS = [];
 
-export const PRODUCTS = [
-   {
-       id: 1,
-       productName: "Stamp",
-       price: 1.00,
-       productImage: product1,
-   },
-   {
-       id: 2,
-       productName: 'Supplies',
-       price: 0.99,
-       productImage: product2,
-   },
-   {
-       id: 3,
-       productName: "Cards & Envelope",
-       price: 5.00,
-       productImage: product3,
-   }
-];
+// Make an HTTP GET request to fetch product data
+axios.get('/api/storeitem')
+  .then(response => {
+    // Assuming the response data is an array of products
+    PRODUCTS = response.data.map(product => ({
+      id: product.ItemID,
+      productName: product.Name,
+      price: product.Cost,
+      productImage: product.productImage // Assuming productImage contains the URL of the image
+    }));
+
+    // Log the fetched products to verify
+    console.log('Fetched Products:', PRODUCTS);
+  })
+  .catch(error => {
+    console.error('Error fetching product data:', error);
+  });
+
+  
+export { PRODUCTS };
