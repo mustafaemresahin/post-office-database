@@ -233,6 +233,22 @@ const server = http.createServer( async (req, res) => {
       });
       return;
     }
+    else if (req.url === "/api/storeitem") 
+    {
+      db.query("SELECT * FROM storeitem", 
+      (error, result) => {
+        if (error) {
+          res.writeHead(500, { "Content-Type": "application/json" });
+          res.end(JSON.stringify({ error: error }));
+          return;
+        } else {
+          res.writeHead(200, { "Content-Type": "application/json" });
+          res.end(JSON.stringify(result));
+          return;
+        }
+      });
+      return;
+    }
     else if (req.url === "/api/cart") {
       db.query(
         "SELECT * FROM cart",
