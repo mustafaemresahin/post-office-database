@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
-import '../css/checkout.css'; // Import your CSS file for styling
+import '../css/checkout.css'; 
 import axios from 'axios';
 import { ShopContext } from "../context/shop-context";
 import { PRODUCTS } from "../products";
@@ -28,28 +28,6 @@ function Checkout() {
 
     
 
-    useEffect(() => {
-        const token = localStorage.getItem('token');
-        const id = localStorage.getItem('id');
-        if (!token) {
-          // If no token found, redirect to login page
-          navigate("/login");
-        }
-        else{
-          axios.get('/api/users')
-          .then(response => {
-              const userData = response.data.find(user => user.UserID === id); // Find the user by id
-              if (userData) {
-                setUserId(id); // Set the found user into the users state, as an array for consistency
-              } else {
-                console.log('User not found');
-                // Handle the case where the user is not found
-              }
-            })
-            .catch(error => console.error('Error:', error));
-        }
-      }, [navigate]);
-   
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -69,6 +47,7 @@ function Checkout() {
             };
           });
           console.log("Transformed Items:", Items);
+          console.log(totalAmount);
           
           
 
@@ -117,29 +96,42 @@ function Checkout() {
         const token = localStorage.getItem('token');
         const id = localStorage.getItem('id');
         if (!token) {
-        navigate("/login");
-        return;
-        }
-    
-        const fetchUserData = async () => {
-        try {
-            axios.get('/api/package')
+        navigate("/login");}
+        else{
+            axios.get('/api/users')
             .then(response => {
-                const packageData = response.data.filter(pkg => pkg.SenderID === id); // Find the package by id
-                if (!packageData) {
-                console.log('No packages');
+                const userData = response.data.find(user => user.UserID === id); // Find the user by id
+                if (userData) {
+                  setUserId(id); // Set the found user into the users state, as an array for consistency
+                } else {
+                  console.log('User not found');
+                  // Handle the case where the user is not found
                 }
-                else{
-                setUnreceivedPackages(packageData);
-                console.log(packageData);
-                }
-            })
-            .catch(error => console.error('Error:', error));
-        } catch (error) {
-            console.error('Error:', error);
-        }
-        };
+              })
+              .catch(error => console.error('Error:', error));
+              return;
+          }
+
+        
     
+          const fetchUserData = async () => {
+            try {
+              axios.get('/api/package')
+              .then(response => {
+                  const packageData = response.data.filter(pkg => pkg.SenderID === id && pkg.Status === 'Pending'); // Find the package by id
+                  if (!packageData) {
+                    console.log('No pending packages');
+                  }
+                  else{
+                    setUnreceivedPackages(packageData);
+                    console.log(packageData);
+                  }
+              })
+              .catch(error => console.error('Error:', error));
+            } catch (error) {
+              console.error('Error:', error);
+            }
+          };    
         fetchUserData();
         setIsLoading(false);
     }, [navigate]);
@@ -207,30 +199,6 @@ function Checkout() {
 <div className='checkout-items'>
 
     </div>            
-            <div className="checkout-confirm">
-                <div className="confirm-header">Cart Totals</div>
-                <div className="confirm-total">Subtotal: ${totalAmount}</div>
-                <div className="confirm-total">Total: ${totalAmount}</div> {/* Adjust if additional fees apply */}
-                <button onClick={handleSubmit}>Place order</button>
-                {PRODUCTS.map((product) => {
-          const quantity = cartItems[product.id]; // Get quantity from cartItems
-          if (quantity > 0) { // Only display items that are in the cart
-            return (
-              <CartItem 
-                key={product.id} 
-                data={product} 
-                quantity={quantity} // Pass quantity as a prop to CartItem
-              />
-              
-            );
-            
-          }
-          
-          return null;
-        })}
-                      </div>
-                      {/* </div> */}
-
             {/*input form ends here */}
             <div style={{ display: 'flex'}}>
                 <div className="cartItem">
@@ -277,7 +245,7 @@ function Checkout() {
                 ) : (
                     <h1> Your Shopping Cart is Empty</h1>
                 )}
-            <button type ="submit">Place order</button>
+            <button onClick={handleSubmit}>Place order</button>
                 </div>
             </div>
         </div>

@@ -70,11 +70,10 @@ export const Cart = () => {
     }
   };
 
-<<<<<<< HEAD
+
 
   console.log(unreceivedPackages);
-=======
->>>>>>> 21bb33f19af6b52fd75077d8ffe2668c4a1cbdfd
+
 
 
   return (
@@ -94,50 +93,7 @@ export const Cart = () => {
           <div>Your Shopping Cart is Empty.</div>
         )}
       </div>
-<<<<<<< HEAD
-       {isLoading ? (
-        <p>Loading pending packages...</p>
-      ) : unreceivedPackages.length > 0 ? (
-        <div className="pending-packages">
-          <h1>Pending Packages</h1>
-          <ul>
-            {_.uniqBy(unreceivedPackages, 'PackageID').map((pendingpackage) => (
-              <li key={pendingpackage.id}> Use a key prop for performance 
-                 Package ID: {pendingpackage.PackageID}, 
-                Cost: {pendingpackage.cost}
-              </li>
-            ))}
-          </ul>
-        </div>
-      ) : (
-        <p>No pending packages found.</p>
-      )} 
-      
-       {totalAmount > 0 || unreceivedPackages.length > 0 ? (
-        <div className="checkout">
-          <p>Subtotal from cart: ${totalAmount} </p>
-          <p>Pending package fees: ${unreceivedPackages.reduce((sum, pendingpackage) => sum + parseFloat(pendingpackage.cost || 0), 0)}</p>
-          <p>Total: ${totalAmount + (unreceivedPackages.reduce((sum, pendingpackage) => sum + parseFloat(pendingpackage.cost || 0), 0))}</p>
-          <button onClick={() => navigate("/shop")}> Continue Shopping </button>
-          <button
-            onClick={() => {
-              checkout();
-              navigate("/checkout");
-            }}
-          >
-            {" "}
-            Checkout{" "}
-          </button>
-        </div>
-      ) : (
-        <h1> Your Shopping Cart is Empty</h1>
-      )} 
-    </div>
-  );
-};
 
-
-=======
       <h1>Pending Packages</h1>
       {isLoading ? (
         <p>Loading...</p>
@@ -185,4 +141,3 @@ export const Cart = () => {
     </div>
   );
 };
->>>>>>> 21bb33f19af6b52fd75077d8ffe2668c4a1cbdfd
