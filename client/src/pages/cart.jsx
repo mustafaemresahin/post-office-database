@@ -93,7 +93,6 @@ export const Cart = () => {
           <div>Your Shopping Cart is Empty.</div>
         )}
       </div>
-
       <h1>Pending Packages</h1>
       {isLoading ? (
         <p>Loading...</p>
