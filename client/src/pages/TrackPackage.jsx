@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import '../css/register.css';
 import '../css/tracking.css';
 import { useNavigate } from 'react-router-dom'; 
@@ -49,17 +49,19 @@ const TrackingForm = () => {
             <h2>Package Tracking Form</h2>
             <form onSubmit={handleSubmit}>
               <div>
-                <label htmlFor="trackingNumber">Tracking Number (in.):</label>
+                <label htmlFor="trackingNumber">Tracking Number:</label>
                 <input
-                  type="number"
+                  type="text"
                   id="trackingNumber"
                   name="trackingNumber"
                   value={trackingNumber.trackingNumber}
                   onChange={handleChange}
                   required
+                  maxLength="16"
+                  pattern="[0-9a-f]{16}"
                 />
               </div>
-              <button type="submit">
+              <button type="submit" disabled={trackingNumber.trackingNumber.length !== 16 || !/^[0-9a-f]{16}$/.test(trackingNumber.trackingNumber)}>
                 Track Package
               </button>
             </form>
