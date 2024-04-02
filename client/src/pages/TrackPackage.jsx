@@ -25,6 +25,8 @@ const TrackingForm = () => {
           const foundPackage = response.data.find(pkg => pkg.TrackingID === userPackageId); // Find the package by trackingID
           if (!foundPackage) {
             console.log('No packages that correspond to that tracking number');
+            statusRef.current = 'No record found';
+            setTrackingNumber({ ...trackingNumber });
           }
           else{
             const { status, location, description, estimatedDelivery } = foundPackage;
@@ -61,23 +63,24 @@ const TrackingForm = () => {
                   pattern="[0-9a-f]{16}"
                 />
               </div>
-              <button type="submit" disabled={trackingNumber.trackingNumber.length !== 16 || !/^[0-9a-f]{16}$/.test(trackingNumber.trackingNumber)}>
+              <button type="submit"> 
                 Track Package
               </button>
             </form>
             {/* Conditionally render the message or package details */}
-            {statusRef.current === 'No record found' ? (
-              <p>Tracking ID does not exist in our system.</p>
-            ) : (
-              statusRef.current && (
-                <div>
-                  <p>Package Status: {statusRef.current}</p>
-                  <p>Location: {locationRef.current}</p>
-                  <p>Description: {descriptionRef.current}</p>
-                  <p>Estimated Delivery: {estDeliveryRef.current}</p>
-                </div>
-              )
-            )}
+              {statusRef.current && (
+              statusRef.current === 'No record found' ? (
+                <p>Tracking ID does not exist in our system.</p>
+              ) : (
+                trackingNumber.trackingNumber && (
+                  <div>
+                    <p>Package Status: {statusRef.current}</p>
+                    <p>Location: {locationRef.current}</p>
+                    <p>Description: {descriptionRef.current}</p>
+                    <p>Estimated Delivery: {estDeliveryRef.current}</p>
+                  </div>
+                )
+              ))}
           </div>
         </div>
       </div> 
