@@ -35,12 +35,6 @@ function Sidebar({ openSidebarToggle, OpenSidebar }) {
 
   return (
     <aside id="sidebar" className={openSidebarToggle ? "sidebar-responsive" : ""}>
-      <div className='sidebar-title'>
-        <div className='sidebar-brand'>
-         <Link to="/shop">Shop</Link>
-        </div>
-        <span className='icon close_icon' onClick={OpenSidebar}>X</span>
-      </div>
 
       <ul className='sidebar-list'>
         <li className='sidebar-list-item'>
@@ -87,7 +81,7 @@ function Home() {
   return (
     <main className='main-container'>
       <div className='main-title'>
-        <h3>DASHBOARD</h3>
+        <h3 className='header-dashboard'>DASHBOARD</h3>
       </div>
 
       <div className='main-cards'>
