@@ -160,6 +160,24 @@ const server = http.createServer( async (req, res) => {
       );
       return;
     }
+    else if (req.url === "/api/trackpackages") 
+    {
+      db.query(
+        "SELECT * FROM trackinghistory",
+        (error, result) => {
+          if (error) {
+            res.writeHead(500, { "Content-Type": "application/json" });
+            res.end(JSON.stringify({ error: error }));
+            return;
+          } else {
+             res.writeHead(200, { "Content-Type": "application/json" });
+            res.end(JSON.stringify(result));
+            return;
+          }
+        }
+      );
+      return;
+    }
     // Get ALL packages
     else if (req.url === "/api/package") 
     {
