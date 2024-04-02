@@ -852,7 +852,7 @@ const server = http.createServer( async (req, res) => {
           }
         );
       });
-    }  
+    // }  
   }
   else if(req.method === "DELETE") {
     const reqURL = url.parse(req.url, true);
