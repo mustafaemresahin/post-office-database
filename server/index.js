@@ -99,26 +99,26 @@ const server = http.createServer( async (req, res) => {
   handleCors(req, res);
 
   //cart-items
-  if (req.url === '/api/cart-item'){ 
-    let cartItems = [];
-    if(req.method === 'POST') {
-    let body = '';
-    req.on('data', chunk => body += chunk.toString());
+//   if (req.url === '/api/cart-item'){ 
+//     let cartItems = [];
+//     if(req.method === 'POST') {
+//     let body = '';
+//     req.on('data', chunk => body += chunk.toString());
 
-    req.on('end', () => {
-      const item = JSON.parse(body);
-      cartItems.push(item);
+//     req.on('end', () => {
+//       const item = JSON.parse(body);
+//       cartItems.push(item);
 
-      res.writeHead(201, { 'Content-Type': 'application/json' });
-      res.end(JSON.stringify({ message: 'Item added' }));
-    });
-  }
-  // Route to fetch cart items
-  else if (req.method === 'GET') {
-    res.writeHead(200, { 'Content-Type': 'application/json' });
-    res.end(JSON.stringify(cartItems));
-  }
-}
+//       res.writeHead(201, { 'Content-Type': 'application/json' });
+//       res.end(JSON.stringify({ message: 'Item added' }));
+//     });
+//   }
+//   // Route to fetch cart items
+//   else if (req.method === 'GET') {
+//     res.writeHead(200, { 'Content-Type': 'application/json' });
+//     res.end(JSON.stringify(cartItems));
+//   }
+// }
 
 
   // GET Requests 
@@ -655,6 +655,7 @@ const server = http.createServer( async (req, res) => {
             }
 
             // Fetch the CartID for the authenticated user
+
             const cartQuery = 'SELECT CartID FROM customer_user WHERE UserID = ?';
             const cartResult = await db.queryAsync(cartQuery, [SenderID]);
             if (cartResult.length === 0) {
@@ -667,44 +668,36 @@ const server = http.createServer( async (req, res) => {
             // Fetch cart items, calculate total, etc.
             const cartItemsQuery = 'SELECT * FROM cart_items WHERE CartID = ?';
             const cartItems = await db.queryAsync(cartItemsQuery, [cartId]);
-            const ItemId = cartItems.CartItemID;
-            const Quantity =  cartItems.Quantity;
 
-
-
-            const totalCost = await processCheckout(cartItems, SenderID, cartId);
-            const transactionID = uuidv4().substring(0,20);
-            const currentDate = new Date();
-            const formattedDate = currentDate.toISOString().slice(0, 19).replace('T', ' ');
            
 
             // Here, insert logic to process cart items, calculate totals, check stock, and so on
-            async function processCheckout(cartItems, SenderID, cartId) {
+            async function processCheckout(cartItems) {
               let totalCost = 0.0;
               const stockUpdates = [];
           
               // Iterate over each item in the cart to calculate total and check stock
               for (const item of cartItems) {
                 console.log(`Item ID: ${item.CartItemID}, Quantity: ${item.Quantity}`);
-                  const productQuery = 'SELECT Inventory FROM storeitem WHERE ItemID = ?';
-                  const product = await db.queryAsync(productQuery, [item.CartItemID]);
+                  const productQuery = 'SELECT * FROM storeitem WHERE ItemID = ?';
+                  const product = await db.queryAsync(productQuery, [item.StoreItemID]);
                   console.log(product[0].Cost);
 
                   if (product.length === 0) {
-                      throw new Error(`Product with ID ${item.CartItemID} not found`);
+                      throw new Error(`Product with ID ${item.StoreItemID} not found`);
                   }
 
           
                   if (product[0].Inventory < item.Quantity) {
-                      throw new Error(`Insufficient stock for product ID ${item.CartItemID}`);
+                      throw new Error(`Insufficient stock for product ID ${item.StoreItemID}`);
                   }
-                  console.log(item.Quantity);
+                  console.log(item);
           
                   // Calculate total cost
-                  totalCost += product[0].Cost * item.Quantity;
+                  totalCost += parseFloat(product[0].Cost) * parseInt(item.Quantity);
 
                   stockUpdates.push({
-                      ProductID: item.CartItemID,
+                      ProductID: item.StoreItemID,
                       NewStock: product[0].Inventory - item.Quantity,
                   });
               }
@@ -718,12 +711,17 @@ const server = http.createServer( async (req, res) => {
           
               return totalCost; // Return total cost for further processing or response
           }
+
+          const total= await processCheckout(cartItems);
+          const transactionID = uuidv4().substring(0,20);
+          const currentDate = new Date();
+          const formattedDate = currentDate.toISOString().slice(0, 19).replace('T', ' ');
           
 
             //  insert a transaction record 
 
             const transactionQuery = 'INSERT INTO transaction (TransactionID, CartID, TransactionDate, TotalAmount, TransactionType) VALUES (?, ?, ?, ?, ?)';
-            await db.queryAsync(transactionQuery, [transactionID, cartId, formattedDate, totalCost, "Payment"] );
+            await db.queryAsync(transactionQuery, [transactionID, cartId, formattedDate, total, "Payment"] );
 
             // Respond to the client
             res.writeHead(200, { 'Content-Type': 'application/json' });
