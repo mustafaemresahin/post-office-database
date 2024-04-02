@@ -191,6 +191,24 @@ const server = http.createServer( async (req, res) => {
       );
       return;
     }
+    else if (req.url === "/api/trackpackages") 
+    {
+      db.query(
+        "SELECT * FROM trackinghistory",
+        (error, result) => {
+          if (error) {
+            res.writeHead(500, { "Content-Type": "application/json" });
+            res.end(JSON.stringify({ error: error }));
+            return;
+          } else {
+             res.writeHead(200, { "Content-Type": "application/json" });
+            res.end(JSON.stringify(result));
+            return;
+          }
+        }
+      );
+      return;
+    }
     // Get ALL packages
     else if (req.url === "/api/package") 
     {
@@ -268,6 +286,22 @@ const server = http.createServer( async (req, res) => {
     else if (req.url === "/api/cart_items") 
     {
       db.query("SELECT * FROM cart_items", 
+      (error, result) => {
+        if (error) {
+          res.writeHead(500, { "Content-Type": "application/json" });
+          res.end(JSON.stringify({ error: error }));
+          return;
+        } else {
+          res.writeHead(200, { "Content-Type": "application/json" });
+          res.end(JSON.stringify(result));
+          return;
+        }
+      });
+      return;
+    }
+    else if (req.url === "/api/storeitem") 
+    {
+      db.query("SELECT * FROM storeitem", 
       (error, result) => {
         if (error) {
           res.writeHead(500, { "Content-Type": "application/json" });
@@ -790,8 +824,36 @@ const server = http.createServer( async (req, res) => {
         );
       });
     }
+    else if(req.url === '/api/userNotifications') 
+    {
+      let data = "";
+      req.on("data", (chunk) => {
+          data += chunk;
+      });
+      req.on('end', () => 
+      {
+        const body = JSON.parse(data);
+        const userID = body.userID;
+        const notification_id = uuidv4().substring(0, 20);
+        const message = body.message;
 
-  // }
+        db.query(
+          "INSERT INTO notifications (notification_id, userID, message) VALUES (?, ?, ?)",
+          [notification_id, userID, message],
+          (error) => 
+          {
+            if (error) {
+              res.writeHead(500, {"Content-Type": "application/json"});
+              res.end(JSON.stringify({error: "message error"}));
+            } else {
+              res.writeHead(200, {"Content-Type": "application/json"});
+              res.end(JSON.stringify({ message: "message has been stored successfully" }));
+            }
+          }
+        );
+      });
+    }  
+  }
   else if(req.method === "DELETE") {
     const reqURL = url.parse(req.url, true);
     const pathSegments = reqURL.pathname.split("/");
