@@ -90,7 +90,6 @@ export const Cart = () => {
           return null;
         })}
       </div>
-
       <h1>Pending Packages</h1>
       {isLoading ? (
         <p>Loading...</p>
