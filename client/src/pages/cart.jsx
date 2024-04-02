@@ -82,16 +82,13 @@ export const Cart = () => {
         <h1 className="cartHeader">Your Cart Items</h1>
       </div>
       <div>
-        {PRODUCTS.some(product => cartItems[product.id] !== 0) ? (
-          PRODUCTS.map(product => {
-            if (cartItems[product.id] !== 0) {
-              return <CartItem key={product.id} data={product} />;
-            }
-            return null;
-          })
-        ) : (
-          <div>Your Shopping Cart is Empty.</div>
-        )}
+        {Object.keys(cartItems).map(itemId => {
+          const product = PRODUCTS.find(product => product.id === parseInt(itemId));
+          if (product && cartItems[itemId] > 0) {
+            return <CartItem key={product.id} data={product} />;
+          }
+          return null;
+        })}
       </div>
       <h1>Pending Packages</h1>
       {isLoading ? (

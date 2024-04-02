@@ -1,18 +1,22 @@
-import React, { createContext, useState } from "react";
+import React, { createContext, useState, useEffect } from "react";
 import { PRODUCTS } from "../products";
 
 export const ShopContext = createContext(null);
 
 const getDefaultCart = () => {
   let cart = {};
-  for (let i = 1; i < PRODUCTS.length + 1; i++) {
-    cart[i] = 0;
-  }
+  PRODUCTS.forEach(product => {
+    cart[product.id] = 0;
+  });
   return cart;
 };
 
 export const ShopContextProvider = (props) => {
   const [cartItems, setCartItems] = useState(getDefaultCart());
+
+  useEffect(() => {
+    console.log("Cart Items Updated:", cartItems);
+  }, [cartItems]);
 
   const getTotalCartAmount = () => {
     let totalAmount = 0;
@@ -26,19 +30,33 @@ export const ShopContextProvider = (props) => {
   };
 
   const addToCart = (itemId) => {
-    setCartItems((prev) => ({ ...prev, [itemId]: prev[itemId] + 1 }));
+    console.log("Adding item to cart. Item ID:", itemId);
+    setCartItems((prev) => {
+      const updatedCart = { ...prev, [itemId]: (prev[itemId] || 0) + 1 };
+      console.log("Item Added to Cart:", itemId, "Updated Cart:", updatedCart);
+      return updatedCart;
+    });
   };
 
   const removeFromCart = (itemId) => {
-    setCartItems((prev) => ({ ...prev, [itemId]: prev[itemId] - 1 }));
+    setCartItems((prev) => {
+      const updatedCart = { ...prev, [itemId]: Math.max((prev[itemId] || 0) - 1, 0) };
+      console.log("Item Removed from Cart:", itemId, "Updated Cart:", updatedCart);
+      return updatedCart;
+    });
   };
 
   const updateCartItemCount = (newAmount, itemId) => {
-    setCartItems((prev) => ({ ...prev, [itemId]: newAmount }));
+    setCartItems((prev) => {
+      const updatedCart = { ...prev, [itemId]: Math.max(newAmount, 0) };
+      console.log("Cart Item Count Updated:", itemId, "New Amount:", newAmount, "Updated Cart:", updatedCart);
+      return updatedCart;
+    });
   };
 
   const checkout = () => {
     setCartItems(getDefaultCart());
+    console.log("Cart Items Cleared - Checkout Complete");
   };
 
   const contextValue = {
