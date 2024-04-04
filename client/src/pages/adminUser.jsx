@@ -1,12 +1,11 @@
 import axios from 'axios'
 import React, { useEffect, useState } from 'react'
 import '../css/adminUser.css';
-import {useNavigate} from 'react-router-dom';
+
 
 
 function AdminUser() {
     const [data, setData] = useState([])
-    const [userId, setUserId] = useState(null);
 
     // useEffect(() => {
     //     axios.get('/api/users')
@@ -28,58 +27,69 @@ function AdminUser() {
     }, []);
 
     
-    const [addFormData, setAddFormData] = useState({
-        firstname: '',
-        lastname: '',
-        email: '',
-        username: '',
-        password: '',
-        address: '',
-        phoneNumber: ''
-    })
+    // const [addFormData, setAddFormData] = useState({
+    //     firstname: '',
+    //     lastname: '',
+    //     email: '',
+    //     username: '',
+    //     password: '',
+    //     address: '',
+    //     phoneNumber: ''
+    // })
 
-const handleAddChange = (event) => {
-    const { name, value } = event.target;
-    setAddFormData(prevState => ({
-      ...prevState,
-      [name]: value,
-    }));
-  };
+// const handleAddChange = (event) => {
+//     const { name, value } = event.target;
+//     setAddFormData(prevState => ({
+//       ...prevState,
+//       [name]: value,
+//     }));
+//   };
 
-const navigate = useNavigate();
 
-const handleAddSubmit = async (event) => {
-    event.preventDefault();
-    try {
-        const response = await axios.post('/api/adminAdd',  JSON.stringify(addFormData));
-        console.log('Added Users successful:', response.data);
-        navigate('/login');
-      } catch (error) {
-        console.error('Added Users failed:', error);
-      }
-    };
+// const handleAddSubmit = async (event) => {
+//     event.preventDefault();
+//     try {
+//         const response = await axios.post('/api/adminAdd',  JSON.stringify(addFormData));
+//         console.log('Added Users successful:', response.data);
+//         navigate('/login');
+//       } catch (error) {
+//         console.error('Added Users failed:', error);
+//       }
+//     };
 
-    const updateUser = async () => {
-      axios.put("/api/users/" + userId)
-      .then((response) => {
-          console.log(response);
-          window.location.reload();
-      }).catch((error) => {
-          console.log(error);
-      });
-  };
+//     const updateUser = async () => {
+//       axios.put("/api/users/" + userId)
+//       .then((response) => {
+//           console.log(response);
+//           window.location.reload();
+//       }).catch((error) => {
+//           console.log(error);
+//       });
+//   };
 
     // Delete A User
-    const deleteUser = async (UserID) => {
-        axios.delete('/api/users/' + UserID)
-        .then((response) => {
-            console.log(response);
-            window.location.reload();
-            navigate("/profile");
-        }).catch((error) => {
-            console.log(error)
-        })
-    };
+    // const deleteUser = async (UserID) => {
+    //     axios.delete('/api/users/' + UserID)
+    //     .then((response) => {
+    //         console.log(response);
+    //         window.location.reload();
+    //         navigate("/profile");
+    //     }).catch((error) => {
+    //         console.log(error)
+    //     })
+    // };
+
+    // const handleDeleteUser = async (userId) => {
+    //   try {
+    //     // Send DELETE request to delete the vehicle with the specified ID
+    //     await axios.delete(`/api/userdelete/${userId}`);
+    //     // Refresh list after deletion
+    //     const updatedUsers = data.filter(data => data.UserID !== userId);
+    //     setData(updatedUsers);
+    //   } catch (error) {
+    //     console.error('Error user vehicle:', error);
+    //   }
+    // };
 
     return (
         <div className="user-container">
@@ -97,7 +107,7 @@ const handleAddSubmit = async (event) => {
                         <th className="user-th">Address</th>
                         <th className="user-th">Phone Number</th>
                         <th className="user-th">Role</th>
-                        <th className="user-th">Action</th>
+                        {/* <th className="user-th">Action</th> */}
                     </tr>
                 </thead>
                 <tbody>
@@ -112,19 +122,15 @@ const handleAddSubmit = async (event) => {
                                 <td>{user.address}</td>
                                 <td>{user.phonenumber}</td>
                                 <td>{user.role}</td>
-                                <td>
-                                 <button className='btnedit'>Read</button>
-                                    <button onClick={() => updateUser(user.UserID) }className='btnedit'>Edit</button>
-                                    <button onClick={() => {
-                                            deleteUser(user.UserID)}
-                                        } className="btn-delete"> Delete </button>
-                                </td>
+                                {/* <td>
+                                <button onClick={() => handleDeleteUser(user.UserID)}>Delete</button>                               
+                                </td> */}
                             </tr>
                         )
                     })}
                 </tbody>
             </table>
-            <h2>Add new user</h2>
+            {/* <h2>Add new user</h2>
             <form onSubmit={handleAddSubmit}>
 
             <div>
@@ -205,7 +211,7 @@ const handleAddSubmit = async (event) => {
               />
             </div>
                 <button type="submit">Add</button>
-            </form>
+            </form> */}
         </div>
     )
 }

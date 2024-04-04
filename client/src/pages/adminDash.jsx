@@ -58,8 +58,8 @@ function Sidebar({ openSidebarToggle, OpenSidebar }) {
           </a>
         </li>
         <li className='sidebar-list-item'>
-          <a href="/inventory">
-            Inventory
+          <a href="/adminStoreItems">
+            Items
           </a>
         </li>
         <li className='sidebar-list-item'>
