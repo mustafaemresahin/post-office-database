@@ -58,6 +58,16 @@ function Sidebar({ openSidebarToggle, OpenSidebar }) {
           </a>
         </li>
         <li className='sidebar-list-item'>
+          <a href="/employees">
+            Employees
+          </a>
+        </li>
+        <li className='sidebar-list-item'>
+          <a href="/employees">
+            Employees
+          </a>
+        </li>
+        <li className='sidebar-list-item'>
           <a href="/adminStoreItems">
             Items
           </a>

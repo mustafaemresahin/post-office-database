@@ -159,7 +159,7 @@ const server = http.createServer( async (req, res) => {
     // Get all Employees
     else if (req.url === "/api/employees") 
     {
-      db.query("SELECT * FROM employees", (error, result) => {
+      db.query("SELECT * FROM employee", (error, result) => {
         if (error) {
           res.writeHead(500, { "Content-Type": "application/json" });
           res.end(JSON.stringify({ error: error }));
