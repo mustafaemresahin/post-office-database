@@ -27,6 +27,7 @@ const EmployeeList = () => {
               <tr className='table-header'>
                 <th className='header-item'>EmployeeID</th>
                 <th className='header-item'>First Name</th>
+                <th className='header-item'>Middle Init</th>
                 <th className='header-item'>Last Name</th>
                 <th className='header-item'>SSN</th>
                 <th className='header-item'>Phone Number</th>
@@ -35,6 +36,10 @@ const EmployeeList = () => {
                 <th className='header-item'>Sex</th>
                 <th className='header-item'>Salary</th>
                 <th className='header-item'>Role</th>
+                <th className='header-item'>Department ID</th>
+                <th className='header-item'>Hire Date</th>
+                <th className='header-item'>DOB</th>
+                <th className='header-item'>Schedule</th>
               </tr>
             </thead>
             <tbody>
@@ -43,6 +48,7 @@ const EmployeeList = () => {
                 <tr key={employee.EmployeeID} className="table-row">
                     <td className='row-item'>{employee.EmployeeID}</td>
                     <td className='row-item'>{employee.Fname}</td>
+                    <td className='row-item'>{employee.Minit}</td>
                     <td className='row-item'>{employee.Lname}</td>
                     <td className='row-item'>{employee.Ssn}</td>
                     <td className='row-item'>{employee.Phone}</td>
@@ -51,6 +57,10 @@ const EmployeeList = () => {
                     <td className='row-item'>{employee.Sex}</td>
                     <td className='row-item'>{employee.Salary}</td>
                     <td className='row-item'>{employee.role}</td>
+                    <td className='row-item'>{employee.DepartmentID}</td>
+                    <td className='row-item'>{new Date(employee.HireDate).toLocaleDateString("en-US")}</td>
+                    <td className='row-item'>{new Date(employee.Dob).toLocaleDateString("en-US")}</td>
+                    <td className='row-item'>{employee.Schedule}</td>
                 </tr>
               )
           

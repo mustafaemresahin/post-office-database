@@ -25,7 +25,6 @@ import EmployeeList from './pages/employeeList';
 
 import AdminStoreItems from './pages/adminStoreItems';
 import Notification from './pages/notification';
-import EmployeeList from './pages/employeeList';
 
 
 const App = () => {

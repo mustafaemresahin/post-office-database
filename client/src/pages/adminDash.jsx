@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import '../css/adminDash.css';
-import { Link } from "react-router-dom"
 
 
 
@@ -55,6 +54,11 @@ function Sidebar({ openSidebarToggle, OpenSidebar }) {
         <li className='sidebar-list-item'>
           <a href="/adminUser">
             Customers
+          </a>
+        </li>
+        <li className='sidebar-list-item'>
+          <a href="/employees">
+            Employees
           </a>
         </li>
         <li className='sidebar-list-item'>
