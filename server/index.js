@@ -249,22 +249,21 @@ const server = http.createServer( async (req, res) => {
     }
 
     // get ALL vehicles
-  else if (req.url === "/api/vehiclelist") {
-    db.query(
-    "SELECT * FROM vehicles",
-    (error, result) => {
-      if (error) {
-        res.writeHead(500, { "Content-Type": "application/json" });
-        res.end(JSON.stringify({ error: error }));
-        return;
-      } else {
-        res.writeHead(200, { "Content-Type": "application/json" });
-        res.end(JSON.stringify(result));
-        return;
-      }
-    }
-  );
-}
+    else if (req.url === "/api/vehiclelist") {
+      db.query(
+        "SELECT * FROM vehicles",
+        (error, result) => {
+           if (error) {
+            res.writeHead(500, { "Content-Type": "application/json" });
+            res.end(JSON.stringify({ error: error }));
+            return;
+          } else {
+            res.writeHead(200, { "Content-Type": "application/json" });
+            res.end(JSON.stringify(result));
+            return;
+           }
+          });
+        }
 
     else if (req.url === "/api/vehiclelist") {
       db.query(
@@ -331,6 +330,22 @@ const server = http.createServer( async (req, res) => {
         }
       );
       return;
+    }
+    else if(req.url === "/api/notify") {
+      db.query(
+        "SELECT * FROM notifications as n, customer_user as c WHERE n.userID = c.UserID" ,
+        (error, result) => {
+          if (error) {
+            res.writeHead(500, { "Content-Type": "application/json" });
+            res.end(JSON.stringify({ error: error }));
+            return;
+          } else {
+            res.writeHead(200, { "Content-Type": "application/json" });
+            res.end(JSON.stringify(result));
+            return;
+          }
+        }
+      );
     }
   }
   else if (req.method === "PUT") {

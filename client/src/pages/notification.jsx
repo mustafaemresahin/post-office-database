@@ -1,7 +1,25 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
+import axios from 'axios';
 import '../css/notification.css';
 
 function Notification() {
+    const [notify, setNotify] = useState([])
+
+
+    useEffect(() => {
+        const fetchPackage = async () => {
+          try {
+            const response = await axios.get('/api/notify');
+            setNotify(response.data);
+          } catch (error) {
+            console.error('Notify error:', error);
+          }
+        };
+    
+        fetchPackage();
+      }, []);
+    
+
   
   return (
     <div class='notification-page'>
@@ -15,8 +33,19 @@ function Notification() {
                  <main class="notification-card">
                     <div class="description-notify">
                         <p> Your Package has arrived </p>
-                    </div>
-                 </main>
+                        <tbody>
+                             {notify && notify.map((notify) => {
+                                 return (
+                                     <tr key={notify.userID} className="notify-tr">
+                                          <td>{notify.notification_id}</td> 
+                                          <td>{notify.userID}</td>
+                                          <td class="notify-td">{notify.message}</td>
+                                          <td class="notify-td">{notify.timestamp}</td>
+                                           </tr>
+                                           ) })}
+                                           </tbody>
+                                           </div>
+                                           </main>
             </div>
         </div>
     </div>
