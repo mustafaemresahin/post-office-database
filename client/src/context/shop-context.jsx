@@ -3,12 +3,49 @@ import { PRODUCTS } from "../products";
 
 export const ShopContext = createContext(null);
 
+/*
 const getDefaultCart = () => {
+  const id = localStorage.getItem('id');
+  const cartid = localStorage.getItem('cart');
+  
   let cart = {};
   PRODUCTS.forEach(product => {
     cart[product.id] = 0;
   });
   return cart;
+};
+*/
+const getDefaultCart = async () => {
+  const id = localStorage.getItem('id');
+  const cartId = localStorage.getItem('cartId');
+
+  // Check if both id and cartId are available before making API call
+  if (!id || !cartId) {
+    return {}; // Return an empty cart if credentials are missing
+  }
+
+  try {
+    const response = await axios.get('/api/cart_items'); // Replace with your actual API endpoint
+    const cartItems = response.data.items || []; // Handle potential missing items data
+
+    // Filter cart items based on user ID
+    const filteredCartItems = cartItems.filter(item => item.userId === id);
+
+    // Create a cart object with quantities for each product
+    let cart = {};
+    PRODUCTS.forEach(product => {
+      cart[product.id] = 0;
+      const matchingItem = filteredCartItems.find(cartItem => cartItem.productId === product.id);
+      if (matchingItem) {
+        cart[product.id] = matchingItem.quantity;
+      }
+    });
+
+    return cart;
+  } catch (error) {
+    console.error("Error fetching cart:", error);
+    return {}; // Return an empty cart on error
+  }
 };
 
 export const ShopContextProvider = (props) => {

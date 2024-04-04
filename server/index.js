@@ -21,6 +21,7 @@ const generateToken = (user) => {
       id: user.id,
       username: user.username,
       email: user.email,
+      cart: user.CartID
     },
     'postofficeproject',
     {
@@ -97,28 +98,6 @@ const serveFile = (filePath, contentType, response) => {
 const server = http.createServer( async (req, res) => {
   // Handle Cors Function To Allow Axios
   handleCors(req, res);
-
-  //cart-items
-  if (req.url === '/api/cart-item'){ 
-    let cartItems = [];
-    if(req.method === 'POST') {
-    let body = '';
-    req.on('data', chunk => body += chunk.toString());
-
-    req.on('end', () => {
-      const item = JSON.parse(body);
-      cartItems.push(item);
-
-      res.writeHead(201, { 'Content-Type': 'application/json' });
-      res.end(JSON.stringify({ message: 'Item added' }));
-    });
-  }
-  // Route to fetch cart items
-  else if (req.method === 'GET') {
-    res.writeHead(200, { 'Content-Type': 'application/json' });
-    res.end(JSON.stringify(cartItems));
-  }
-}
 
 
   // GET Requests 
@@ -578,6 +557,7 @@ const server = http.createServer( async (req, res) => {
                       username: user.CustomerUser,
                       email: user.Email,
                       role: userRole,
+                      cart: user.CartID,
                       token: token
                     }));
                     return;
@@ -600,6 +580,29 @@ const server = http.createServer( async (req, res) => {
         return;
       });
     }
+    /*
+    else if (req.url === '/api/cart-item')
+    {
+      let data = "";
+      req.on("data", (chunk) => {
+        data += chunk;
+      });
+      req.on("end", () => {
+        const body = JSON.parse(data);
+        const id = body.id;
+        const productName = body.productName;
+        const price = body.price;
+        const productImage = body.productImage;
+
+        db.query(
+          "INSERT INTO cart_items (CartItemID, CartID, StoreItemID, PackageID, Quantity) VALUES (?, ?, ?, ?, ?)",
+          [CartIt] 
+        );
+
+      });
+    }
+    */
+    // Route to fetch cart items
     else if (req.url === "/api/sentPackages") {
       let data = "";
       req.on("data", (chunk) => {
