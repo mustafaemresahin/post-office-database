@@ -6,9 +6,6 @@ import { CartItem } from "./cart-item";
 import { useNavigate } from "react-router-dom";
 import axios from 'axios';
 import _ from 'lodash';
-
-
-
 import "../css/cart.css";
 
 export const Cart = () => {

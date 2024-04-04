@@ -333,7 +333,7 @@ const server = http.createServer( async (req, res) => {
     }
     else if(req.url === "/api/notify") {
       db.query(
-        "SELECT * FROM notifications as n, customer_user as c WHERE n.userID = c.UserID" ,
+        "SELECT * FROM notifications" ,
         (error, result) => {
           if (error) {
             res.writeHead(500, { "Content-Type": "application/json" });
