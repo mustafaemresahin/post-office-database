@@ -21,6 +21,7 @@ import ShippingForm from './pages/add-package';
 import AdminPack from './pages/adminPack';
 import VehiclesTable from './pages/VehicleList';
 import VehicleAdd from './pages/VehicleAdd';
+import VehicleEdit from './pages/VehicleEdit';
 
 const App = () => {
 
@@ -48,6 +49,8 @@ const App = () => {
           <Route path="/addvehicles" element={<VehicleAdd />} />
           <Route path="/adminPack" element={<AdminPack />} />
           <Route path="/adminUser" element={<AdminUser />} />
+          <Route path="/vehicleEdit" element={<VehicleEdit />} />
+
 
         </Routes>
         </ShopContextProvider>

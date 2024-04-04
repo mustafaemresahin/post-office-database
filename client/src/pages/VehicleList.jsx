@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import '../css/register.css';
 import '../css/vehicles.css';
 
 const VehiclesTable = () => {
   const [vehicles, setVehicles] = useState([]);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchVehicles = async () => {
@@ -20,7 +22,6 @@ const VehiclesTable = () => {
   }, []);
 
 
-  //done
   const handleDeleteVehicle = async (vehicleId) => {
     try {
       // Send DELETE request to delete the vehicle with the specified ID
@@ -30,6 +31,17 @@ const VehiclesTable = () => {
       setVehicles(updatedVehicles);
     } catch (error) {
       console.error('Error deleting vehicle:', error);
+    }
+  };
+
+  const handleEditVehicle = async (vehicleID) => {
+    try {
+      const response = await axios.put(`/api/vehicleEdit/${vehicleID}`);
+      console.log('Vehicle updated successfully:', response.data);
+      // Handle success, show notification, redirect, etc.
+    } catch (error) {
+      console.error('Failed to update vehicle:', error);
+      // Handle error, show error message, etc.
     }
   };
 
@@ -63,25 +75,12 @@ const VehiclesTable = () => {
                                 <td>{user.Unit}</td>
                                 <td>{user.EmployeeID}</td>
                                 <td>
-                                  {/*<button onClick={("/addvehicles")}>Add</button>*/}
-                                  <button>Edit </button>
+                                  <button onClick={() => navigate("/vehicleEdit")}>Edit </button>
                                   <button onClick={() => handleDeleteVehicle(user.VehicleID)}>Delete</button>                                </td>
                             </tr>
                         )
                     
                     })}
-            {/* {vehicles.map(vehicle => (
-              <React.Fragment key={vehicle.id}>
-                <tr onClick={() => toggleRowExpansion(vehicle.id)}>
-                  <td>{vehicle.id}</td>
-                  <td>Vehicle {vehicle.id}</td>
-                  <td>
-                    <button onClick={() => handleDeleteVehicle(vehicle.id)}>Delete</button>
-                  </td>
-                </tr>
-                {renderAdditionalInfo(vehicle)}
-              </React.Fragment>
-            ))} */}
           </tbody>
         </table>
       </div>

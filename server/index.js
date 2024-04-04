@@ -365,6 +365,39 @@ const server = http.createServer( async (req, res) => {
         )
       })
     }
+    else if (req.url.startsWith("/api/vehicleEdit/")) {
+      const parts = req.url.split('/');
+      const vehicleID = parts[parts.length - 1];
+    
+      let body = '';
+      req.on('data', (chunk) => {
+        body += chunk.toString();
+      });
+      req.on('end', () => {
+        const vehicle = JSON.parse(body);
+        const timestamp = new Date().toISOString().slice(0, 19).replace('T', ' ');
+        const location = vehicle.location;
+        const status = vehicle.status;
+        const unit = vehicle.unit;
+    
+        // Update the vehicle record
+        db.query(
+          "UPDATE vehicles SET Timestamp = ?, Location = ?, Status = ?, Unit = ? WHERE VehicleID = ?",
+          [timestamp, location, status, unit, vehicleID],
+          (updateError) => {
+            if (updateError) {
+              console.error('Update error:', updateError);
+              res.writeHead(500, { "Content-Type": "application/json" });
+              res.end(JSON.stringify({ error: 'Failed to update vehicle' }));
+              return;
+            }
+            
+            res.writeHead(200, { "Content-Type": "application/json" });
+            res.end(JSON.stringify({ message: 'Vehicle updated successfully' }));
+          }
+        );
+      });
+    }
   }
  
   else if (req.method === "POST") {
@@ -851,7 +884,6 @@ else if(req.url === '/api/userNotifications')
 }  
 
     }    
-    // API for adding a vehicle
     
   else if(req.method === "DELETE") {
     const reqURL = url.parse(req.url, true);
