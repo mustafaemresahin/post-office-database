@@ -1,13 +1,15 @@
 import React, { useContext, useEffect, useState } from "react";
+import { ShopContext } from "../context/shop-context";
 import '../css/checkout.css'; 
 import axios from 'axios';
-import { ShopContext } from "../context/shop-context";
 import { PRODUCTS } from "../products";
 import { CartItem } from "./cart-item";
 import { useNavigate } from "react-router-dom";
 import _ from 'lodash';
 
-function Checkout() {
+export const Checkout = () => {
+    const { cartItems, getTotalCartAmount, checkout, updateCartItemCount } = useContext(ShopContext);
+    const totalAmount = getTotalCartAmount();
     const [firstName, setFirstName] = useState('');
     const [lastName, setLastName] = useState(''); 
     const [email, setEmail] = useState(''); 
@@ -19,8 +21,6 @@ function Checkout() {
     const [expiration, setExpiration] = useState(''); 
     const [CVV, setCVV] = useState(''); 
     const [userId, setUserId] = useState(null);
-    const { cartItems, getTotalCartAmount, checkout } = useContext(ShopContext);
-    const totalAmount = getTotalCartAmount();
     const [unreceivedPackages, setUnreceivedPackages] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
 
@@ -30,6 +30,7 @@ function Checkout() {
 
 
     const handleSubmit = async (e) => {
+
         e.preventDefault();
 
 
@@ -37,7 +38,7 @@ function Checkout() {
             alert("Please fill out all required fields.");
             return;
         }
-        const Items = Object.entries(CartItem).map(([id, quantity]) => {
+        const Items = Object.entries(cartItems).map(([id, quantity]) => {
             // Assuming PRODUCTS is an array where each product has an `id` and a `price`
             const product = PRODUCTS.find(product => product.id.toString() === id);
             return {
@@ -93,6 +94,7 @@ function Checkout() {
     
 
     useEffect(() => {
+        
         const token = localStorage.getItem('token');
         const id = localStorage.getItem('id');
         if (!token) {
@@ -137,10 +139,11 @@ function Checkout() {
     }, [navigate]);
 
     return (
+        
 
     <div className="checkout-container">
+
         <h1>Checkout</h1>
-        {/* <form onSubmit={handleSubmit}> */}
         <div className="checkout-container-split">
             <div className="container-split">
                 <h2>Customer Info</h2>
@@ -198,58 +201,24 @@ function Checkout() {
              
 <div className='checkout-items'>
 
-    </div>            
-            {/*input form ends here */}
-            <div style={{ display: 'flex'}}>
-                <div className="cartItem">
-                    <div className="description">
-                    <div className="description">
-                        <p>Shopping Cart</p>
-                        {PRODUCTS.some(product => cartItems[product.id] !== 0) ? (
-                        PRODUCTS.map(product => {
-                            if (cartItems[product.id] !== 0) {
-                            return <CartItem key={product.id} data={product} />;
-                            }
-                            return null;
-                        })
-                        ) : (
-                        <p>Cart Empty</p>
-                        )}
-                        <p>Packages</p>
-                        {unreceivedPackages.length > 0 ? (
-                        <div className="pending-packages">
-                            <ul>
-                            {_.uniqBy(unreceivedPackages, 'PackageID').map((pendingpackage) => (
-                                <li key={pendingpackage.PackageID}> {/* Corrected key prop */}
-                                Package ID: {pendingpackage.PackageID},
-                                Cost: {pendingpackage.cost}
-                                </li>
-                            ))}
-                            </ul>
-                        </div>
-                        ) : (
-                        <p>No pending packages found.</p>
-                        )}
-                    </div>
-                    </div>
-                </div>
+
                 <div className="checkout-confirm">
                 <div className="confirm-header">Cart Totals</div>
-                {totalAmount > 0 || unreceivedPackages.length > 0 ? (
+                {/* {totalAmount > 0 || unreceivedPackages.length > 0 ? ( */}
                     <div className="checkout">
                     <p>Subtotal from cart: ${totalAmount} </p>
                     <p>Pending package fees: ${unreceivedPackages.reduce((sum, pendingpackage) => sum + parseFloat(pendingpackage.cost || 0), 0)}</p>
                     <p>Total: ${totalAmount + (unreceivedPackages.reduce((sum, pendingpackage) => sum + parseFloat(pendingpackage.cost || 0), 0))}</p>
-                    <button onClick={() => navigate("/shop")}> Continue Shopping </button>
+                    {/* <button onClick={() => navigate("/shop")}> Continue Shopping </button> */}
                     </div>
-                ) : (
-                    <h1> Your Shopping Cart is Empty</h1>
-                )}
-            <button onClick={handleSubmit}>Place order</button>
+                
+                    <button onClick={() => {
+                        checkout();
+                        handleSubmit(); }}> Place order </button>
+
                 </div>
             </div>
         </div>
 
     );
 };
-export default Checkout;

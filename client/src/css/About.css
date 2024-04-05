@@ -6,12 +6,6 @@
 
 
 .about-us-container {
-  /* position: relative; /* Enable positioning for the overlay */
-  /* width: 100%; 
-  height: 100%;
-  background-color: #f2f2f2; */ 
-
-
   margin: 35px;
   display: flex;
   flex-direction: column;
@@ -28,38 +22,36 @@
   left: 0;
   width: 100%;
   height: 100%;
-  object-fit: cover; /* Ensure image covers the entire container */
-  opacity: 0; /* Initially hide the image */
-  transition: opacity 0.5s ease-in-out; /* Add smooth transition */
+  object-fit: cover; 
+  opacity: 0; 
+  transition: opacity 0.5s ease-in-out; 
 }
 
 .background-image.loaded {
-  opacity: 1; /* Show the image once loaded */
+  opacity: 1; 
 }
 
 .loading-animation {
-  /* Styles for your loading animation (e.g., spinner, placeholder text) */
   position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  /* Adjust styles as needed for your chosen animation */
 }
 
 .featured-products-1{
   
   display: flex;
-  justify-content: center; /* Centers children horizontally */
-  align-items: center; /* Centers children vertically */
-  gap: 30px; /* Adjust the gap between items as necessary */
-  margin: 50px; /* Margin around the whole container */
+  justify-content: center; 
+  align-items: center; 
+  gap: 30px; 
+  margin: 50px; 
   padding:30px;
 
 }
 
 .image-holder-1{
 
-  flex: 1; /* Allows the image holder to grow and take up space */
+  flex: 1; 
   display: flex;
   order:1;
   flex-direction: column;
@@ -71,7 +63,7 @@
 
 .image-holder-2{
 
-  flex: 1; /* Allows the image holder to grow and take up space */
+  flex: 1; 
   display: flex;
   flex-direction: column;
   order: 2;
@@ -83,17 +75,17 @@
 
 .content-holder-1{
 
-  flex: 1; /* Allows the content holder to grow and take up space */
+  flex: 1; 
   display: flex;
   order: 2;
-  flex-direction: column; /* Stacks content vertically */
+  flex-direction: column;
 }
 
 
 .content-holder-2{
-  flex: 1; /* Allows the content holder to grow and take up space */
+  flex: 1; 
   display: flex;
-  flex-direction: column; /* Stacks content vertically */
+  flex-direction: column; 
   order: 1;
 }
 img{
@@ -119,10 +111,10 @@ img{
 .button-holder{
 
   display: flex;
-  justify-content: center; /* Centers children horizontally */
-  align-items: center; /* Centers children vertically */
-  gap: 30px; /* Adjust the gap between items as necessary */
-  margin: 50px; /* Margin around the whole container */
+  justify-content: center; 
+  align-items: center; 
+  gap: 30px; 
+  margin: 50px; 
 
 
 

@@ -55,7 +55,9 @@ export const ShopContextProvider = (props) => {
   };
 
   const checkout = () => {
+    console.log("Checkout function called from:", new Error().stack);
     setCartItems(getDefaultCart());
+    
     console.log("Cart Items Cleared - Checkout Complete");
   };
 

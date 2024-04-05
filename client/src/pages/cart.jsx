@@ -20,6 +20,7 @@ export const Cart = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
+    console.log(totalAmount);
     const token = localStorage.getItem('token');
     const id = localStorage.getItem('id');
     if (!token) {
@@ -70,6 +71,8 @@ export const Cart = () => {
     }
   };
 
+  
+
 
 
   console.log(unreceivedPackages);
@@ -78,6 +81,7 @@ export const Cart = () => {
 
   return (
     <div className="cart">
+
       <div>
         <h1 className="cartHeader">Your Cart Items</h1>
       </div>
@@ -123,7 +127,7 @@ export const Cart = () => {
                 <button onClick={() => navigate("/shop")}> Continue Shopping </button>
                 <button
                   onClick={() => {
-                    checkout();
+                    // checkout();
                     navigate("/checkout");
                   }}
                 >

@@ -10,10 +10,10 @@ import "./css/App.css";
 import ProfilePage from './pages/profile';
 import {Shop} from './pages/shop';
 import { Cart } from "./pages/cart";
+import {Checkout} from "./pages/checkout";
 import EditProfile from './pages/editprofile';
 import { ShopContextProvider } from "./context/shop-context";
 // import { AuthProvider } from './context/AuthContext'; // Import your AuthProvider
-import Checkout from './pages/checkout';
 import AdminDash from './pages/adminDash';
 import AdminUser from './pages/adminUser';
 import Employee from './pages/Employee';
@@ -39,7 +39,7 @@ const App = () => {
           <Route path="/track" element={<Track />} />
           <Route path="/Shop" element={<Shop />} />
           <Route path ="/Cart" element={<Cart />} />
-          <Route path="/checkout" element={<Checkout/>} />
+          <Route path="/checkout" element={<Checkout />} />
           <Route path="/editprofile" element={<EditProfile />} />
           <Route path="/adminDash" element={<AdminDash />} />
           <Route path="/Employee" element={<Employee />} />
