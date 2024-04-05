@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import axios from 'axios';
 import '../css/register.css';
 import '../css/vehicles.css';
@@ -84,6 +85,9 @@ const VehiclesTable = () => {
             ))} */}
           </tbody>
         </table>
+        <div className='add-vehicle-div'>
+          <Link to="/addvehicles" className="add-vehicle-link">Add Vehicle</Link>
+        </div>
       </div>
       </div>
     </div>
