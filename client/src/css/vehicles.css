@@ -29,3 +29,23 @@ th, td {
 th {
   background-color: #f2f2f2; /* Light gray background for table headers */
 }
+
+.add-vehicle-link {
+  display: inline-block;
+  background-color: #0d6efd; /* Green background to match the table header */
+  color: white; /* White text */
+  padding: 10px 20px;
+  margin: 20px 0;
+  border-radius: 5px; /* Rounded corners */
+  text-decoration: none; /* Removes underline */
+  font-weight: bold; /* Makes text bold */
+  transition: background-color 0.3s; /* Smooth background color transition on hover */
+}
+
+.add-vehicle-link:hover {
+  background-color: #0b5ed7; /* Darker green on hover */
+}
+
+.add-vehicle-div {
+  text-align: center;
+}

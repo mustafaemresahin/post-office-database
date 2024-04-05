@@ -6,13 +6,10 @@ import { CartItem } from "./cart-item";
 import { useNavigate } from "react-router-dom";
 import axios from 'axios';
 import _ from 'lodash';
-
-
-
 import "../css/cart.css";
 
 export const Cart = () => {
-  const { cartItems, getTotalCartAmount, checkout, updateCartItemCount } = useContext(ShopContext);
+  const { cartItems, getTotalCartAmount, checkout } = useContext(ShopContext);
   const totalAmount = getTotalCartAmount();
   const [unreceivedPackages, setUnreceivedPackages] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
