@@ -49,7 +49,7 @@ export const Cart = () => {
   
   const deleteCartItem = async (packageID) => {
     try {
-      const response = await axios.delete('/api/cart_item/delete/'+ packageID, {
+      const response = await axios.delete('/api/cart_item_package/delete/'+ packageID, {
         headers: {
           'Content-Type': 'application/json',
           // Include the token in the request if your API requires authentication
