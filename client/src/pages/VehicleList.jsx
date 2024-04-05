@@ -6,7 +6,7 @@ import '../css/vehicles.css';
 
 const VehiclesTable = () => {
   const [vehicles, setVehicles] = useState([]);
-  const navigate = useNavigate();
+  //const navigate = useNavigate();
 
   useEffect(() => {
     const fetchVehicles = async () => {
@@ -35,14 +35,7 @@ const VehiclesTable = () => {
   };
 
   const handleEditVehicle = async (vehicleID) => {
-    try {
-      const response = await axios.put(`/api/vehicleEdit/${vehicleID}`);
-      console.log('Vehicle updated successfully:', response.data);
-      // Handle success, show notification, redirect, etc.
-    } catch (error) {
-      console.error('Failed to update vehicle:', error);
-      // Handle error, show error message, etc.
-    }
+    //history.push(`/vehicleEdit/${vehicleID}`);
   };
 
   return (
@@ -75,7 +68,7 @@ const VehiclesTable = () => {
                                 <td>{user.Unit}</td>
                                 <td>{user.EmployeeID}</td>
                                 <td>
-                                  <button onClick={() => navigate("/vehicleEdit")}>Edit </button>
+                                  <button onClick={() => window.location.href=`/vehicleEdit/${user.VehicleID}`}>Edit</button>
                                   <button onClick={() => handleDeleteVehicle(user.VehicleID)}>Delete</button>                                </td>
                             </tr>
                         )

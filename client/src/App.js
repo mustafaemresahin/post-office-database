@@ -49,7 +49,7 @@ const App = () => {
           <Route path="/addvehicles" element={<VehicleAdd />} />
           <Route path="/adminPack" element={<AdminPack />} />
           <Route path="/adminUser" element={<AdminUser />} />
-          <Route path="/vehicleEdit" element={<VehicleEdit />} />
+          <Route path="/vehicleEdit:vehicleId" element={<VehicleEdit />} />
 
 
         </Routes>
