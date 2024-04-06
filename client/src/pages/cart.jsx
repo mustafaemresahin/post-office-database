@@ -67,27 +67,27 @@ export const Cart = () => {
     }
   };
 
-
-
-  console.log(unreceivedPackages);
-
-
-
   return (
     <div className="cart">
       <div>
         <h1 className="cartHeader">Your Cart Items</h1>
       </div>
       <div>
-        {Object.keys(cartItems).map(itemId => {
-          const product = PRODUCTS.find(product => product.id === parseInt(itemId));
-          if (product && cartItems[itemId] > 0) {
-            return <CartItem key={product.id} data={product} />;
-          }
-          return null;
-        })}
+        {Object.keys(cartItems).length > 0 ? (
+          // Only render cart items if there are items in the cart
+          Object.keys(cartItems).map((itemId) => {
+            const product = PRODUCTS.find(product => product.id === parseInt(itemId));
+            if (product) {
+              return <CartItem key={product.id} data={product} />;
+            }
+            // Handle cases where the product might not exist in PRODUCTS
+            return null;
+          })
+        ) : (
+          // Display message if the cart is empty
+          <p>No store items in cart</p>
+        )}
       </div>
-
       <h1>Pending Packages</h1>
       {isLoading ? (
         <p>Loading...</p>
@@ -121,7 +121,6 @@ export const Cart = () => {
                 <button onClick={() => navigate("/shop")}> Continue Shopping </button>
                 <button
                   onClick={() => {
-                    checkout();
                     navigate("/checkout");
                   }}
                 >
