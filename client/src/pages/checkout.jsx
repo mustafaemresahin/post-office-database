@@ -136,9 +136,6 @@ function Checkout() {
       setIsLoading(false);
   }, [navigate]);
 
-  console.log(cartItems);
-  console.log("products: ", PRODUCTS);
-
   return (
     <div className="checkout-container">
       <h1>Checkout</h1>
@@ -201,18 +198,23 @@ function Checkout() {
           <div className="cartItem">                
             <div className="description">
               <p>Shopping Cart</p>
-              {Object.keys(cartItems).length > 0 ? (
-                // Only render cart items if there are items in the cart
-                Object.keys(cartItems).map((itemId) => {
-                  const product = PRODUCTS.find(product => product.id === parseInt(itemId));
-                  if (product) {
-                    return <CartItem key={product.id} data={product} />;
-                  }
-                  // Handle cases where the product might not exist in PRODUCTS
-                  return null;
-                })
+              {Object.keys(cartItems).some(itemId => cartItems[itemId] > 0) ?(
+                <ul className="cart-item-list"> {/* Added unordered list with class */}
+                  {Object.keys(cartItems).map((itemId) => {
+                    const product = PRODUCTS.find(product => product.id === parseInt(itemId));
+                    if (product && cartItems[itemId] > 0) {
+                      return (
+                        <li key={product.id}> {/* Each item now within a list item */}
+                          {product.productName},
+                          quantity: {cartItems[itemId]}
+                        </li>
+                      );
+                    }
+                    // Handle cases where the product might not exist in PRODUCTS
+                    return null;
+                  })}
+                </ul>
               ) : (
-                // Display message if the cart is empty
                 <p>Cart Empty</p>
               )}
               <p>Packages</p>
