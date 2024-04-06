@@ -3,7 +3,7 @@ import '../css/checkout.css';
 import axios from 'axios';
 import { ShopContext } from "../context/shop-context";
 import { PRODUCTS } from "../products";
-import { CartItem } from "./cart-item";
+//import { CartItem } from "./cart-item";
 import { useNavigate } from "react-router-dom";
 import _ from 'lodash';
 
@@ -37,7 +37,7 @@ function Checkout() {
             alert("Please fill out all required fields.");
             return;
         }
-        const Items = Object.entries(CartItem).map(([id, quantity]) => {
+        const Items = Object.entries(cartItems).map(([id, quantity]) => {
             // Assuming PRODUCTS is an array where each product has an `id` and a `price`
             const product = PRODUCTS.find(product => product.id.toString() === id);
             return {
@@ -208,7 +208,7 @@ function Checkout() {
                         {PRODUCTS.some(product => cartItems[product.id] !== 0) ? (
                         PRODUCTS.map(product => {
                             if (cartItems[product.id] !== 0) {
-                            return <CartItem key={product.id} data={product} />;
+                            return <cartItems key={product.id} data={product} />;
                             }
                             return null;
                         })
