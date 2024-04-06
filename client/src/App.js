@@ -12,7 +12,6 @@ import {Shop} from './pages/shop';
 import { Cart } from "./pages/cart";
 import EditProfile from './pages/editprofile';
 import { ShopContextProvider } from "./context/shop-context";
-// import { AuthProvider } from './context/AuthContext'; // Import your AuthProvider
 import Checkout from './pages/checkout';
 import AdminDash from './pages/adminDash';
 import AdminUser from './pages/adminUser';
@@ -22,10 +21,10 @@ import AdminPack from './pages/adminPack';
 import VehiclesTable from './pages/VehicleList';
 import VehicleAdd from './pages/VehicleAdd';
 import EmployeeList from './pages/employeeList';
-
+import Reports from './pages/reports'
 import AdminStoreItems from './pages/adminStoreItems';
 import Notification from './pages/notification';
-
+import Employeesanddepartments from './pages/employeesanddepartments';
 
 const App = () => {
 
@@ -54,12 +53,10 @@ const App = () => {
           <Route path="/adminPack" element={<AdminPack />} />
           <Route path="/adminUser" element={<AdminUser />} />
           <Route path="/employees" element={<EmployeeList />} />
-
           <Route path="/adminStoreItems" element={<AdminStoreItems />} />
           <Route path="/notification" element={<Notification />} />
-          <Route path="/employees" element={<EmployeeList />} />
-
-
+          <Route path="/reports" element={<Reports />} />
+          <Route path="/employeesanddepartments" element={<Employeesanddepartments />} />
         </Routes>
         </ShopContextProvider>
       </div>      
