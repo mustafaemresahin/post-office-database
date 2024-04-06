@@ -67,17 +67,18 @@ export const Cart = () => {
     }
   };
 
+
   return (
     <div className="cart">
       <div>
         <h1 className="cartHeader">Your Cart Items</h1>
       </div>
       <div>
-        {Object.keys(cartItems).length > 0 ? (
+        {Object.keys(cartItems).some(itemId => cartItems[itemId] > 0) ? (
           // Only render cart items if there are items in the cart
           Object.keys(cartItems).map((itemId) => {
             const product = PRODUCTS.find(product => product.id === parseInt(itemId));
-            if (product) {
+            if (product && cartItems[itemId] > 0) {
               return <CartItem key={product.id} data={product} />;
             }
             // Handle cases where the product might not exist in PRODUCTS
