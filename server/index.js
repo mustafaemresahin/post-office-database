@@ -711,6 +711,38 @@ const server = http.createServer( async (req, res) => {
         }
       });
     }
+
+    else if (req.url === '/api/cart_items/update') {
+      let data = "";
+      req.on("data", (chunk) => {
+        data += chunk;
+      });
+      req.on('end', () => {
+        const body = JSON.parse(data);
+        const itemId = body.itemId;
+        const cartId = body.cartId;
+        const newQuantity = Math.max(newQuantity, 0); // Ensure quantity doesn't go below 0
+    
+        try {
+          // Update existing cart item quantity
+          db.query("UPDATE cart_items SET Quantity = ? WHERE StoreItemID = ? AND CartID = ?", [newQuantity, itemId, cartId], (updateError) => {
+            if (updateError) {
+              console.error("Error updating cart item quantity:", updateError);
+              res.writeHead(500, {"Content-Type": "application/json"});
+              res.end(JSON.stringify({ error: "Error updating cart item" })); // More specific error message can be provided
+            } else {
+              // Respond with success message
+              res.writeHead(200, {"Content-Type": "application/json"});
+              res.end(JSON.stringify({ success: true, message: "updated cart item count"})); 
+            }
+          });
+        } catch (error) {
+          console.error("Error updating cart item:", error);
+          res.writeHead(500, {"Content-Type": "application/json"});
+          res.end(JSON.stringify({ error: "Error updating cart item" })); // More specific error message can be provided
+        }
+      });
+    }
     
     else if (req.url === "/api/sentPackages") {
       let data = "";
