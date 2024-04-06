@@ -21,6 +21,7 @@ const generateToken = (user) => {
       id: user.id,
       username: user.username,
       email: user.email,
+      cart: user.cart
     },
     'postofficeproject',
     {
@@ -97,28 +98,6 @@ const serveFile = (filePath, contentType, response) => {
 const server = http.createServer( async (req, res) => {
   // Handle Cors Function To Allow Axios
   handleCors(req, res);
-
-  //cart-items
-  if (req.url === '/api/cart-item'){ 
-    let cartItems = [];
-    if(req.method === 'POST') {
-    let body = '';
-    req.on('data', chunk => body += chunk.toString());
-
-    req.on('end', () => {
-      const item = JSON.parse(body);
-      cartItems.push(item);
-
-      res.writeHead(201, { 'Content-Type': 'application/json' });
-      res.end(JSON.stringify({ message: 'Item added' }));
-    });
-  }
-  // Route to fetch cart items
-  else if (req.method === 'GET') {
-    res.writeHead(200, { 'Content-Type': 'application/json' });
-    res.end(JSON.stringify(cartItems));
-  }
-}
 
 
   // GET Requests 
@@ -248,12 +227,11 @@ const server = http.createServer( async (req, res) => {
       return;
     }
 
-    // get ALL vehicles
-    else if (req.url === "/api/vehiclelist") {
+    else if (req.url === "/api/employeesanddepartments"){
       db.query(
-        "SELECT * FROM vehicles",
+        "SELECT e.EmployeeID, e.Fname, e.Lname, e.Phone, e.Email, e.DepartmentID, d.Address as DepartmentAddress, d.OperatingHours FROM employee e JOIN deparments d ON e.DepartmentID = d.DeparmentsID;",
         (error, result) => {
-           if (error) {
+          if (error) {
             res.writeHead(500, { "Content-Type": "application/json" });
             res.end(JSON.stringify({ error: error }));
             return;
@@ -261,10 +239,13 @@ const server = http.createServer( async (req, res) => {
             res.writeHead(200, { "Content-Type": "application/json" });
             res.end(JSON.stringify(result));
             return;
-           }
-          });
+          }
         }
+      );
+      return;
+    }
 
+    // get ALL vehicles
     else if (req.url === "/api/vehiclelist") {
       db.query(
         "SELECT * FROM vehicles",
@@ -625,6 +606,7 @@ const server = http.createServer( async (req, res) => {
                       username: user.CustomerUser,
                       email: user.Email,
                       role: userRole,
+                      cart: user.CartID,
                       token: token
                     }));
                     return;
@@ -647,6 +629,155 @@ const server = http.createServer( async (req, res) => {
         return;
       });
     }
+    else if (req.url === '/api/cart_items/add') {
+      let data = "";
+      req.on("data", (chunk) => {
+        data += chunk;
+      });
+      req.on('end', () => {
+        const body = JSON.parse(data);
+        const itemId = body.itemId;
+        const cartId = body.cartId;
+        const quantity = body.quantity || 1; // Allow optional quantity in request
+    
+        try {
+          // Check for existing entry
+          db.query("SELECT * FROM cart_items WHERE StoreItemID = ? AND CartID = ?", [itemId, cartId], (error, results) => {
+            if (error) {
+              console.error("Error checking for existing item:", error);
+              res.writeHead(500, {"Content-Type": "application/json"});
+              res.end(JSON.stringify({ error: "Error adding/updating cart item" })); // More specific error message can be provided
+            } else if (results.length > 0) {
+              // Update quantity (existing item found)
+              const existingItem = results[0];
+              db.query("UPDATE cart_items SET Quantity = Quantity + ? WHERE CartItemID = ?", [quantity, existingItem.CartItemID], (updateError) => {
+                if (updateError) {
+                  console.error("Error updating cart item quantity:", updateError);
+                  res.writeHead(500, {"Content-Type": "application/json"});
+                  res.end(JSON.stringify({ error: "Error adding/updating cart item" })); // More specific error message can be provided
+                } else {
+                  res.writeHead(200, {"Content-Type": "application/json"});
+                  res.end(JSON.stringify({ success: true, message: "Item quantity updated in cart" }));
+                }
+              });
+            } else {
+              // Insert new entry (no existing item found)
+              const CartItemID = uuidv4().substring(0, 20);
+              db.query("INSERT INTO cart_items (CartItemID, CartID, StoreItemID, Quantity) VALUES (?, ?, ?, ?)", [CartItemID, cartId, itemId, quantity], (insertError) => {
+                if (insertError) {
+                  console.error("Error adding new item to cart:", insertError);
+                  res.writeHead(500, {"Content-Type": "application/json"});
+                  res.end(JSON.stringify({ error: "Error adding/updating cart item" })); // More specific error message can be provided
+                } else {
+                  res.writeHead(200, {"Content-Type": "application/json"});
+                  res.end(JSON.stringify({ success: true, message: "Item added to cart successfully" }));
+                }
+              });
+            }
+          });
+        } catch (error) {
+          console.error("Error adding/updating cart item:", error);
+          res.writeHead(500, {"Content-Type": "application/json"});
+          res.end(JSON.stringify({ error: "Error adding/updating cart item" })); // More specific error message can be provided
+        }
+      });
+    }
+
+    else if (req.url === '/api/cart_items/remove') {
+      let data = "";
+      req.on("data", (chunk) => {
+        data += chunk;
+      });
+      req.on('end', () => {
+        const body = JSON.parse(data);
+        const itemId = body.itemId;
+        const cartId = body.cartId;
+    
+        try {
+          // Check for existing entry
+          db.query("SELECT * FROM cart_items WHERE StoreItemID = ? AND CartID = ?", [itemId, cartId], (error, results) => {
+            if (error) {
+              console.error("Error checking for existing item:", error);
+              res.writeHead(500, {"Content-Type": "application/json"});
+              res.end(JSON.stringify({ error: "Error removing item from cart" })); // More specific error message can be provided
+            } else if (results.length === 0) {
+              // Item not found in cart, no need to remove
+              res.writeHead(200, {"Content-Type": "application/json"});
+              res.end(JSON.stringify({ success: false, message: "Item not found in cart" }));
+            } else {
+              // Existing item found, decrement quantity
+              const existingItem = results[0];
+              const newQuantity = Math.max(existingItem.Quantity - 1, 0); // Ensure quantity doesn't go below 0
+
+              if (newQuantity === 0) {
+                // Remove item completely
+                db.query("DELETE FROM cart_items WHERE CartItemID = ?", [existingItem.CartItemID], (deleteError) => {
+                  if (deleteError) {
+                    // Handle deletion errors
+                    console.error("Error removing item from cart:", deleteError); // Handle deletion errors
+                    res.writeHead(500, {"Content-Type": "application/json"});
+                    res.end(JSON.stringify({ error: "Error removing item from cart" })); // Specific error message
+                  } else {
+                    // Respond with success message for removal
+                    res.writeHead(200, {"Content-Type": "application/json"});
+                    res.end(JSON.stringify({ success: true, message: "Item removed from cart successfully" }));
+                  }
+                });
+              } else {
+                db.query("UPDATE cart_items SET Quantity = ? WHERE CartItemID = ?", [newQuantity, existingItem.CartItemID], (updateError) => {
+                  if (updateError) {
+                    console.error("Error updating cart item quantity:", updateError);
+                    res.writeHead(500, {"Content-Type": "application/json"});
+                    res.end(JSON.stringify({ error: "Error removing item from cart" })); // More specific error message can be provided
+                  } else {
+                    // Respond based on the updated quantity
+                    res.writeHead(200, {"Content-Type": "application/json"});
+                    res.end(JSON.stringify({ success: true, message: "Item quantity reduced in cart" }));
+                  }
+                });
+              }
+            }
+          });
+        } catch (error) {
+          console.error("Error removing item from cart:", error);
+          res.writeHead(500, {"Content-Type": "application/json"});
+          res.end(JSON.stringify({ error: "Error removing item from cart" })); // More specific error message can be provided
+        }
+      });
+    }
+
+    else if (req.url === '/api/cart_items/update') {
+      let data = "";
+      req.on("data", (chunk) => {
+        data += chunk;
+      });
+      req.on('end', () => {
+        const body = JSON.parse(data);
+        const itemId = body.itemId;
+        const cartId = body.cartId;
+        const newQuantity = Math.max(newQuantity, 0); // Ensure quantity doesn't go below 0
+    
+        try {
+          // Update existing cart item quantity
+          db.query("UPDATE cart_items SET Quantity = ? WHERE StoreItemID = ? AND CartID = ?", [newQuantity, itemId, cartId], (updateError) => {
+            if (updateError) {
+              console.error("Error updating cart item quantity:", updateError);
+              res.writeHead(500, {"Content-Type": "application/json"});
+              res.end(JSON.stringify({ error: "Error updating cart item" })); // More specific error message can be provided
+            } else {
+              // Respond with success message
+              res.writeHead(200, {"Content-Type": "application/json"});
+              res.end(JSON.stringify({ success: true, message: "updated cart item count"})); 
+            }
+          });
+        } catch (error) {
+          console.error("Error updating cart item:", error);
+          res.writeHead(500, {"Content-Type": "application/json"});
+          res.end(JSON.stringify({ error: "Error updating cart item" })); // More specific error message can be provided
+        }
+      });
+    }
+    
     else if (req.url === "/api/sentPackages") {
       let data = "";
       req.on("data", (chunk) => {
@@ -942,7 +1073,7 @@ const server = http.createServer( async (req, res) => {
           });
         }
      
-        else if (pathSegments.length === 5 && pathSegments[2] === "cart_item") {
+        else if (pathSegments.length === 5 && pathSegments[2] === "cart_item_package") {
         const PackageID = pathSegments[4];
       
         db.query("DELETE FROM cart_items WHERE PackageID = ?", [PackageID], (error) => {
