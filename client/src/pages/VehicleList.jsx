@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
-import '../css/register.css';
 import '../css/vehicles.css';
 
 const VehiclesTable = () => {
@@ -35,11 +34,10 @@ const VehiclesTable = () => {
   };
 
   return (
-    <div className='d-flex flex-column justify-content-center align-itmes-center bg-light vh-100'>
-      <div className='w-75 rounded bg-white border shadow p-4'>
-        <div className='d-flex justify-content-end'>
+    <div className='vehicles-employees-container'>
+      <div className='inner'>
         <h1>Vehicle List</h1>
-        <table className='table table-striped'>
+        <table className='vehicles-table table-striped'>
           <thead>
             <tr>
               <th>VehicleID</th>
@@ -48,50 +46,36 @@ const VehiclesTable = () => {
               <th>Status</th>
               <th>Type</th>
               <th>Unit</th>
-              <td>EmployeeID</td>
+              <th>EmployeeID</th>
             </tr>
           </thead>
           <tbody>
-          {vehicles && vehicles.map((user) => {
-          
-                        return (
-                            <tr key={user.VehicleID} className="user-tr">
-                                <td>{user.VehicleID}</td>
-                                <td>{user.Timestamp}</td>
-                                <td>{user.Location}</td>
-                                <td>{user.Status}</td>
-                                <td>{user.Type}</td>
-                                <td>{user.Unit}</td>
-                                <td>{user.EmployeeID}</td>
-                                <td>
-                                  {/*<button onClick={("/addvehicles")}>Add</button>*/}
-                                  <button>Edit </button>
-                                  <button onClick={() => handleDeleteVehicle(user.VehicleID)}>Delete</button>                                </td>
-                            </tr>
-                        )
-                    
-                    })}
-            {/* {vehicles.map(vehicle => (
-              <React.Fragment key={vehicle.id}>
-                <tr onClick={() => toggleRowExpansion(vehicle.id)}>
-                  <td>{vehicle.id}</td>
-                  <td>Vehicle {vehicle.id}</td>
+            {vehicles && vehicles.map((user) => {
+              return (
+                <tr key={user.VehicleID} className="user-tr">
+                  <td>{user.VehicleID}</td>
+                  <td>{new Date(user.Timestamp).toLocaleString()}</td>
+                  <td>{user.Location}</td>
+                  <td>{user.Status}</td>
+                  <td>{user.Type}</td>
+                  <td>{user.Unit}</td>
+                  <td>{user.EmployeeID}</td>
                   <td>
-                    <button onClick={() => handleDeleteVehicle(vehicle.id)}>Delete</button>
+                    <button>Edit</button>
+                    <button onClick={() => handleDeleteVehicle(user.VehicleID)}>Delete</button>
                   </td>
                 </tr>
-                {renderAdditionalInfo(vehicle)}
-              </React.Fragment>
-            ))} */}
+              )
+            })}
           </tbody>
         </table>
         <div className='add-vehicle-div'>
           <Link to="/addvehicles" className="add-vehicle-link">Add Vehicle</Link>
         </div>
       </div>
-      </div>
     </div>
   );
+  
 };
 
 export default VehiclesTable;
