@@ -245,6 +245,24 @@ const server = http.createServer( async (req, res) => {
       return;
     }
 
+    else if (req.url === "/api/vehiclesandemployees"){
+      db.query(
+        "SELECT v.VehicleID, v.Location, v.Status, v.Type, e.EmployeeID, e.Fname, e.Lname, e.Phone FROM vehicles v JOIN employee e ON v.EmployeeID = e.EmployeeID;",
+        (error, result) => {
+          if (error) {
+            res.writeHead(500, { "Content-Type": "application/json" });
+            res.end(JSON.stringify({ error: error }));
+            return;
+          } else {
+            res.writeHead(200, { "Content-Type": "application/json" });
+            res.end(JSON.stringify(result));
+            return;
+          }
+        }
+      );
+      return;
+    }
+
     // get ALL vehicles
     else if (req.url === "/api/vehiclelist") {
       db.query(
