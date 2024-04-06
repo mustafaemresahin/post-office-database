@@ -19,56 +19,50 @@ const EmployeeList = () => {
   }, []);
 
   return (
-    <div className='container'>
-        <h1 className='title'>Employee List</h1>
-        <div className='table-responsive'>
-          <table className='table'>
+    <div className='employees'>
+        <h2>Employee List</h2>
+          <table>
             <thead>
-              <tr className='table-header'>
-                <th className='header-item'>EmployeeID</th>
-                <th className='header-item'>First Name</th>
-                <th className='header-item'>Middle Init</th>
-                <th className='header-item'>Last Name</th>
-                <th className='header-item'>SSN</th>
-                <th className='header-item'>Phone Number</th>
-                <th className='header-item'>Email</th>
-                <th className='header-item'>Address</th>
-                <th className='header-item'>Sex</th>
-                <th className='header-item'>Salary</th>
-                <th className='header-item'>Role</th>
-                <th className='header-item'>Department ID</th>
-                <th className='header-item'>Hire Date</th>
-                <th className='header-item'>DOB</th>
-                <th className='header-item'>Schedule</th>
+              <tr>
+                <th>EmployeeID</th>
+                <th>First Name</th>
+                <th>Middle Init</th>
+                <th>Last Name</th>
+                <th>SSN</th>
+                <th>Phone Number</th>
+                <th>Email</th>
+                <th>Address</th>
+                <th>Sex</th>
+                <th>Salary</th>
+                <th>Role</th>
+                <th>Department ID</th>
+                <th>Hire Date</th>
+                <th>DOB</th>
               </tr>
             </thead>
             <tbody>
-            {employees && employees.map((employee) => {
-              return (
-                <tr key={employee.EmployeeID} className="table-row">
-                    <td className='row-item'>{employee.EmployeeID}</td>
-                    <td className='row-item'>{employee.Fname}</td>
-                    <td className='row-item'>{employee.Minit}</td>
-                    <td className='row-item'>{employee.Lname}</td>
-                    <td className='row-item'>{employee.Ssn}</td>
-                    <td className='row-item'>{employee.Phone}</td>
-                    <td className='row-item'>{employee.Email}</td>
-                    <td className='row-item'>{employee.Address}</td>
-                    <td className='row-item'>{employee.Sex}</td>
-                    <td className='row-item'>{employee.Salary}</td>
-                    <td className='row-item'>{employee.role}</td>
-                    <td className='row-item'>{employee.DepartmentID}</td>
-                    <td className='row-item'>{new Date(employee.HireDate).toLocaleDateString("en-US")}</td>
-                    <td className='row-item'>{new Date(employee.Dob).toLocaleDateString("en-US")}</td>
-                    <td className='row-item'>{employee.Schedule}</td>
+            {employees && employees.map((employee) => (
+                <tr key={employee.EmployeeID}>
+                  <td>{employee.EmployeeID}</td>
+                    <td>{employee.Fname}</td>
+                    <td>{employee.Minit}</td>
+                    <td>{employee.Lname}</td>
+                    <td>{employee.Ssn}</td>
+                    <td>{employee.Phone}</td>
+                    <td>{employee.Email}</td>
+                    <td>{employee.Address}</td>
+                    <td>{employee.Sex}</td>
+                    <td>{employee.Salary}</td>
+                    <td>{employee.role}</td>
+                    <td>{employee.DepartmentID}</td>
+                    <td>{new Date(employee.HireDate).toLocaleDateString("en-US")}</td>
+                    <td>{new Date(employee.Dob).toLocaleDateString("en-US")}</td>
                 </tr>
-              )
           
-            })}
+            ))}
             </tbody>
           </table>
         </div>
-    </div>
   );
 };
 
