@@ -27,7 +27,7 @@ function EmployeesandDepartments() {
   return (
     <div className="employees-departments">
         <a href="/reports" className='back-button'>Back</a>
-      <h2>Employees and Departments</h2>
+      <h2>Employee Department Assignments</h2>
       <table>
         <thead>
           <tr>
