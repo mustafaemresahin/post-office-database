@@ -380,9 +380,8 @@ const server = http.createServer( async (req, res) => {
         )
       })
     }
-    else if (req.url.startsWith("/api/vehicleEdit/")) {
-      const parts = req.url.split('/');
-      const vehicleID = parts[parts.length - 1];
+    else if (req.url === ("/api/vehicleEdit")) {
+      const vehicleID = localStorage.getItem('editVehicleId');
     
       let body = '';
       req.on('data', (chunk) => {

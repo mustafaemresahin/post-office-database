@@ -1,10 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+
 import axios from 'axios';
 import '../css/register.css';
 import '../css/vehicles.css';
 
 const VehiclesTable = () => {
+  const navigate = useNavigate();
+
   const [vehicles, setVehicles] = useState([]);
   //const navigate = useNavigate();
 
@@ -34,9 +37,15 @@ const VehiclesTable = () => {
     }
   };
 
-  const handleEditVehicle = async (vehicleID) => {
-    //history.push(`/vehicleEdit/${vehicleID}`);
-  };
+ const handleVehicleEdit = (event, vehicleID) => {
+  event.preventDefault();
+  
+  // Set the vehicle ID in local storage
+  localStorage.setItem('editVehicleId', vehicleID);
+
+  // Navigate to the vehicle edit page
+  navigate('/vehicleEdit');
+};
 
   return (
     <div className='d-flex flex-column justify-content-center align-itmes-center bg-light vh-100'>
@@ -68,7 +77,7 @@ const VehiclesTable = () => {
                                 <td>{user.Unit}</td>
                                 <td>{user.EmployeeID}</td>
                                 <td>
-                                  <button onClick={() => window.location.href=`/vehicleEdit/${user.VehicleID}`}>Edit</button>
+                                  <button onClick={(event) => handleVehicleEdit(event, user.VehicleID)}>Edit</button>
                                   <button onClick={() => handleDeleteVehicle(user.VehicleID)}>Delete</button>                                </td>
                             </tr>
                         )

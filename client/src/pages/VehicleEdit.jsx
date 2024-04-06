@@ -1,11 +1,10 @@
 import React, { useState } from 'react';
-import { useParams } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
 const VehicleEdit = () => {
-  const { vehicleId } = useParams();
   const navigate = useNavigate();
+
   const [formData, setFormData] = useState({
     location: '',
     status: '',
@@ -13,18 +12,20 @@ const VehicleEdit = () => {
   });
 
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData(prevState => ({
+  const handleChange = (event) => {
+    const { name, value, type } = event.target;
+    setFormData((prevState) => ({
       ...prevState,
-      [name]: value
+      [name]: type === 'checkbox' ? event.target.checked : value,
     }));
   };
 
   const handleEditVehicle = async () => {
     try {
-      const response = await axios.put(`/api/vehicleEdit/${vehicleId}`);
+      const response = await axios.put('/api/vehicleEdit', formData);
       console.log('Vehicle updated successfully:', response.data);
+      localStorage.removeItem('editVehicleId');
+      navigate("/vehicles")
       //const updatedVehicles = updatedResponse.data;
       //setVehicles(updatedVehicles);
     } catch (error) {
@@ -39,15 +40,15 @@ const VehicleEdit = () => {
       <form onSubmit={handleEditVehicle}>
         <label>
           Location:
-          <input type="text" name="location" value={formData.location} onChange={handleChange} />
+          <input type="string" id="location" name="location" value={formData.location} onChange={handleChange} />
         </label>
         <label>
           Status:
-          <input type="text" name="status" value={formData.status} onChange={handleChange} />
+          <input type="string" id = "status" name="status" value={formData.status} onChange={handleChange} />
         </label>
         <label>
           Unit:
-          <input type="text" name="unit" value={formData.unit} onChange={handleChange} />
+          <input type="string" id = "unit" name="unit" value={formData.unit} onChange={handleChange} />
         </label>
         <button type="submit">Update Vehicle</button>
       </form>
