@@ -16,7 +16,7 @@ function Reports() {
       </div>
       <div className="report-buttons">
         <button onClick={() => goToReport('/employeesanddepartments')} className="report-link">Employees and Depratments</button>
-        <button onClick={() => goToReport('/report2')} className="report-link">User Engagement</button>
+        <button onClick={() => goToReport('/vehiclesandemployees')} className="report-link">Vehicles and Employees</button>
         <button onClick={() => goToReport('/report3')} className="report-link">Inventory Status</button>
       </div>
       <p className="report-description">
