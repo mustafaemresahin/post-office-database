@@ -74,16 +74,21 @@ const Header = () => {
         <nav onClick={toggleMenu} className={`header-nav ${isMenuOpen ? 'show' : ''}`}>
           <NavLink to="/home" className={({ isActive }) => isActive ? "activeLink" : ""}>Home</NavLink>          
           {isUser && <NavLink to="/Send Package" className={({ isActive }) => isActive ? "activeLink" : ""}>Send Package</NavLink>}
-          {isUser && <NavLink to="/Shop" className={({ isActive }) => isActive ? "activeLink" : ""}>Shop</NavLink>}
+          {!isAdmin && !isEmployee && <NavLink to="/Shop" className={({ isActive }) => isActive ? "activeLink" : ""}>Shop</NavLink>}
           {isUser && <NavLink to="/Cart" className={({ isActive }) => isActive ? "activeLink" : ""}>Cart</NavLink>}
-          {isUser && <NavLink to="/track" className={({ isActive }) => isActive ? "activeLink" : ""}>Track Package</NavLink>}
-          {isAdmin && <NavLink to="/adminDash" className={({ isActive }) => isActive ? "activeLink" : ""}>Admin</NavLink>}
+          {!isAdmin && !isEmployee && <NavLink to="/track" className={({ isActive }) => isActive ? "activeLink" : ""}>Track Package</NavLink>}
+          {isAdmin && <NavLink to="/adminDash" className={({ isActive }) => isActive ? "activeLink" : ""}>Admin Dashboard</NavLink>}
+          {isAdmin && <NavLink to="/adminPack" className={({ isActive }) => isActive ? "activeLink" : ""}>Packages</NavLink>}
+          {isAdmin && <NavLink to="/adminUser" className={({ isActive }) => isActive ? "activeLink" : ""}>Customers</NavLink>}
+          {isAdmin && <NavLink to="/employees" className={({ isActive }) => isActive ? "activeLink" : ""}>Employees</NavLink>}
+          {isAdmin && <NavLink to="/adminStoreItems" className={({ isActive }) => isActive ? "activeLink" : ""}>Store Items</NavLink>}
+          {isAdmin && <NavLink to="/reports" className={({ isActive }) => isActive ? "activeLink" : ""}>Reports</NavLink>}
           {isEmployee && <NavLink to="/Employee" className={({ isActive }) => isActive ? "activeLink" : ""}>Employee</NavLink>}
           {isAdmin && <NavLink to="/vehicles" className={({ isActive }) => isActive ? "activeLink" : ""}>Vehicles</NavLink>}
           {isEmployee && <NavLink to="/vehicles" className={({ isActive }) => isActive ? "activeLink" : ""}>Vehicles</NavLink>}
           {!isLoggedIn && <NavLink to="/login" className={({ isActive }) => isActive ? "activeLink" : ""}>Login/Signup</NavLink>}
           {isLoggedIn && <NavLink to="/Profile" className={({ isActive }) => isActive ? "activeLink" : ""}>Logged in as {name}</NavLink>}
-          {isLoggedIn && <NavLink to="/notification" className={({ isActive }) => isActive ? "activeLink" : ""}>Notification</NavLink>}
+          {isLoggedIn && <NavLink to="/notification" className={({ isActive }) => isActive ? "activeLink" : ""}>Notifications</NavLink>}
 
         </nav>
       </div>
