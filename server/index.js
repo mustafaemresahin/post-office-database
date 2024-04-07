@@ -460,7 +460,7 @@ const server = http.createServer( async (req, res) => {
           const dateSignup = formattedDate; 
           const role = 'User';
           const address = body.address;
-          const CartID = uuidv4.substring(0,20);
+          const CartID = uuidv4().substring(0,20);
           
           db.query
           (
@@ -493,143 +493,54 @@ const server = http.createServer( async (req, res) => {
         const body = JSON.parse(data);
         const username = body.username;
         const password = body.password;
-        const role = body.role;
     
-        // Here, make sure you are hashing and comparing passwords correctly if using hashing
-        // If passwords are hashed, compare the hash of the provided password with the stored hash
-        if (role === "admin") {
-          db.query(
-            "SELECT * FROM admin WHERE AdminUser = ?", // Make sure this table name is correct
-            [username],
-            (error, results) => {
-              if (error) {
-                res.writeHead(500, { "Content-Type": "application/json" });
-                res.end(JSON.stringify({ error: 'Internal Server Error' }));
-                return;
-              } else {
-                if (results.length > 0) {
-                  const user = results[0];
-                  
-                  // Since we're not concerned with security for this demo, we'll check the password directly
-                  if (user.AdminPass === password) { // Ensure your column names match your table's case exactly
-                    // Generate token
-                    const token = generateToken(user);
-                    // Send user details and token in response
-                    res.writeHead(200, { 'Content-Type': 'application/json' });
-                    res.end(JSON.stringify({
-                      id: user.AdminID,
-                      username: user.AdminUser,
-                      email: user.Email,
-                      token: token // Ensure generateToken is defined and returns a valid token
-                    }));
-                    return;
-                  } else {
-                    // Password does not match
-                    res.writeHead(401, { "Content-Type": "application/json" });
-                    res.end(JSON.stringify({ message: "Wrong username or password" }));
-                    return;
-                  }
+        
+        
+        
+        db.query(
+          "SELECT * FROM customer_user WHERE CustomerUser = ?",
+          [username],
+          (error, results) => {
+            if (error) {
+              res.writeHead(500, { "Content-Type": "application/json" });
+              res.end(JSON.stringify({ error: 'Internal Server Error' }));
+              return;
+            } else {
+              if (results.length > 0) {
+                const user = results[0]; // Assuming user is found in the first result
+
+                const userRole = user.role;
+                // Check if the provided password matches the stored password
+                // If you're using hashed passwords, this is where bcrypt.compare would be used
+                if (user.CustomerPass === password) {
+                  // Generate token
+                  const token = generateToken(user);
+                  // Send user details and token in response
+                  res.writeHead(200, { 'Content-Type': 'application/json' });
+                  res.end(JSON.stringify({
+                    id: user.UserID,
+                    username: user.CustomerUser,
+                    email: user.Email,
+                    role: userRole,
+                    cart: user.CartID,
+                    token: token
+                  }));
+                  return;
                 } else {
-                  // No user found
+                  // Password does not match
                   res.writeHead(401, { "Content-Type": "application/json" });
                   res.end(JSON.stringify({ message: "Wrong username or password" }));
                   return;
                 }
-              }
-            }
-          );
-        }
-        else if(role === "Employee"){
-          db.query(
-            "SELECT * FROM employee WHERE CustomerUser = ?",
-            [username],
-            (error, results) => {
-              if (error) {
-                res.writeHead(500, { "Content-Type": "application/json" });
-                res.end(JSON.stringify({ error: 'Internal Server Error' }));
-                return;
               } else {
-                if (results.length > 0) {
-                  const user = results[0]; // Assuming user is found in the first result
-  
-                  const userRole = user.role;
-                  // Check if the provided password matches the stored password
-                  // If you're using hashed passwords, this is where bcrypt.compare would be used
-                  if (user.CustomerPass === password) {
-                    // Generate token
-                    const token = generateToken(user);
-                    // Send user details and token in response
-                    res.writeHead(200, { 'Content-Type': 'application/json' });
-                    res.end(JSON.stringify({
-                      id: user.UserID,
-                      username: user.CustomerUser,
-                      email: user.Email,
-                      role: userRole,
-                      token: token
-                    }));
-                    return;
-                  } else {
-                    // Password does not match
-                    res.writeHead(401, { "Content-Type": "application/json" });
-                    res.end(JSON.stringify({ message: "Wrong username or password" }));
-                    return;
-                  }
-                } else {
-                  // No user found
-                  res.writeHead(401, { "Content-Type": "application/json" });
-                  res.end(JSON.stringify({ message: "Wrong username or password" }));
-                  return;
-                }
-              }
-            }
-          );
-        }
-        else{
-          db.query(
-            "SELECT * FROM customer_user WHERE CustomerUser = ?",
-            [username],
-            (error, results) => {
-              if (error) {
-                res.writeHead(500, { "Content-Type": "application/json" });
-                res.end(JSON.stringify({ error: 'Internal Server Error' }));
+                // No user found
+                res.writeHead(401, { "Content-Type": "application/json" });
+                res.end(JSON.stringify({ message: "Wrong username or password" }));
                 return;
-              } else {
-                if (results.length > 0) {
-                  const user = results[0]; // Assuming user is found in the first result
-  
-                  const userRole = user.role;
-                  // Check if the provided password matches the stored password
-                  // If you're using hashed passwords, this is where bcrypt.compare would be used
-                  if (user.CustomerPass === password) {
-                    // Generate token
-                    const token = generateToken(user);
-                    // Send user details and token in response
-                    res.writeHead(200, { 'Content-Type': 'application/json' });
-                    res.end(JSON.stringify({
-                      id: user.UserID,
-                      username: user.CustomerUser,
-                      email: user.Email,
-                      role: userRole,
-                      cart: user.CartID,
-                      token: token
-                    }));
-                    return;
-                  } else {
-                    // Password does not match
-                    res.writeHead(401, { "Content-Type": "application/json" });
-                    res.end(JSON.stringify({ message: "Wrong username or password" }));
-                    return;
-                  }
-                } else {
-                  // No user found
-                  res.writeHead(401, { "Content-Type": "application/json" });
-                  res.end(JSON.stringify({ message: "Wrong username or password" }));
-                  return;
-                }
               }
             }
-          );
-        }
+          }
+        );
         return;
       });
     }
@@ -1033,6 +944,36 @@ const server = http.createServer( async (req, res) => {
         );
       });
     }  
+
+    else if(req.url === '/api/users/changerole'){
+      let body = '';
+      req.on('data', (chunk) => {
+          body += chunk.toString(); // Concatenate the data chunks
+      });
+      req.on('end', () => {
+          const user = JSON.parse(body); // Parse the received data to JSON
+          const userID = user.UserID; // Use the UserID from the request body
+          const setRole = user.newRole; // Set the role to 'Driver'
+  
+          // Update the user's role in the customer_user table
+          const updateQuery = "UPDATE customer_user SET role = ? WHERE UserID = ?";
+          db.query(
+              updateQuery,
+              [setRole, userID], // The parameters are the role and the UserID
+              (updateError, updateResults) => {
+                  if (updateError) {
+                      console.error('Update error:', updateError);
+                      res.writeHead(500, { "Content-Type": "application/json" });
+                      res.end(JSON.stringify({ error: 'Failed to update user role' }));
+                  } else {
+                      res.writeHead(200, { "Content-Type": "application/json" });
+                      res.end(JSON.stringify({ message: 'User role updated successfully' }));
+                  }
+              }
+          );
+      });
+  }
+  
 
     }    
     
