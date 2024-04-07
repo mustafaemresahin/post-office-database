@@ -17,7 +17,7 @@ function AdminUser() {
       const fetchData = async () => {
         try {
           const response = await axios.get('/api/users');
-          setData(response.data);
+          setData(response.data.filter(user => user.role === "User"));
         } catch (error) {
           console.error('Error users:', error);
         }
