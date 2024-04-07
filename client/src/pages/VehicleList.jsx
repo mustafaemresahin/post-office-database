@@ -1,10 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+
 import axios from 'axios';
 import '../css/vehicles.css';
 
 const VehiclesTable = () => {
+  const navigate = useNavigate();
+
   const [vehicles, setVehicles] = useState([]);
+  //const navigate = useNavigate();
 
   useEffect(() => {
     const fetchVehicles = async () => {
@@ -20,7 +24,6 @@ const VehiclesTable = () => {
   }, []);
 
 
-  //done
   const handleDeleteVehicle = async (vehicleId) => {
     try {
       // Send DELETE request to delete the vehicle with the specified ID
@@ -32,6 +35,16 @@ const VehiclesTable = () => {
       console.error('Error deleting vehicle:', error);
     }
   };
+
+ const handleVehicleEdit = (event, vehicleID) => {
+  event.preventDefault();
+  
+  // Set the vehicle ID in local storage
+  localStorage.setItem('editVehicleId', vehicleID);
+
+  // Navigate to the vehicle edit page
+  navigate('/vehicleEdit');
+};
 
   return (
     <div className='vehicles-employees-container'>
@@ -50,23 +63,24 @@ const VehiclesTable = () => {
             </tr>
           </thead>
           <tbody>
-            {vehicles && vehicles.map((user) => {
-              return (
-                <tr key={user.VehicleID} className="user-tr">
-                  <td>{user.VehicleID}</td>
-                  <td>{new Date(user.Timestamp).toLocaleString()}</td>
-                  <td>{user.Location}</td>
-                  <td>{user.Status}</td>
-                  <td>{user.Type}</td>
-                  <td>{user.Unit}</td>
-                  <td>{user.EmployeeID}</td>
-                  <td>
-                    <button>Edit</button>
-                    <button onClick={() => handleDeleteVehicle(user.VehicleID)}>Delete</button>
-                  </td>
-                </tr>
-              )
-            })}
+          {vehicles && vehicles.map((user) => {
+          
+                        return (
+                            <tr key={user.VehicleID} className="user-tr">
+                                <td>{user.VehicleID}</td>
+                                <td>{user.Timestamp}</td>
+                                <td>{user.Location}</td>
+                                <td>{user.Status}</td>
+                                <td>{user.Type}</td>
+                                <td>{user.Unit}</td>
+                                <td>{user.EmployeeID}</td>
+                                <td>
+                                  <button onClick={(event) => handleVehicleEdit(event, user.VehicleID)}>Edit</button>
+                                  <button onClick={() => handleDeleteVehicle(user.VehicleID)}>Delete</button>                                </td>
+                            </tr>
+                        )
+                    
+                    })}
           </tbody>
         </table>
         <div className='add-vehicle-div'>

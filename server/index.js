@@ -299,6 +299,34 @@ const server = http.createServer( async (req, res) => {
       );
       return;
     }
+
+    else if (req.url.startsWith("/api/vehicleSelect/")) {
+      const parts = req.url.split('/');
+      const vehicleID = parts[parts.length - 1];
+  
+      db.query(
+          "SELECT Timestamp, Location, Status, Unit FROM vehicles WHERE VehicleID = ?",
+          [vehicleID],
+          (error, result) => {
+              if (error) {
+                  res.writeHead(500, { "Content-Type": "application/json" });
+                  res.end(JSON.stringify({ error: error }));
+                  return;
+              } else {
+                  if (result.length === 0) {
+                      res.writeHead(404, { "Content-Type": "application/json" });
+                      res.end(JSON.stringify({ error: 'Vehicle not found' }));
+                      return;
+                  }
+                  res.writeHead(200, { "Content-Type": "application/json" });
+                  res.end(JSON.stringify(result[0])); // Assuming only one vehicle with the specified ID
+                  return;
+              }
+          }
+      );
+      return;
+  }
+
     else if (req.url === "/api/cart_items") 
     {
       db.query("SELECT * FROM cart_items", 
@@ -396,6 +424,57 @@ const server = http.createServer( async (req, res) => {
           }
         )
       })
+    }
+    else if (req.url.startsWith("/api/vehicleEdit/")) {
+      const parts = req.url.split('/');
+      const vehicleID = parts[parts.length - 1];
+      
+      let body = '';
+      req.on('data', (chunk) => {
+        body += chunk.toString();
+      });
+      req.on('end', () => {
+        const vehicle = JSON.parse(body);
+        const timestamp = new Date().toISOString().slice(0, 19).replace('T', ' ');
+        let sql = "UPDATE vehicles SET Timestamp = ?";
+        const params = [timestamp];
+        // putting each const in here
+    
+        // checking to see if input is empty before putting in the params array
+        // had to do it like this or else blanks were placed in the DB
+        const { location, status, unit } = vehicle;
+        if (location !== undefined && location !== '') {
+          sql += ", Location = ?";
+          params.push(location);
+        }
+        if (status !== undefined && status !== '') {
+          sql += ", Status = ?";
+          params.push(status);
+        }
+        if (unit !== undefined && unit !== '') {
+          sql += ", Unit = ?";
+          params.push(unit);
+        }
+        sql += " WHERE VehicleID = ?";
+        // Add the vehicleID to the params array
+        params.push(vehicleID);
+    
+        // Updating vehicle
+        db.query(
+          sql,
+          params,
+          (updateError) => {
+            if (updateError) {
+              console.error('Update error:', updateError);
+              res.writeHead(500, { "Content-Type": "application/json" });
+              res.end(JSON.stringify({ error: 'Failed to update vehicle' }));
+              return;
+            }
+            res.writeHead(200, { "Content-Type": "application/json" });
+            res.end(JSON.stringify({ message: 'Vehicle updated successfully' }));
+          }
+        );
+      });
     }
   }
  

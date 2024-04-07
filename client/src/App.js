@@ -20,6 +20,7 @@ import ShippingForm from './pages/add-package';
 import AdminPack from './pages/adminPack';
 import VehiclesTable from './pages/VehicleList';
 import VehicleAdd from './pages/VehicleAdd';
+import VehicleEdit from './pages/VehicleEdit';
 import EmployeeList from './pages/employeeList';
 import Reports from './pages/reports'
 import AdminStoreItems from './pages/adminStoreItems';
@@ -55,7 +56,6 @@ const App = () => {
           <Route path="/addvehicles" element={<VehicleAdd />} />
           <Route path="/adminPack" element={<AdminPack />} />
           <Route path="/adminUser" element={<AdminUser />} />
-          <Route path="/employees" element={<EmployeeList />} />
           <Route path="/adminStoreItems" element={<AdminStoreItems />} />
           <Route path="/notification" element={<Notification />} />
           <Route path="/reports" element={<Reports />} />
@@ -64,6 +64,10 @@ const App = () => {
           <Route path="/packagesender" element={<Packagesender />} />
           <Route path="/addEmployee" element={<AddEmployee />} />
 
+
+
+          <Route path="/employees" element={<EmployeeList />} />
+          <Route path="/vehicleEdit" element={<VehicleEdit />} />
 
 
         </Routes>
