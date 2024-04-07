@@ -400,12 +400,12 @@ const server = http.createServer( async (req, res) => {
       req.on('end', () => {
         const vehicle = JSON.parse(body);
         const timestamp = new Date().toISOString().slice(0, 19).replace('T', ' ');
-    
-        // Construct the SQL query dynamically based on the non-empty fields in the request body
         let sql = "UPDATE vehicles SET Timestamp = ?";
         const params = [timestamp];
+        // putting each const in here
     
-        // Check each field in the vehicle object and add it to the SQL query if it's not empty
+        // checking to see if input is empty before putting in the params array
+        // had to do it like this or else blanks were placed in the DB
         const { location, status, unit } = vehicle;
         if (location !== undefined && location !== '') {
           sql += ", Location = ?";
@@ -419,13 +419,11 @@ const server = http.createServer( async (req, res) => {
           sql += ", Unit = ?";
           params.push(unit);
         }
-    
         sql += " WHERE VehicleID = ?";
-    
         // Add the vehicleID to the params array
         params.push(vehicleID);
     
-        // Update the vehicle record
+        // Updating vehicle
         db.query(
           sql,
           params,
@@ -436,7 +434,6 @@ const server = http.createServer( async (req, res) => {
               res.end(JSON.stringify({ error: 'Failed to update vehicle' }));
               return;
             }
-            
             res.writeHead(200, { "Content-Type": "application/json" });
             res.end(JSON.stringify({ message: 'Vehicle updated successfully' }));
           }
