@@ -21,11 +21,15 @@ import ShippingForm from './pages/add-package';
 import AdminPack from './pages/adminPack';
 import VehiclesTable from './pages/VehicleList';
 import VehicleAdd from './pages/VehicleAdd';
+import VehicleEdit from './pages/VehicleEdit';
 import EmployeeList from './pages/employeeList';
 
 import AdminStoreItems from './pages/adminStoreItems';
 import Notification from './pages/notification';
-
+import Employeesanddepartments from './pages/employeesanddepartments';
+import Vehiclesandemployees from './pages/vehiclesandemployees';
+import Packagesender from './pages/packagesender';
+import AddEmployee from './pages/addEmployee';
 
 const App = () => {
 
@@ -53,11 +57,18 @@ const App = () => {
           <Route path="/addvehicles" element={<VehicleAdd />} />
           <Route path="/adminPack" element={<AdminPack />} />
           <Route path="/adminUser" element={<AdminUser />} />
-          <Route path="/employees" element={<EmployeeList />} />
-
           <Route path="/adminStoreItems" element={<AdminStoreItems />} />
           <Route path="/notification" element={<Notification />} />
+          <Route path="/reports" element={<Reports />} />
+          <Route path="/employeesanddepartments" element={<Employeesanddepartments />} />
+          <Route path="/vehiclesandemployees" element={<Vehiclesandemployees />} />
+          <Route path="/packagesender" element={<Packagesender />} />
+          <Route path="/addEmployee" element={<AddEmployee />} />
+
+
+
           <Route path="/employees" element={<EmployeeList />} />
+          <Route path="/vehicleEdit" element={<VehicleEdit />} />
 
 
         </Routes>

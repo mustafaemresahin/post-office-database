@@ -4,5 +4,49 @@
 
 .title {
     text-align: center;
-}
+  }
+  
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+  }
+  
+  table th, table td {
+    text-align: left;
+    padding: 8px;
+    color: #555;
+  }
+  
+  table th {
+    background-color: #eee;
+    color: #333;
+  }
+  
+  table tr:nth-child(odd) {
+    background-color: #fdfdfd;
+  }
+  
+  table tr:hover {
+    background-color: #f1f1f1;
+  }
+  
+  /* Style for the responsive table */
+  @media screen and (max-width: 600px) {
+    table {
+      display: block;
+      overflow-x: auto;
+    }
+  
+    table th, table td {
+      text-align: center;
+    }
+  }
 
+.back-button {
+    background-color: #007bff;
+    color:#eee;
+    padding:10px;
+    border-radius: 10px;
+    text-decoration: none;
+}

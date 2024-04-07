@@ -43,32 +43,34 @@ const EmployeeList = () => {
               </tr>
             </thead>
             <tbody>
-            {employees && employees.map((employee) => {
-              return (
-                <tr key={employee.EmployeeID} className="table-row">
-                    <td className='row-item'>{employee.EmployeeID}</td>
-                    <td className='row-item'>{employee.Fname}</td>
-                    <td className='row-item'>{employee.Minit}</td>
-                    <td className='row-item'>{employee.Lname}</td>
-                    <td className='row-item'>{employee.Ssn}</td>
-                    <td className='row-item'>{employee.Phone}</td>
-                    <td className='row-item'>{employee.Email}</td>
-                    <td className='row-item'>{employee.Address}</td>
-                    <td className='row-item'>{employee.Sex}</td>
-                    <td className='row-item'>{employee.Salary}</td>
-                    <td className='row-item'>{employee.role}</td>
-                    <td className='row-item'>{employee.DepartmentID}</td>
-                    <td className='row-item'>{new Date(employee.HireDate).toLocaleDateString("en-US")}</td>
-                    <td className='row-item'>{new Date(employee.Dob).toLocaleDateString("en-US")}</td>
-                    <td className='row-item'>{employee.Schedule}</td>
+            {employees && employees.map((employee) => (
+                <tr key={employee.EmployeeID}>
+                  <td>{employee.EmployeeID}</td>
+                    <td>{employee.Fname}</td>
+                    <td>{employee.Minit}</td>
+                    <td>{employee.Lname}</td>
+                    <td>{employee.Ssn}</td>
+                    <td>{employee.Phone}</td>
+                    <td>{employee.Email}</td>
+                    <td>{employee.Address}</td>
+                    <td>{employee.Sex}</td>
+                    <td>{employee.Salary}</td>
+                    <td>{employee.role}</td>
+                    <td>{employee.DepartmentID}</td>
+                    <td>{employee.HireDate ? new Date(employee.HireDate).toLocaleDateString("en-US") : ''}</td>
+                    <td>{employee.Dob ? new Date(employee.Dob).toLocaleDateString("en-US") : ''}</td>
                 </tr>
               )
           
-            })}
+            )}
             </tbody>
           </table>
+          <div className='button-div'>
+            <a href="/addEmployee" className='add-employee'>Add Employee</a>
+          </div>
         </div>
-    </div>
+        </div>
+
   );
 };
 

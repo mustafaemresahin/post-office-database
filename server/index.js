@@ -265,6 +265,43 @@ const server = http.createServer( async (req, res) => {
           });
         }
 
+    else if (req.url === "/api/vehiclesandemployees"){
+      db.query(
+        "SELECT v.VehicleID, v.Location, v.Status, v.Type, e.EmployeeID, e.Fname, e.Lname, e.Phone FROM vehicles v JOIN employee e ON v.EmployeeID = e.EmployeeID;",
+        (error, result) => {
+          if (error) {
+            res.writeHead(500, { "Content-Type": "application/json" });
+            res.end(JSON.stringify({ error: error }));
+            return;
+          } else {
+            res.writeHead(200, { "Content-Type": "application/json" });
+            res.end(JSON.stringify(result));
+            return;
+          }
+        }
+      );
+      return;
+    }
+
+    else if (req.url === "/api/packagesender"){
+      db.query(
+        "SELECT p.PackageID, p.SenderID, p.Weight, p.Dimensions, p.Type, p.Status, p.DateSent, p.destination, cu.CustomerUser, cu.firstname, cu.lastname, cu.Email FROM package p JOIN customer_user cu ON p.SenderID = cu.UserID;",
+        (error, result) => {
+          if (error) {
+            res.writeHead(500, { "Content-Type": "application/json" });
+            res.end(JSON.stringify({ error: error }));
+            return;
+          } else {
+            res.writeHead(200, { "Content-Type": "application/json" });
+            res.end(JSON.stringify(result));
+            return;
+          }
+        }
+      );
+      return;
+    }
+
+    // get ALL vehicles
     else if (req.url === "/api/vehiclelist") {
       db.query(
         "SELECT * FROM vehicles",
@@ -282,6 +319,34 @@ const server = http.createServer( async (req, res) => {
       );
       return;
     }
+
+    else if (req.url.startsWith("/api/vehicleSelect/")) {
+      const parts = req.url.split('/');
+      const vehicleID = parts[parts.length - 1];
+  
+      db.query(
+          "SELECT Timestamp, Location, Status, Unit FROM vehicles WHERE VehicleID = ?",
+          [vehicleID],
+          (error, result) => {
+              if (error) {
+                  res.writeHead(500, { "Content-Type": "application/json" });
+                  res.end(JSON.stringify({ error: error }));
+                  return;
+              } else {
+                  if (result.length === 0) {
+                      res.writeHead(404, { "Content-Type": "application/json" });
+                      res.end(JSON.stringify({ error: 'Vehicle not found' }));
+                      return;
+                  }
+                  res.writeHead(200, { "Content-Type": "application/json" });
+                  res.end(JSON.stringify(result[0])); // Assuming only one vehicle with the specified ID
+                  return;
+              }
+          }
+      );
+      return;
+  }
+
     else if (req.url === "/api/cart_items") 
     {
       db.query("SELECT * FROM cart_items", 
@@ -380,6 +445,57 @@ const server = http.createServer( async (req, res) => {
         )
       })
     }
+    else if (req.url.startsWith("/api/vehicleEdit/")) {
+      const parts = req.url.split('/');
+      const vehicleID = parts[parts.length - 1];
+      
+      let body = '';
+      req.on('data', (chunk) => {
+        body += chunk.toString();
+      });
+      req.on('end', () => {
+        const vehicle = JSON.parse(body);
+        const timestamp = new Date().toISOString().slice(0, 19).replace('T', ' ');
+        let sql = "UPDATE vehicles SET Timestamp = ?";
+        const params = [timestamp];
+        // putting each const in here
+    
+        // checking to see if input is empty before putting in the params array
+        // had to do it like this or else blanks were placed in the DB
+        const { location, status, unit } = vehicle;
+        if (location !== undefined && location !== '') {
+          sql += ", Location = ?";
+          params.push(location);
+        }
+        if (status !== undefined && status !== '') {
+          sql += ", Status = ?";
+          params.push(status);
+        }
+        if (unit !== undefined && unit !== '') {
+          sql += ", Unit = ?";
+          params.push(unit);
+        }
+        sql += " WHERE VehicleID = ?";
+        // Add the vehicleID to the params array
+        params.push(vehicleID);
+    
+        // Updating vehicle
+        db.query(
+          sql,
+          params,
+          (updateError) => {
+            if (updateError) {
+              console.error('Update error:', updateError);
+              res.writeHead(500, { "Content-Type": "application/json" });
+              res.end(JSON.stringify({ error: 'Failed to update vehicle' }));
+              return;
+            }
+            res.writeHead(200, { "Content-Type": "application/json" });
+            res.end(JSON.stringify({ message: 'Vehicle updated successfully' }));
+          }
+        );
+      });
+    }
   }
  
   else if (req.method === "POST") {
@@ -443,7 +559,7 @@ const server = http.createServer( async (req, res) => {
           const dateSignup = formattedDate; 
           const role = 'User';
           const address = body.address;
-          const CartID = uuidv4.substring(0,20);
+          const CartID = uuidv4().substring(0,20);
           
           db.query
           (
@@ -476,6 +592,54 @@ const server = http.createServer( async (req, res) => {
         const body = JSON.parse(data);
         const username = body.username;
         const password = body.password;
+    
+        
+        
+        
+        db.query(
+          "SELECT * FROM customer_user WHERE CustomerUser = ?",
+          [username],
+          (error, results) => {
+            if (error) {
+              res.writeHead(500, { "Content-Type": "application/json" });
+              res.end(JSON.stringify({ error: 'Internal Server Error' }));
+              return;
+            } else {
+              if (results.length > 0) {
+                const user = results[0]; // Assuming user is found in the first result
+
+                const userRole = user.role;
+                // Check if the provided password matches the stored password
+                // If you're using hashed passwords, this is where bcrypt.compare would be used
+                if (user.CustomerPass === password) {
+                  // Generate token
+                  const token = generateToken(user);
+                  // Send user details and token in response
+                  res.writeHead(200, { 'Content-Type': 'application/json' });
+                  res.end(JSON.stringify({
+                    id: user.UserID,
+                    username: user.CustomerUser,
+                    email: user.Email,
+                    role: userRole,
+                    cart: user.CartID,
+                    token: token
+                  }));
+                  return;
+                } else {
+                  // Password does not match
+                  res.writeHead(401, { "Content-Type": "application/json" });
+                  res.end(JSON.stringify({ message: "Wrong username or password" }));
+                  return;
+                }
+              } else {
+                // No user found
+                res.writeHead(401, { "Content-Type": "application/json" });
+                res.end(JSON.stringify({ message: "Wrong username or password" }));
+                return;
+              }
+            }
+          }
+        );
         const role = body.role;
     
         // Here, make sure you are hashing and comparing passwords correctly if using hashing
@@ -868,6 +1032,39 @@ const server = http.createServer( async (req, res) => {
         );
       });
     }  
+
+    else if(req.url === '/api/users/changerole'){
+      let body = '';
+      req.on('data', (chunk) => {
+          body += chunk.toString(); // Concatenate the data chunks
+      });
+      req.on('end', () => {
+          const user = JSON.parse(body); // Parse the received data to JSON
+          const userID = user.UserID; // Use the UserID from the request body
+          const setRole = user.newRole; // Set the role to 'Driver'
+  
+          // Update the user's role in the customer_user table
+          const updateQuery = "UPDATE customer_user SET role = ? WHERE UserID = ?";
+          db.query(
+              updateQuery,
+              [setRole, userID], // The parameters are the role and the UserID
+              (updateError, updateResults) => {
+                  if (updateError) {
+                      console.error('Update error:', updateError);
+                      res.writeHead(500, { "Content-Type": "application/json" });
+                      res.end(JSON.stringify({ error: 'Failed to update user role' }));
+                  } else {
+                      res.writeHead(200, { "Content-Type": "application/json" });
+                      res.end(JSON.stringify({ message: 'User role updated successfully' }));
+                  }
+              }
+          );
+      });
+  
+  
+
+    }    
+    
   else if(req.method === "DELETE") {
     const reqURL = url.parse(req.url, true);
     const pathSegments = reqURL.pathname.split("/");
