@@ -263,6 +263,34 @@ const server = http.createServer( async (req, res) => {
       );
       return;
     }
+
+    else if (req.url.startsWith("/api/vehicleSelect/")) {
+      const parts = req.url.split('/');
+      const vehicleID = parts[parts.length - 1];
+  
+      db.query(
+          "SELECT Timestamp, Location, Status, Unit FROM vehicles WHERE VehicleID = ?",
+          [vehicleID],
+          (error, result) => {
+              if (error) {
+                  res.writeHead(500, { "Content-Type": "application/json" });
+                  res.end(JSON.stringify({ error: error }));
+                  return;
+              } else {
+                  if (result.length === 0) {
+                      res.writeHead(404, { "Content-Type": "application/json" });
+                      res.end(JSON.stringify({ error: 'Vehicle not found' }));
+                      return;
+                  }
+                  res.writeHead(200, { "Content-Type": "application/json" });
+                  res.end(JSON.stringify(result[0])); // Assuming only one vehicle with the specified ID
+                  return;
+              }
+          }
+      );
+      return;
+  }
+
     else if (req.url === "/api/cart_items") 
     {
       db.query("SELECT * FROM cart_items", 
@@ -364,7 +392,7 @@ const server = http.createServer( async (req, res) => {
     else if (req.url.startsWith("/api/vehicleEdit/")) {
       const parts = req.url.split('/');
       const vehicleID = parts[parts.length - 1];
-    
+      
       let body = '';
       req.on('data', (chunk) => {
         body += chunk.toString();
@@ -372,14 +400,35 @@ const server = http.createServer( async (req, res) => {
       req.on('end', () => {
         const vehicle = JSON.parse(body);
         const timestamp = new Date().toISOString().slice(0, 19).replace('T', ' ');
-        //const location = vehicle.location;
-        //const status = vehicle.status;
-        //const unit = vehicle.unit;
+    
+        // Construct the SQL query dynamically based on the non-empty fields in the request body
+        let sql = "UPDATE vehicles SET Timestamp = ?";
+        const params = [timestamp];
+    
+        // Check each field in the vehicle object and add it to the SQL query if it's not empty
+        const { location, status, unit } = vehicle;
+        if (location !== undefined && location !== '') {
+          sql += ", Location = ?";
+          params.push(location);
+        }
+        if (status !== undefined && status !== '') {
+          sql += ", Status = ?";
+          params.push(status);
+        }
+        if (unit !== undefined && unit !== '') {
+          sql += ", Unit = ?";
+          params.push(unit);
+        }
+    
+        sql += " WHERE VehicleID = ?";
+    
+        // Add the vehicleID to the params array
+        params.push(vehicleID);
     
         // Update the vehicle record
         db.query(
-          "UPDATE vehicles SET Timestamp = ?, Location = ?, Status = ?, Unit = ? WHERE VehicleID = ?",
-          [timestamp, vehicle.location, vehicle.status, vehicle.unit, vehicleID],
+          sql,
+          params,
           (updateError) => {
             if (updateError) {
               console.error('Update error:', updateError);

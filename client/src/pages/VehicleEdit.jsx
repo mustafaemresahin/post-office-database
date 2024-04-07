@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
@@ -12,15 +12,42 @@ const VehicleEdit = () => {
   });
 
 
-  const handleChange = (event) => {
-    const { name, value} = event.target;
-    setFormData((prevState) => ({
-      ...prevState,
-      [name]: value === '' ? prevState[name] : value,
-    }));
+  const [initialData, setInitialData] = useState({});
+
+useEffect(() => {
+  // Fetch initial values from the backend and update initialData state
+  const fetchInitialValues = async () => {
+    try {
+      const vehicleId = localStorage.getItem('editVehicleId');
+      console.log('Fetching initial data for vehicle ID:', vehicleId);
+      const response = await axios.get(`/api/vehicleSelect/${vehicleId}`);
+      console.log('API response:', response.data);
+      const data = response.data; // Assuming the response contains initial data for location, status, and unit
+      setInitialData(data);
+      console.log('Initial data set:', data);
+    } catch (error) {
+      console.error('Failed to fetch initial data:', error);
+      // Handle error, show error message, etc.
+    }
   };
 
+  fetchInitialValues();
+}, []);
+  
+const handleChange = (event) => {
+  const { name, value } = event.target;
+  console.log('Handling change for input:', name);
+  console.log('Previous state:', formData);
+  console.log('New value:', value);
 
+  setFormData((prevState) => {
+    const newValue = value !== '' ? value : initialData[name];
+    return {
+      ...prevState,
+      [name]: newValue,
+    };
+  });
+};
 
   const handleEditVehicle = async () => {
     try {
@@ -45,7 +72,7 @@ const VehicleEdit = () => {
       <form onSubmit={handleEditVehicle}>
         <label>
           Location:
-          <input type="string" id="location" name="location" value={formData.location} onChange={handleChange} />
+          <input type="string" id="location" name="location"   value={formData.location} onChange={handleChange} />
         </label>
         <label>
           Status:
