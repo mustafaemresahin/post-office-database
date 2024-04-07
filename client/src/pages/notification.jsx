@@ -55,7 +55,7 @@ function Notification() {
                       <tr key={notification.userID} className="notify-tr">
                         <td>{notification.notification_id}</td> 
                         <td className="notify-td">{notification.message}</td>
-                        <td className="notify-td">{notification.timestamp}</td>
+                        <td className="notify-td">{(new Date(notification.timestamp).toLocaleString("en-US", { year: 'numeric', month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit', hour12: true }))}</td>
                       </tr>
                     ))}
                   </tbody>
