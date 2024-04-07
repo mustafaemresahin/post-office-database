@@ -54,7 +54,7 @@ function AdminPack() {
                                 <td>{p.Dimensions}</td>
                                 <td>{p.Type}</td>
                                 <td>{p.Status}</td>
-                                <td>{p.DateSent}</td>
+                                <td>{(new Date(p.DateSent).toLocaleString("en-US", { year: 'numeric', month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit', hour12: true }))}</td>
                                 <td>{p.VehicleID}</td>
                                 <td>{p.destination}</td>
                                 <td>{p.expeditedShipping}</td>
