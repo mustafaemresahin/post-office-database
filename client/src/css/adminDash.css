@@ -151,20 +151,33 @@ body {
 }
 
 .card:first-child {
-  background-color: #2962ff;
+  background-color: #607D8B; /* Blue Grey - Good for general overview */
 }
 
 .card:nth-child(2) {
-  background-color: #ff6d00;
+  background-color: #757575; /* Grey - Suitable for financials */
 }
 
 .card:nth-child(3) {
-  background-color: #2e7d32;
+  background-color: #795548; /* Brown - Works well for user or customer metrics */
 }
 
 .card:nth-child(4) {
-  background-color: #d50000;
+  background-color: #546E7A; /* Darker Blue Grey - For more serious data, like alerts or issues */
 }
+
+.card:nth-child(5) {
+  background-color: #9E9E9E; /* Light Grey - Neutral, good for miscellaneous data */
+}
+
+.card:nth-child(6) {
+  background-color: #455A64; /* Dark Blue Grey - Ideal for critical metrics needing attention */
+}
+
+.card:nth-child(7) {
+  background-color: #6D4C41; /* Dark Brown - Good for operational metrics */
+}
+
 
 .card-inner {
   display: flex;
