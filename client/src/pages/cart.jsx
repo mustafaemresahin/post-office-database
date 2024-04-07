@@ -9,7 +9,7 @@ import _ from 'lodash';
 import "../css/cart.css";
 
 export const Cart = () => {
-  const { cartItems, getTotalCartAmount } = useContext(ShopContext);
+  const { cartItems, getTotalCartAmount} = useContext(ShopContext);
   const totalAmount = getTotalCartAmount();
   const [unreceivedPackages, setUnreceivedPackages] = useState([]);
   const [isLoading, setIsLoading] = useState(true);

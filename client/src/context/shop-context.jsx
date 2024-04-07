@@ -146,23 +146,31 @@ export const ShopContextProvider = (props) => {
     }
   };
 
-  const checkout = async () => {
-    const cartId = localStorage.getItem('cartId');
-  
+  async function checkout() {
     try {
-      const response = await axios.delete('/api/cart_items_deletion/' + cartId); // Inside the try block
-      console.log("API response:", response.data);
+      const cartId = localStorage.getItem('cartId');
+  
+      // Construct API endpoint URL
+      const apiEndpoint = `/api/cart_items_deletion/${cartId}`;
+  
+      // Make the API request to delete cart items
+      const response = await axios.delete(apiEndpoint);
+  
       if (response.data.success) {
+        // Clear cart items locally if API deletion is successful
         setCartItems(getDefaultCart());
         console.log("Cart Items Cleared - Checkout Complete");
-      }else {
-        console.error("Error clearing cart:", response.data.error); // Handle errors
-        // You might consider reverting the state change or displaying an error message
+      } else {
+        // Handle error from API response
+        console.error("Error clearing cart:", response.data.error);
+        // Consider displaying a user-friendly error message or retrying the operation
       }
     } catch (error) {
+      // Handle general errors during the request or response handling
       console.error("Error clearing cart:", error);
+      // Consider implementing more specific error handling or retries
     }
-  };
+  }
 
   const contextValue = {
     cartItems,
