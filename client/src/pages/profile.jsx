@@ -30,48 +30,24 @@ const ProfilePage = () => {
         // If no token found, redirect to login page
         navigate("/login");
       }
-      else{
-        if(Userrole === "admin"){
-            axios.get('/api/admin')
-            .then(response => {
-                const userData = response.data.find(user => user.AdminID === id); // Find the user by id
-                if (userData) {
-                setUser(userData); // Set the found user into the users state, as an array for consistency
-                setemail(userData.Email);
-                setfirst(userData.Fname);
-                setlast(userData.Lname);
-                setaddress(userData.Address);
-                setphone(userData.Phone);
-                } else {
-                console.log('User not found');
-                // Handle the case where the user is not found
-                }
-            })
-            .catch(error => console.error('Error:', error));
-        }
-        else if(Userrole === "employee"){
-
-        }
-        else{
-            axios.get('/api/users')
-            .then(response => {
-                const userData = response.data.find(user => user.UserID === id); // Find the user by id
-                if (userData) {
-                setUser(userData); // Set the found user into the users state, as an array for consistency
-                setRole(localStorage.getItem('role'));
-                setemail(userData.Email);
-                setfirst(userData.firstname);
-                setlast(userData.lastname);
-                setaddress(userData.address);
-                setphone(userData.phonenumber);
-                } else {
-                console.log('User not found');
-                // Handle the case where the user is not found
-                }
-            })
-            .catch(error => console.error('Error:', error));
-        }
-      }
+        
+        axios.get('/api/users')
+        .then(response => {
+            const userData = response.data.find(user => user.UserID === id); // Find the user by id
+            if (userData) {
+            setUser(userData); // Set the found user into the users state, as an array for consistency
+            setRole(localStorage.getItem('role'));
+            setemail(userData.Email);
+            setfirst(userData.firstname);
+            setlast(userData.lastname);
+            setaddress(userData.address);
+            setphone(userData.phonenumber);
+            } else {
+            console.log('User not found');
+            // Handle the case where the user is not found
+            }
+        })
+        .catch(error => console.error('Error:', error));
     }, [navigate]);
     
 
@@ -80,6 +56,7 @@ const ProfilePage = () => {
   
       // Remove token from localStorage
       localStorage.removeItem('token');
+      localStorage.removeItem('role');
   
       // Navigate to the home route
       navigate('/login');
@@ -95,9 +72,9 @@ const ProfilePage = () => {
             <div className="registration-card">
                 <form onSubmit={handleNavigation}>
                     {/* Conditionally render the profile type header */}
-                    {role === "admin" && <h1 className="centered-header">Admin Profile</h1>}
-                    {role === "User" && <h1 className="centered-header">Employee Profile</h1>}
-                    {role === "customer" && <h1 className="centered-header">Customer Profile</h1>}
+                    {role === "Admin" && <h1 className="centered-header">Admin Profile</h1>}
+                    {role === "Driver" && <h1 className="centered-header">Employee Profile</h1>}
+                    {role === "User" && <h1 className="centered-header">Customer Profile</h1>}
     
                     <table className="profile-table">
                         <tbody>
