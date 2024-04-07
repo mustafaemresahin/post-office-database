@@ -83,13 +83,13 @@ function Sidebar({ openSidebarToggle, OpenSidebar }) {
 
 function Home() {
 
-  const [userCount, setUsers] = useState(0);
-  const [itemCount, setItems] = useState(0);
-  const [inventoryCount, setInventoryCount] = useState(0);
-  const [vehicleCount, setVehicleCount] = useState(0);
-  const [employeeCount, setEmployeeCount] = useState(0);
-  const [packageCount, setPackageCount] = useState(0);
-  const [departmentCount, setDepartmentCount] = useState(0);
+  const [userCount, setUsers] = useState(null);
+  const [itemCount, setItems] = useState(null);
+  const [inventoryCount, setInventoryCount] = useState(null);
+  const [vehicleCount, setVehicleCount] = useState(null);
+  const [employeeCount, setEmployeeCount] = useState(null);
+  const [packageCount, setPackageCount] = useState(null);
+  const [departmentCount, setDepartmentCount] = useState(null);
 
   // Fetch counts from the API
   useEffect(() => {
