@@ -93,27 +93,25 @@ function AdminUser() {
 
     return (
         <div className="user-container">
-            <br></br>
-            <br></br>
-            <h1>User information</h1>
-            <table className="user-table">
+            <h2>User information</h2>
+            <table>
                 <thead>
                     <tr>
-                        <th className="user-th">UserID</th>
-                        <th className="user-th">Username</th>
-                        <th className="user-th">Email</th>
-                        <th className="user-th">First Name</th>
-                        <th className="user-th">Last Name</th>
-                        <th className="user-th">Address</th>
-                        <th className="user-th">Phone Number</th>
-                        <th className="user-th">Role</th>
+                        <th>UserID</th>
+                        <th>Username</th>
+                        <th>Email</th>
+                        <th>First Name</th>
+                        <th>Last Name</th>
+                        <th>Address</th>
+                        <th>Phone Number</th>
+                        <th>Role</th>
                         {/* <th className="user-th">Action</th> */}
                     </tr>
                 </thead>
                 <tbody>
                     {data && data.map((user) => {
                         return (
-                            <tr key={user.UserID} className="user-tr">
+                            <tr key={user.UserID}>
                                 <td>{user.UserID}</td>
                              <td>{user.CustomerUser}</td>
                                 <td>{user.Email}</td>
