@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from "react";
 import '../css/adminDash.css';
-
+import axios from 'axios';
 
 
 function AdminApp() {
@@ -82,6 +82,51 @@ function Sidebar({ openSidebarToggle, OpenSidebar }) {
 }
 
 function Home() {
+
+  const [userCount, setUsers] = useState(0);
+  const [itemCount, setItems] = useState(0);
+  const [inventoryCount, setInventoryCount] = useState(0);
+  const [vehicleCount, setVehicleCount] = useState(0);
+  const [employeeCount, setEmployeeCount] = useState(0);
+  const [packageCount, setPackageCount] = useState(0);
+  const [departmentCount, setDepartmentCount] = useState(0);
+
+  // Fetch counts from the API
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const users = await axios.get('/api/users');
+        const items = await axios.get('/api/storeitem');
+        const vehicles = await axios.get('/api/vehiclelist');
+        const employees = await axios.get('/api/employees');
+        const packages = await axios.get('/api/package');
+        const departments = await axios.get('/api/departments');
+
+        // Update state with the fetched counts
+        const usersCount = users.data.filter(user => user.role === "User").length;
+        setUsers(usersCount);
+
+        setItems(items.data.length);
+
+        setVehicleCount(vehicles.data.length);
+
+        const totalInventory = items.data.reduce((acc, currentItem) => acc + currentItem.Inventory, 0);
+        setInventoryCount(totalInventory);
+
+        setEmployeeCount(employees.data.length);
+
+        setPackageCount(packages.data.length);
+
+        setDepartmentCount(departments.data.length);
+
+      } catch (error) {
+        console.error('Failed to fetch counts:', error);
+      }
+    };
+
+    fetchData();
+  }, []);
+
   return (
     <main className='main-container'>
       <div className='main-title'>
@@ -89,29 +134,47 @@ function Home() {
       </div>
 
       <div className='main-cards'>
-        <div className='card'>
-          <div className='card-inner'>
-            <h3>PRODUCTS</h3>
-          </div>
-          <h1>300</h1>
-        </div>
-        <div className='card'>
-          <div className='card-inner'>
-            <h3>CATEGORIES</h3>
-          </div>
-          <h1>12</h1>
-        </div>
-        <div className='card'>
+      <div className='card'>
           <div className='card-inner'>
             <h3>CUSTOMERS</h3>
           </div>
-          <h1>33</h1>
+          <h1>{userCount}</h1>
         </div>
         <div className='card'>
           <div className='card-inner'>
-            <h3>ALERTS</h3>
+            <h3>INVENTORY</h3>
           </div>
-          <h1>42</h1>
+          <h1>{inventoryCount}</h1>
+        </div>
+        <div className='card'>
+          <div className='card-inner'>
+            <h3>STORE ITEMS</h3>
+          </div>
+          <h1>{itemCount}</h1>
+        </div>
+        <div className='card'>
+          <div className='card-inner'>
+            <h3>VEHICLES</h3>
+          </div>
+          <h1>{vehicleCount}</h1>
+        </div>
+        <div className='card'>
+          <div className='card-inner'>
+            <h3>EMPLOYEES</h3>
+          </div>
+          <h1>{employeeCount}</h1>
+        </div>
+        <div className='card'>
+          <div className='card-inner'>
+            <h3>PACKAGES</h3>
+          </div>
+          <h1>{packageCount}</h1>
+        </div>
+        <div className='card'>
+          <div className='card-inner'>
+            <h3>DEPARTMENTS</h3>
+          </div>
+          <h1>{departmentCount}</h1>
         </div>
       </div>
     </main>
