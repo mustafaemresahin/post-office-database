@@ -43,7 +43,7 @@ function Notification() {
         <div className="notifcation-container">
           <header className="header-notify">   
             <div className="notification-header">
-              <h1>Notification</h1>
+              <h1>Notifications</h1>
             </div>
           </header>
           <main className="notification-card">
