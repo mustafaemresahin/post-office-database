@@ -16,54 +16,31 @@ const Header = () => {
   useEffect(() => {
     const token = localStorage.getItem('token');
     const id = localStorage.getItem('id');
-    const role = localStorage.getItem('role');
     setIsLoggedIn(!!token);
     if (!token) {
       // If no token found, do nothing
     }
     else{
-      if(role === "admin"){
-        axios.get('/api/admin')
-        .then(response => {
-            const userData = response.data.find(user => user.AdminID === id); // Find the user by id
-            if (userData) {
-              setName(userData.Fname);
-              setIsAdmin(true);
-            } else {
-              console.log('User not found');
-              // Handle the case where the user is not found
-            }
-          })
-          .catch(error => console.error('Error:', error));
-      }
-      else if(role === "employee"){
         axios.get('/api/users')
         .then(response => {
             const userData = response.data.find(user => user.UserID === id); // Find the user by id
             if (userData) {
               setName(userData.firstname);
-              setIsEmployee(true);
+              if (userData.role === "User"){
+                setIsUser(true);
+              }
+              else if (userData.role === "Driver" || userData.role === "Manager" ||userData.role === "Service Clerk"){
+                setIsEmployee(true);
+              }
+              else{
+                setIsAdmin(true);
+              }
             } else {
               console.log('User not found');
               // Handle the case where the user is not found
             }
           })
           .catch(error => console.error('Error:', error));
-      }
-      else{
-        axios.get('/api/users')
-        .then(response => {
-            const userData = response.data.find(user => user.UserID === id); // Find the user by id
-            if (userData) {
-              setName(userData.firstname);
-              setIsUser(true);
-            } else {
-              console.log('User not found');
-              // Handle the case where the user is not found
-            }
-          })
-          .catch(error => console.error('Error:', error));
-      }
     }
   }, []);
 
