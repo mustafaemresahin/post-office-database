@@ -1060,71 +1060,95 @@ const server = http.createServer( async (req, res) => {
     //           }
     //       );
     //   }
-      if (req.url.startsWith("/api/userdelete/")) {
-        const parts = req.url.split('/');
-        const userID = parts[parts.length - 1];
-        db.query(
-          "DELETE FROM customer_user WHERE userID = ?",
-          [userID],
-          (error) => {
-            if (error) {
-              console.error('Vehicle deletion error:', error); // Corrected to use 'error'
-              res.writeHead(500, { "Content-Type": "application/json" });
-              res.end(JSON.stringify({ error: 'Failed to remove vehicle' }));
-              return;
-            } else {
-              res.writeHead(201, { "Content-Type": "application/json" });
-              res.end(JSON.stringify({ message: 'Vehicle deleted successfully' }));
-              return;
-            }
-          });
-        }
-     
-        else if (pathSegments.length === 5 && pathSegments[2] === "cart_item_package") {
-        const PackageID = pathSegments[4];
-      
-        db.query("DELETE FROM cart_items WHERE PackageID = ?", [PackageID], (error) => {
+    if (req.url.startsWith("/api/userdelete/")) {
+      const parts = req.url.split('/');
+      const userID = parts[parts.length - 1];
+      db.query(
+        "DELETE FROM customer_user WHERE userID = ?",
+        [userID],
+        (error) => {
           if (error) {
-            // Handle cart_items deletion error
+            console.error('Vehicle deletion error:', error); // Corrected to use 'error'
             res.writeHead(500, { "Content-Type": "application/json" });
-            res.end(JSON.stringify({ error: error}));
+            res.end(JSON.stringify({ error: 'Failed to remove vehicle' }));
+            return;
           } else {
-            db.query("DELETE FROM package WHERE PackageID = ?", [PackageID], (packageError) => {
-              if (packageError) {
-                // Handle package deletion error
-                res.writeHead(500, { "Content-Type": "application/json" });
-                res.end(JSON.stringify({ error: 'Failed to remove package' }));
-              } else {
-                // Both deletions successful
-                res.writeHead(200, {"Content-Type": "application/json"});
-                res.end(JSON.stringify({ message: "cart_item and package deleted successfully" }));
-              }
-            });
+            res.writeHead(201, { "Content-Type": "application/json" });
+            res.end(JSON.stringify({ message: 'Vehicle deleted successfully' }));
+            return;
           }
         });
-      }  
+      }
       
-      // api for deleting vehicles
-      else if (req.url.startsWith("/api/vehicledelete/")) {
-        const parts = req.url.split('/');
-        const vehicleID = parts[parts.length - 1];
+    else if (pathSegments.length === 5 && pathSegments[2] === "cart_item_package") {
+      const PackageID = pathSegments[4];
     
-        db.query(
-            "DELETE FROM vehicles WHERE vehicleID = ?",
-            [vehicleID],
-            (error) => {
-                if (error) {
-                    console.error('Vehicle deletion error:', error); // Corrected to use 'error'
-                    res.writeHead(500, { "Content-Type": "application/json" });
-                    res.end(JSON.stringify({ error: 'Failed to remove vehicle' }));
-                    return;
-                } else {
-                    res.writeHead(201, { "Content-Type": "application/json" });
-                    res.end(JSON.stringify({ message: 'Vehicle deleted successfully' }));
-                    return;
-                }
-            }
-        );
+      // Delete cart item using prepared statement for security
+      const deleteCartItemQuery = "DELETE FROM cart_items WHERE PackageID = ?";
+      db.query(deleteCartItemQuery, [PackageID], (error) => {
+        if (error) {
+          console.error("Error deleting cart item:", error); // Log the error for debugging
+          res.writeHead(500, { "Content-Type": "application/json" });
+          res.end(JSON.stringify({ error: error.message })); // Informative error message
+          return; // Exit the callback function to prevent unnecessary package deletion
+        }
+    
+        // Delete package upon successful cart item deletion
+        const deletePackageQuery = "DELETE FROM package WHERE PackageID = ?";
+        db.query(deletePackageQuery, [PackageID], (packageError) => {
+          if (packageError) {
+            console.error("Error deleting package:", packageError); // Log the error
+            res.writeHead(500, { "Content-Type": "application/json" });
+            res.end(JSON.stringify({ error: 'Failed to remove package' }));
+          } else {
+            res.writeHead(200, { "Content-Type": "application/json" });
+            res.end(JSON.stringify({ message: "cart_item and package deleted successfully" }));
+          }
+        });
+      });
+    }
+    
+    
+    else if (pathSegments.length === 4 && pathSegments[1] === "cart_items_deletion") {
+      const cartId = pathSegments[3];
+
+      // Delete cart item using prepared statement for security
+      const deleteCartItemQuery = "DELETE FROM cart_items WHERE CartID = ?";
+      db.query(deleteCartItemQuery, [cartId], (error) => {
+        if (error) {
+          console.error("Error deleting cart item:", error); // Log the error for debugging
+          res.writeHead(500, { "Content-Type": "application/json" });
+          res.end(JSON.stringify({ error: error.message })); // Informative error message
+          return; // Exit the callback function to prevent unnecessary package deletion
+        } else {
+          res.writeHead(200, { "Content-Type": "application/json" });
+          res.end(JSON.stringify({ message: "cart_items deleted successfully" }));
+        }
+      });
+    }
+    
+    // api for deleting vehicles
+    else if (req.url.startsWith("/api/vehicledelete/")) 
+    {
+      const parts = req.url.split('/');
+      const vehicleID = parts[parts.length - 1];
+
+      db.query(
+          "DELETE FROM vehicles WHERE vehicleID = ?",
+          [vehicleID],
+          (error) => {
+              if (error) {
+                  console.error('Vehicle deletion error:', error); // Corrected to use 'error'
+                  res.writeHead(500, { "Content-Type": "application/json" });
+                  res.end(JSON.stringify({ error: 'Failed to remove vehicle' }));
+                  return;
+              } else {
+                  res.writeHead(201, { "Content-Type": "application/json" });
+                  res.end(JSON.stringify({ message: 'Vehicle deleted successfully' }));
+                  return;
+              }
+          }
+      );
     }
   }
 

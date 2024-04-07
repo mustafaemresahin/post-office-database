@@ -19,7 +19,7 @@ function Checkout() {
   const [expiration, setExpiration] = useState(''); 
   const [CVV, setCVV] = useState(''); 
   const [userId, setUserId] = useState(null);
-  const { cartItems, getTotalCartAmount } = useContext(ShopContext);
+  const { cartItems, getTotalCartAmount, checkout} = useContext(ShopContext);
   const totalAmount = getTotalCartAmount();
   const [unreceivedPackages, setUnreceivedPackages] = useState([]);
 
@@ -77,6 +77,7 @@ function Checkout() {
               // Handle successful checkout
               alert("Checkout successful!");
               navigate('/home');
+              checkout();
               // Reset form fields or redirect to success page here
           } else {
               // Handle errors or unsuccessful checkout
