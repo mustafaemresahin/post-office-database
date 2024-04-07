@@ -73,7 +73,7 @@ const ProfilePage = () => {
                 <form onSubmit={handleNavigation}>
                     {/* Conditionally render the profile type header */}
                     {role === "Admin" && <h1 className="centered-header">Admin Profile</h1>}
-                    {role === "Driver" && <h1 className="centered-header">Employee Profile</h1>}
+                    {role === "Driver" && role === "Service Clerk" && role === "Manager" && <h1 className="centered-header">Employee Profile</h1>}
                     {role === "User" && <h1 className="centered-header">Customer Profile</h1>}
     
                     <table className="profile-table">
