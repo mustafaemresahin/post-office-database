@@ -1,58 +1,60 @@
-.user-table {
-  border-collapse: collapse;
-  width: 100%;
-}
-
-.btn-add {
-  border: 1px solid #ffffff;
-  text-align: center; /* Align text to center */
-  padding: 8px;
-  font-size: 20px;
-  background-color: rgb(205, 235, 253);
-  height: auto; /* Adjust height to fit content */
-  display: inline-block; /* Make it inline-block to fit content */
-  text-decoration: none; /* Remove default underline */
-  color: black; /* Change text color */
-  cursor: pointer; /* Change cursor style to indicate button */
-}
-
-.btn-add:hover {
-  background-color: #9fc5e8; /* Change background color on hover */
-}
-
-
-.user-th {
-  border: 1px solid #ffffff;
-  text-align: left;
-  padding: 8px;
-  font-size: 20px;
-  background-color: rgb(117, 201, 250);
-}
-
-.user-tr td {
-  border: 1px solid #ffffff;
-  text-align: left;
-  padding: 8px;
-  font-size: 20px;
-  background-color: rgb(205, 235, 253);
-  height: 20px; /* Set a fixed height for cells */
-}
-
-/* Additional styling for form elements */
-.user-container form {
-  display: flex;
-  gap: 5px;
-}
-
-.user-container form td:last-child {
-  display: flex;
-  justify-content: space-evenly;
-}
-
-.user-container form * {
-  font-size: 20px;
-}
-
 .user-container {
-  padding: 30px;
+  font-family: Arial, sans-serif;
+  margin: 30px;
+  margin-top:100px;
+  padding: 20px;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  overflow:hidden;
+  overflow-x: auto;
+}
+
+.user-container h2 {
+  color: #333;
+  text-align: center;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+table th, table td {
+  text-align: left;
+  padding: 8px;
+  color: #555;
+}
+
+table th {
+  background-color: #eee;
+  color: #333;
+}
+
+table tr:nth-child(odd) {
+  background-color: #fdfdfd;
+}
+
+table tr:hover {
+  background-color: #f1f1f1;
+}
+
+/* Style for the responsive table */
+@media screen and (max-width: 600px) {
+  table {
+    display: block;
+    overflow-x: auto;
+  }
+
+  table th, table td {
+    text-align: center;
+  }
+}
+
+.back-button {
+  background-color: #007bff;
+  color:#eee;
+  padding:10px;
+  border-radius: 10px;
+  text-decoration: none;
 }

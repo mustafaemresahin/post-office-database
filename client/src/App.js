@@ -26,6 +26,9 @@ import Reports from './pages/reports'
 import AdminStoreItems from './pages/adminStoreItems';
 import Notification from './pages/notification';
 import Employeesanddepartments from './pages/employeesanddepartments';
+import Vehiclesandemployees from './pages/vehiclesandemployees';
+import Packagesender from './pages/packagesender';
+
 
 const App = () => {
 
@@ -57,6 +60,10 @@ const App = () => {
           <Route path="/notification" element={<Notification />} />
           <Route path="/reports" element={<Reports />} />
           <Route path="/employeesanddepartments" element={<Employeesanddepartments />} />
+          <Route path="/vehiclesandemployees" element={<Vehiclesandemployees />} />
+          <Route path="/packagesender" element={<Packagesender />} />
+
+
           <Route path="/employees" element={<EmployeeList />} />
           <Route path="/vehicleEdit" element={<VehicleEdit />} />
 

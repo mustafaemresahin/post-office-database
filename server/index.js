@@ -245,6 +245,42 @@ const server = http.createServer( async (req, res) => {
       return;
     }
 
+    else if (req.url === "/api/vehiclesandemployees"){
+      db.query(
+        "SELECT v.VehicleID, v.Location, v.Status, v.Type, e.EmployeeID, e.Fname, e.Lname, e.Phone FROM vehicles v JOIN employee e ON v.EmployeeID = e.EmployeeID;",
+        (error, result) => {
+          if (error) {
+            res.writeHead(500, { "Content-Type": "application/json" });
+            res.end(JSON.stringify({ error: error }));
+            return;
+          } else {
+            res.writeHead(200, { "Content-Type": "application/json" });
+            res.end(JSON.stringify(result));
+            return;
+          }
+        }
+      );
+      return;
+    }
+
+    else if (req.url === "/api/packagesender"){
+      db.query(
+        "SELECT p.PackageID, p.SenderID, p.Weight, p.Dimensions, p.Type, p.Status, p.DateSent, p.destination, cu.CustomerUser, cu.firstname, cu.lastname, cu.Email FROM package p JOIN customer_user cu ON p.SenderID = cu.UserID;",
+        (error, result) => {
+          if (error) {
+            res.writeHead(500, { "Content-Type": "application/json" });
+            res.end(JSON.stringify({ error: error }));
+            return;
+          } else {
+            res.writeHead(200, { "Content-Type": "application/json" });
+            res.end(JSON.stringify(result));
+            return;
+          }
+        }
+      );
+      return;
+    }
+
     // get ALL vehicles
     else if (req.url === "/api/vehiclelist") {
       db.query(
@@ -993,8 +1029,6 @@ const server = http.createServer( async (req, res) => {
     });
 }
 
-
-    }    
     // API for adding a vehicle
     else if (req.url === "/api/vehicleadd") {
       let body = '';
@@ -1078,6 +1112,9 @@ const server = http.createServer( async (req, res) => {
         );
       });
     }  
+
+    }    
+    
   else if(req.method === "DELETE") {
     const reqURL = url.parse(req.url, true);
     const pathSegments = reqURL.pathname.split("/");

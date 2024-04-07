@@ -1,4 +1,4 @@
-.employees {
+.packages-report-container {
     font-family: Arial, sans-serif;
     margin: 30px;
     margin-top:100px;
@@ -10,7 +10,7 @@
     overflow-x: auto;
   }
   
-  .employees h2 {
+  .packages-report-container h2 {
     color: #333;
     text-align: center;
   }

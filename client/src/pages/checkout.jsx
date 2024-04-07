@@ -19,10 +19,9 @@ function Checkout() {
   const [expiration, setExpiration] = useState(''); 
   const [CVV, setCVV] = useState(''); 
   const [userId, setUserId] = useState(null);
-  const { cartItems, getTotalCartAmount, checkout } = useContext(ShopContext);
+  const { cartItems, getTotalCartAmount } = useContext(ShopContext);
   const totalAmount = getTotalCartAmount();
   const [unreceivedPackages, setUnreceivedPackages] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
 
   const navigate = useNavigate();
 
@@ -97,43 +96,41 @@ function Checkout() {
       const id = localStorage.getItem('id');
       if (!token) {
       navigate("/login");}
-      else{
-          axios.get('/api/users')
-          .then(response => {
-              const userData = response.data.find(user => user.UserID === id); // Find the user by id
-              if (userData) {
-                setUserId(id); // Set the found user into the users state, as an array for consistency
-              } else {
-                console.log('User not found');
-                // Handle the case where the user is not found
-              }
-            })
-            .catch(error => console.error('Error:', error));
-            return;
-        }
+
+
+      axios.get('/api/users')
+      .then(response => {
+          const userData = response.data.find(user => user.UserID === id); // Find the user by id
+          if (userData) {
+            setUserId(id); // Set the found user into the users state, as an array for consistency
+          } else {
+            console.log('User not found');
+            // Handle the case where the user is not found
+          }
+        })
+        .catch(error => console.error('Error:', error));
 
       
   
-        const fetchUserData = async () => {
-          try {
-            axios.get('/api/package')
-            .then(response => {
-                const packageData = response.data.filter(pkg => pkg.SenderID === id && pkg.Status === 'Pending'); // Find the package by id
-                if (!packageData) {
-                  console.log('No pending packages');
-                }
-                else{
-                  setUnreceivedPackages(packageData);
-                  console.log(packageData);
-                }
-            })
-            .catch(error => console.error('Error:', error));
-          } catch (error) {
-            console.error('Error:', error);
-          }
-        };    
+      const fetchUserData = async () => {
+        try {
+          axios.get('/api/package')
+          .then(response => {
+              const packageData = response.data.filter(pkg => pkg.SenderID === id && pkg.Status === 'Pending'); // Find the package by id
+              if (!packageData) {
+                console.log('No pending packages');
+              }
+              else{
+                setUnreceivedPackages(packageData);
+                console.log(packageData);
+              }
+          })
+          .catch(error => console.error('Error:', error));
+        } catch (error) {
+          console.error('Error:', error);
+        }
+      };    
       fetchUserData();
-      setIsLoading(false);
   }, [navigate]);
 
   return (

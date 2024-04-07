@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import '../css/register.css';
 import '../css/vehicles.css';
 
 const VehicleAdd = () => {
@@ -47,7 +46,6 @@ const VehicleAdd = () => {
     <div className="vehicle-card">
       <h2>Add Vehicle</h2>
       <form onSubmit={handleSubmit}> 
-
         <label htmlFor="location">Location:</label>
         <input type="text" id="location" name="location" value={vehicleData.location} onChange={handleChange} />
         <label htmlFor="status">Status:</label>
@@ -58,7 +56,6 @@ const VehicleAdd = () => {
         <input type="text" id="unit" name="unit" value={vehicleData.unit} onChange={handleChange} />
         <label htmlFor="employeeID">Employee ID:</label>
         <input type="text" id="employeeID" name="employeeID" value={vehicleData.employeeID} onChange={handleChange} />
-
         <button type="submit">Add Vehicle</button>
       </form>
     </div>

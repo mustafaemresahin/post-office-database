@@ -1,10 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
 import '../css/employeesanddepartments.css';
 
 function EmployeesandDepartments() {
   const [data, setData] = useState([]);
-  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -27,7 +25,7 @@ function EmployeesandDepartments() {
   return (
     <div className="employees-departments">
         <a href="/reports" className='back-button'>Back</a>
-      <h2>Employees and Departments</h2>
+      <h2>Employee Department Assignments</h2>
       <table>
         <thead>
           <tr>

@@ -1,7 +1,6 @@
 .custom-header {
   background-color: #3d3d3d; /* Bootstrap primary color */
   color: #fff;
-  padding: 0.1rem 0.1rem;
   position: fixed;
   top: 0;
   width: 100%;
@@ -16,7 +15,7 @@
   display: flex;
   justify-content: center; /* Center items within the container */
   align-items: center;
-  max-width: 1060px;
+  max-width: 10000px;
   width: 100%; /* Ensure container takes full width for proper centering */
 }
 
@@ -39,17 +38,16 @@
   display: flex;
   justify-content: center; /* Center navbar items */
   width: 100%; /* Full width to ensure proper centering */
-  gap: 10px; /* Adjust the gap as needed */
 }
 
 .header-nav a {
   color: #fff;
   text-decoration: none;
-  padding: 0.5rem 0.5rem;
   border-radius: 0.25rem;
   transition: background-color 0.2s ease-in-out;
-  margin-top:10px;
-  margin-bottom:10px;
+  padding:10px;
+  margin-left:10px;
+  margin-right:10px;
 }
 
 .header-nav a:hover {

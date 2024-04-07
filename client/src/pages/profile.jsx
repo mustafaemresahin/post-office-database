@@ -24,6 +24,8 @@ const ProfilePage = () => {
       const token = localStorage.getItem('token');
       const id = localStorage.getItem('id');
       const Userrole = localStorage.getItem('role');
+      console.log(Userrole);
+      setRole(Userrole);
       if (!token) {
         // If no token found, redirect to login page
         navigate("/login");
@@ -35,7 +37,6 @@ const ProfilePage = () => {
                 const userData = response.data.find(user => user.AdminID === id); // Find the user by id
                 if (userData) {
                 setUser(userData); // Set the found user into the users state, as an array for consistency
-                setRole(localStorage.getItem('role'));
                 setemail(userData.Email);
                 setfirst(userData.Fname);
                 setlast(userData.Lname);
@@ -95,7 +96,7 @@ const ProfilePage = () => {
                 <form onSubmit={handleNavigation}>
                     {/* Conditionally render the profile type header */}
                     {role === "admin" && <h1 className="centered-header">Admin Profile</h1>}
-                    {role === "employee" && <h1 className="centered-header">Employee Profile</h1>}
+                    {role === "User" && <h1 className="centered-header">Employee Profile</h1>}
                     {role === "customer" && <h1 className="centered-header">Customer Profile</h1>}
     
                     <table className="profile-table">

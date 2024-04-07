@@ -7,6 +7,7 @@ const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
+  const [isUser, setIsUser] = useState(false);
   const [isEmployee, setIsEmployee] = useState(false);
 
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
@@ -55,6 +56,7 @@ const Header = () => {
             const userData = response.data.find(user => user.UserID === id); // Find the user by id
             if (userData) {
               setName(userData.firstname);
+              setIsUser(true);
             } else {
               console.log('User not found');
               // Handle the case where the user is not found
@@ -70,19 +72,23 @@ const Header = () => {
       <div className="container">
         <button className="menu-toggle" onClick={toggleMenu}>☰</button>
         <nav onClick={toggleMenu} className={`header-nav ${isMenuOpen ? 'show' : ''}`}>
-          <NavLink to="/home" className={({ isActive }) => isActive ? "activeLink" : ""}>Home</NavLink>
-          <NavLink to="/Send Package" className={({ isActive }) => isActive ? "activeLink" : ""}>Send Package</NavLink>
-          <NavLink to="/Shop" className={({ isActive }) => isActive ? "activeLink" : ""}>Shop</NavLink>
-          <NavLink to="/Cart" className={({ isActive }) => isActive ? "activeLink" : ""}>Cart</NavLink>
-          <NavLink to="/track" className={({ isActive }) => isActive ? "activeLink" : ""}>Track Package</NavLink>
-          {isAdmin && <NavLink to="/adminDash" className={({ isActive }) => isActive ? "activeLink" : ""}>Admin</NavLink>}
-          {isAdmin && <NavLink to="/Employee" className={({ isActive }) => isActive ? "activeLink" : ""}>Employee</NavLink>}
+          <NavLink to="/home" className={({ isActive }) => isActive ? "activeLink" : ""}>Home</NavLink>          
+          {isUser && <NavLink to="/Send Package" className={({ isActive }) => isActive ? "activeLink" : ""}>Send Package</NavLink>}
+          {!isAdmin && !isEmployee && <NavLink to="/Shop" className={({ isActive }) => isActive ? "activeLink" : ""}>Shop</NavLink>}
+          {isUser && <NavLink to="/Cart" className={({ isActive }) => isActive ? "activeLink" : ""}>Cart</NavLink>}
+          {!isAdmin && !isEmployee && <NavLink to="/track" className={({ isActive }) => isActive ? "activeLink" : ""}>Track Package</NavLink>}
+          {isAdmin && <NavLink to="/adminDash" className={({ isActive }) => isActive ? "activeLink" : ""}>Admin Dashboard</NavLink>}
+          {isAdmin && <NavLink to="/adminPack" className={({ isActive }) => isActive ? "activeLink" : ""}>Packages</NavLink>}
+          {isAdmin && <NavLink to="/adminUser" className={({ isActive }) => isActive ? "activeLink" : ""}>Customers</NavLink>}
+          {isAdmin && <NavLink to="/employees" className={({ isActive }) => isActive ? "activeLink" : ""}>Employees</NavLink>}
+          {isAdmin && <NavLink to="/adminStoreItems" className={({ isActive }) => isActive ? "activeLink" : ""}>Store Items</NavLink>}
+          {isAdmin && <NavLink to="/reports" className={({ isActive }) => isActive ? "activeLink" : ""}>Reports</NavLink>}
           {isEmployee && <NavLink to="/Employee" className={({ isActive }) => isActive ? "activeLink" : ""}>Employee</NavLink>}
           {isAdmin && <NavLink to="/vehicles" className={({ isActive }) => isActive ? "activeLink" : ""}>Vehicles</NavLink>}
           {isEmployee && <NavLink to="/vehicles" className={({ isActive }) => isActive ? "activeLink" : ""}>Vehicles</NavLink>}
           {!isLoggedIn && <NavLink to="/login" className={({ isActive }) => isActive ? "activeLink" : ""}>Login/Signup</NavLink>}
           {isLoggedIn && <NavLink to="/Profile" className={({ isActive }) => isActive ? "activeLink" : ""}>Logged in as {name}</NavLink>}
-          {isLoggedIn && <NavLink to="/notification" className={({ isActive }) => isActive ? "activeLink" : ""}>Notification</NavLink>}
+          {isLoggedIn && <NavLink to="/notification" className={({ isActive }) => isActive ? "activeLink" : ""}>Notifications</NavLink>}
 
         </nav>
       </div>

@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 
 import axios from 'axios';
-import '../css/register.css';
 import '../css/vehicles.css';
 
 const VehiclesTable = () => {
@@ -48,11 +47,10 @@ const VehiclesTable = () => {
 };
 
   return (
-    <div className='d-flex flex-column justify-content-center align-itmes-center bg-light vh-100'>
-      <div className='w-75 rounded bg-white border shadow p-4'>
-        <div className='d-flex justify-content-end'>
+    <div className='vehicles-employees-container'>
+      <div className='inner'>
         <h1>Vehicle List</h1>
-        <table className='table table-striped'>
+        <table className='vehicles-table table-striped'>
           <thead>
             <tr>
               <th>VehicleID</th>
@@ -61,7 +59,7 @@ const VehiclesTable = () => {
               <th>Status</th>
               <th>Type</th>
               <th>Unit</th>
-              <td>EmployeeID</td>
+              <th>EmployeeID</th>
             </tr>
           </thead>
           <tbody>
@@ -89,9 +87,9 @@ const VehiclesTable = () => {
           <Link to="/addvehicles" className="add-vehicle-link">Add Vehicle</Link>
         </div>
       </div>
-      </div>
     </div>
   );
+  
 };
 
 export default VehiclesTable;

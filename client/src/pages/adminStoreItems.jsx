@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import '../css/register.css';
-import '../css/vehicles.css';
+import '../css/adminUser.css';
 
 const VehiclesTable = () => {
   const [storeitems, setStoreItems] = useState([]);
@@ -22,11 +21,9 @@ const VehiclesTable = () => {
 
 
   return (
-    <div className='inventory-container'>
-      <div className='inventory'>
-        <div className='inv'>
-        <h1>Store Items</h1>
-        <table className='inventoryy'>
+    <div className='user-container'>
+        <h2>Store Items</h2>
+        <table>
           <thead>
             <tr>
               <th>Item ID</th>
@@ -41,7 +38,7 @@ const VehiclesTable = () => {
           {storeitems && storeitems.map((items) => {
           
                         return (
-                            <tr key={items.ItemID} className="user-tr">
+                            <tr key={items.ItemID}>
                                 <td>{items.ItemID}</td>
                                 <td>{items.Name}</td>
                                 <td>{items.Cost}</td>
@@ -58,8 +55,6 @@ const VehiclesTable = () => {
           </tbody>
         </table>
       </div>
-      </div>
-    </div>
   );
 };
 
