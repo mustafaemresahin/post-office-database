@@ -263,6 +263,24 @@ const server = http.createServer( async (req, res) => {
       return;
     }
 
+    else if (req.url === "/api/packagesender"){
+      db.query(
+        "SELECT p.PackageID, p.SenderID, p.Weight, p.Dimensions, p.Type, p.Status, p.DateSent, p.destination, cu.CustomerUser, cu.firstname, cu.lastname, cu.Email FROM package p JOIN customer_user cu ON p.SenderID = cu.UserID;",
+        (error, result) => {
+          if (error) {
+            res.writeHead(500, { "Content-Type": "application/json" });
+            res.end(JSON.stringify({ error: error }));
+            return;
+          } else {
+            res.writeHead(200, { "Content-Type": "application/json" });
+            res.end(JSON.stringify(result));
+            return;
+          }
+        }
+      );
+      return;
+    }
+
     // get ALL vehicles
     else if (req.url === "/api/vehiclelist") {
       db.query(
