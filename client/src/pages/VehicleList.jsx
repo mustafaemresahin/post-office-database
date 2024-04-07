@@ -68,7 +68,7 @@ const VehiclesTable = () => {
                         return (
                             <tr key={user.VehicleID} className="user-tr">
                                 <td>{user.VehicleID}</td>
-                                <td>{user.Timestamp}</td>
+                                <td>{(new Date(user.Timestamp).toLocaleString("en-US", { year: 'numeric', month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit', hour12: true }))}</td>
                                 <td>{user.Location}</td>
                                 <td>{user.Status}</td>
                                 <td>{user.Type}</td>
@@ -76,7 +76,8 @@ const VehiclesTable = () => {
                                 <td>{user.EmployeeID}</td>
                                 <td>
                                   <button onClick={(event) => handleVehicleEdit(event, user.VehicleID)}>Edit</button>
-                                  <button onClick={() => handleDeleteVehicle(user.VehicleID)}>Delete</button>                                </td>
+                                  <button onClick={() => handleDeleteVehicle(user.VehicleID)}>Delete</button>
+                                </td>
                             </tr>
                         )
                     
