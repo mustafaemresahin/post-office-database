@@ -24,32 +24,30 @@ function AdminPack() {
 
 
     return (
-        <div className="admin_pack">
-            <br></br>
-            <br></br>
-            <h1>Package Information</h1>
-            <table className="table table-striped" style={{width:"50%"}}>
+        <div className="user-container">
+            <h2>Package Information</h2>
+            <table>
                 <thead>
                     <tr>
-                        <th className="package-th">PackageID</th>
-                        <th className="package-th">SenderID</th>
-                        <th className="package-th">Weight</th>
-                        <th className="package-th">Dimensions</th>
-                        <th className="package-th">Type</th>
-                        <th className="package-th">Status</th>
-                        <th className="package-th">DateSent</th>
-                        <th className="package-th">VehicleID</th>
-                        <th className="package-th">Destination</th>
-                        <th className="package-th">Expedited Shipping</th>
-                        <th className="package-th">Recipient First Name</th>
-                        <th className="package-th">Recipient Last Name</th>
-                        <th className="package-th">Cost</th>
+                        <th>PackageID</th>
+                        <th>SenderID</th>
+                        <th>Weight</th>
+                        <th>Dimensions</th>
+                        <th>Type</th>
+                        <th>Status</th>
+                        <th>DateSent</th>
+                        <th>VehicleID</th>
+                        <th>Destination</th>
+                        <th>Expedited Shipping</th>
+                        <th>Recipient First Name</th>
+                        <th>Recipient Last Name</th>
+                        <th>Cost</th>
                     </tr>
                 </thead>
                 <tbody>
                     {pack && pack.map((p) => {
                         return (
-                            <tr key={p.PackageID} className="pack-tr">
+                            <tr key={p.PackageID}>
                                 <td>{p.PackageID}</td>
                                 <td>{p.SenderID}</td>
                                 <td>{p.Weight}</td>
