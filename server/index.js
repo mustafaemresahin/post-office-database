@@ -848,104 +848,106 @@ const server = http.createServer( async (req, res) => {
         return;
       });
     }
-
-   
-//-----------------------------------
-//API for completing order
+    //API for completing order
     else if (req.url === "/api/checkout") {
-
       let data = "";
+    
       req.on("data", (chunk) => {
         data += chunk;
       });
-
-    req.on('end', async () => {
+    
+      req.on("end", async () => {
         try {
-            const body = JSON.parse(data); // Assume the token is sent in the request body
-            const SenderID = body.userId;
-            if (!SenderID) {
-                throw new Error('Invalid or expired token');
-            }
+          const body = JSON.parse(data); // Assume the token is sent in the request body
+          const SenderID = body.userId;
+          const totalAmount = body.TotalAmount;
 
-            // Fetch the CartID for the authenticated user
-            const cartQuery = 'SELECT CartID FROM customer_user WHERE UserID = ?';
-            const cartResult = await db.queryAsync(cartQuery, [SenderID]);
-            if (cartResult.length === 0) {
-                throw new Error('No cart found for user');
-            }
-            const cartId = cartResult[0].CartID;
-
-
-
-            // Fetch cart items, calculate total, etc.
-            const cartItemsQuery = 'SELECT * FROM cart_items WHERE CartID = ?';
-            const cartItems = await db.queryAsync(cartItemsQuery, [cartId]);
-            const ItemId = cartItems.CartItemID;
-            const Quantity =  cartItems.Quantity;
-
-
-
-
-            async function processCheckout(cartItems) {
-              let totalCost = 0.0;
-              const stockUpdates = [];
-          
-              // Iterate over each item in the cart to calculate total and check stock
-              for (const item of cartItems) {
-                console.log(`Item ID: ${item.CartItemID}, Quantity: ${item.Quantity}`);
-                  const productQuery = 'SELECT * FROM storeitem WHERE ItemID = ?';
-                  const product = await db.queryAsync(productQuery, [item.StoreItemID]);
-                  console.log(product[0].Cost);
-
-                  if (product.length === 0) {
-                      throw new Error(`Product with ID ${item.CartItemID} not found`);
-                  }
-
-          
-                  if (product[0].Inventory < item.Quantity) {
-                      throw new Error(`Insufficient stock for product ID ${item.CartItemID}`);
-                  }
-                  console.log(item.Quantity);
-          
-                  // Calculate total cost
-                  totalCost += product[0].Cost * item.Quantity;
-
-                  stockUpdates.push({
-                      ProductID: item.StoreItemID,
-                      NewStock: product[0].Inventory - item.Quantity,
-                  });
-              }
-          
-              // Update stock levels in the database
-              for (const update of stockUpdates) {
-                  const stockUpdateQuery = 'UPDATE storeitem SET Inventory = ? WHERE ItemID = ?';
-                  await db.queryAsync(stockUpdateQuery, [update.NewStock, update.ProductID]);
-              }
-          
-          
-              return totalCost; // Return total cost for further processing or response
+          if (!SenderID) {
+            throw new Error("Invalid or expired token");
           }
-          const totalCost =  await processCheckout(cartItems);
-          const transactionID = uuidv4().substring(0,10);
+    
+          // Fetch the CartID for the authenticated user
+          const cartQuery = "SELECT CartID FROM customer_user WHERE UserID = ?";
+          const cartResult = await db.queryAsync(cartQuery, [SenderID]);
+          if (cartResult.length === 0) {
+            throw new Error("No cart found for user");
+          }
+          const cartId = cartResult[0].CartID;
+    
+          // Fetch cart items, calculate total, etc.
+          const cartItemsQuery = "SELECT * FROM cart_items WHERE CartID = ?";
+          const cartItems = await db.queryAsync(cartItemsQuery, [cartId]);
+    
+          const stockUpdates = [];
+        
+          // Iterate over each item in the cart to check stock
+          for (const item of cartItems) {
+            // Check if StoreItemID is 1, 2, or 3 and is not null
+            if ([1, 2, 3].includes(item.StoreItemID) && item.StoreItemID !== null) {
+              try {
+                const productQuery = "SELECT Inventory FROM storeitem WHERE ItemID = ?";
+                const product = await db.queryAsync(productQuery, [item.StoreItemID]);
+        
+                if (product.length === 0) {
+                  throw new Error(`Product with ID ${item.StoreItemID} not found`);
+                }
+        
+                if (product[0].Inventory < item.Quantity) {
+                  throw new Error(`Insufficient stock for product ID ${item.StoreItemID}`);
+                }
+        
+                stockUpdates.push({
+                  ProductID: item.StoreItemID,
+                  NewStock: product[0].Inventory - item.Quantity,
+                });
+              } catch (error) {
+                console.error(error); // Log any errors within this block
+              }
+            } else {
+              // Handle package items here (assuming no stock update needed)
+              console.log(`Package item: ${item.PackageID} - No stock update`);
+            }
+          }
+        
+          // Proceed with stock updates in the database for valid items
+          for (const update of stockUpdates) {
+            const stockUpdateQuery =
+              "UPDATE storeitem SET Inventory = ? WHERE ItemID = ?";
+            await db.queryAsync(stockUpdateQuery, [update.NewStock, update.ProductID]);
+          }
+
+          const transactionID = uuidv4().substring(0, 20);
           const currentDate = new Date();
-          const formattedDate = currentDate.toISOString().slice(0, 19).replace('T', ' ');
-          
+          const formattedDate = currentDate.toISOString().slice(0, 19).replace("T", " ");
+    
+          // Insert a transaction record
+          const transactionQuery =
+            "INSERT INTO transaction (TransactionID, CartID, TransactionDate, TotalAmount, TransactionType) VALUES (?, ?, ?, ?, ?)";
+          await db.queryAsync(transactionQuery, [transactionID, cartId, formattedDate, totalAmount, "Payment"]);
 
-            //  insert a transaction record 
-
-            const transactionQuery = 'INSERT INTO transaction (TransactionID, CartID, TransactionDate, TotalAmount, TransactionType) VALUES (?, ?, ?, ?, ?)';
-            await db.queryAsync(transactionQuery, [transactionID, cartId, formattedDate, totalCost, "Payment"] );
-
-            // Respond to the client
-            res.writeHead(200, { 'Content-Type': 'application/json' });
-            res.end(JSON.stringify({ message: 'Checkout successful' }));
+          // update status to allow schema trigger to take effect
+          for (const item of cartItems) {
+            if (item.PackageID) {
+              try {
+                const updatePackageQuery = "UPDATE package SET Status = 'Accepted' WHERE PackageID = ?";
+                await db.queryAsync(updatePackageQuery, [item.PackageID]);
+              } catch (error) {
+                console.error(`Error updating package status: ${error}`); // Log any errors
+              }
+            }
+          }    
+    
+          // Respond to the client
+          res.writeHead(200, { "Content-Type": "application/json" });
+          res.end(JSON.stringify({ message: "Checkout successful" }));
         } catch (error) {
-            console.error(error);
-            res.writeHead(500, { 'Content-Type': 'application/json' });
-            res.end(JSON.stringify({ error: error.message }));
+          console.error(error);
+          res.writeHead(500, { "Content-Type": "application/json" });
+          res.end(JSON.stringify({ error: error.message }));
         }
-    });
-}
+      });
+    }
+    
 
 
     }    
@@ -1087,71 +1089,95 @@ const server = http.createServer( async (req, res) => {
     //           }
     //       );
     //   }
-      if (req.url.startsWith("/api/userdelete/")) {
-        const parts = req.url.split('/');
-        const userID = parts[parts.length - 1];
-        db.query(
-          "DELETE FROM customer_user WHERE userID = ?",
-          [userID],
-          (error) => {
-            if (error) {
-              console.error('Vehicle deletion error:', error); // Corrected to use 'error'
-              res.writeHead(500, { "Content-Type": "application/json" });
-              res.end(JSON.stringify({ error: 'Failed to remove vehicle' }));
-              return;
-            } else {
-              res.writeHead(201, { "Content-Type": "application/json" });
-              res.end(JSON.stringify({ message: 'Vehicle deleted successfully' }));
-              return;
-            }
-          });
-        }
-     
-        else if (pathSegments.length === 5 && pathSegments[2] === "cart_item") {
-        const PackageID = pathSegments[4];
-      
-        db.query("DELETE FROM cart_items WHERE PackageID = ?", [PackageID], (error) => {
+    if (req.url.startsWith("/api/userdelete/")) {
+      const parts = req.url.split('/');
+      const userID = parts[parts.length - 1];
+      db.query(
+        "DELETE FROM customer_user WHERE userID = ?",
+        [userID],
+        (error) => {
           if (error) {
-            // Handle cart_items deletion error
+            console.error('Vehicle deletion error:', error); // Corrected to use 'error'
             res.writeHead(500, { "Content-Type": "application/json" });
-            res.end(JSON.stringify({ error: error}));
+            res.end(JSON.stringify({ error: 'Failed to remove vehicle' }));
+            return;
           } else {
-            db.query("DELETE FROM package WHERE PackageID = ?", [PackageID], (packageError) => {
-              if (packageError) {
-                // Handle package deletion error
-                res.writeHead(500, { "Content-Type": "application/json" });
-                res.end(JSON.stringify({ error: 'Failed to remove package' }));
-              } else {
-                // Both deletions successful
-                res.writeHead(200, {"Content-Type": "application/json"});
-                res.end(JSON.stringify({ message: "cart_item and package deleted successfully" }));
-              }
-            });
+            res.writeHead(201, { "Content-Type": "application/json" });
+            res.end(JSON.stringify({ message: 'Vehicle deleted successfully' }));
+            return;
           }
         });
-      }  
+      }
       
-      // api for deleting vehicles
-      else if (req.url.startsWith("/api/vehicledelete/")) {
-        const parts = req.url.split('/');
-        const vehicleID = parts[parts.length - 1];
+    else if (pathSegments.length === 5 && pathSegments[2] === "cart_item_package") {
+      const PackageID = pathSegments[4];
     
-        db.query(
-            "DELETE FROM vehicles WHERE vehicleID = ?",
-            [vehicleID],
-            (error) => {
-                if (error) {
-                    console.error('Vehicle deletion error:', error); // Corrected to use 'error'
-                    res.writeHead(500, { "Content-Type": "application/json" });
-                    res.end(JSON.stringify({ error: 'Failed to remove vehicle' }));
-                    return;
-                } else {
-                    res.writeHead(201, { "Content-Type": "application/json" });
-                    res.end(JSON.stringify({ message: 'Vehicle deleted successfully' }));
-                    return;
-                }
-            }
-        );
+      // Delete cart item using prepared statement for security
+      const deleteCartItemQuery = "DELETE FROM cart_items WHERE PackageID = ?";
+      db.query(deleteCartItemQuery, [PackageID], (error) => {
+        if (error) {
+          console.error("Error deleting cart item:", error); // Log the error for debugging
+          res.writeHead(500, { "Content-Type": "application/json" });
+          res.end(JSON.stringify({ error: error.message })); // Informative error message
+          return; // Exit the callback function to prevent unnecessary package deletion
+        }
+    
+        // Delete package upon successful cart item deletion
+        const deletePackageQuery = "DELETE FROM package WHERE PackageID = ?";
+        db.query(deletePackageQuery, [PackageID], (packageError) => {
+          if (packageError) {
+            console.error("Error deleting package:", packageError); // Log the error
+            res.writeHead(500, { "Content-Type": "application/json" });
+            res.end(JSON.stringify({ error: 'Failed to remove package' }));
+          } else {
+            res.writeHead(200, { "Content-Type": "application/json" });
+            res.end(JSON.stringify({ message: "cart_item and package deleted successfully" }));
+          }
+        });
+      });
+    }
+    
+    
+    else if (pathSegments.length === 4 && pathSegments[2] === "cart_items_deletion") {
+      const cartId = pathSegments[3];
+
+      // Delete cart item using prepared statement for security
+      const deleteCartItemQuery = "DELETE FROM cart_items WHERE CartID = ?";
+      db.query(deleteCartItemQuery, [cartId], (error) => {
+        if (error) {
+          console.error("Error deleting cart item:", error); // Log the error for debugging
+          res.writeHead(500, { "Content-Type": "application/json" });
+          res.end(JSON.stringify({ error: error.message })); // Informative error message
+          return; // Exit the callback function to prevent unnecessary package deletion
+        } else {
+          res.writeHead(200, { "Content-Type": "application/json" });
+          res.end(JSON.stringify({success: true, message: "cart_items deleted successfully" }));
+        }
+      });
+    }
+    
+    // api for deleting vehicles
+    else if (req.url.startsWith("/api/vehicledelete/")) 
+    {
+      const parts = req.url.split('/');
+      const vehicleID = parts[parts.length - 1];
+
+      db.query(
+          "DELETE FROM vehicles WHERE vehicleID = ?",
+          [vehicleID],
+          (error) => {
+              if (error) {
+                  console.error('Vehicle deletion error:', error); // Corrected to use 'error'
+                  res.writeHead(500, { "Content-Type": "application/json" });
+                  res.end(JSON.stringify({ error: 'Failed to remove vehicle' }));
+                  return;
+              } else {
+                  res.writeHead(201, { "Content-Type": "application/json" });
+                  res.end(JSON.stringify({ message: 'Vehicle deleted successfully' }));
+                  return;
+              }
+          }
+      );
     }
   }
 
