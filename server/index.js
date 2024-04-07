@@ -1109,7 +1109,7 @@ const server = http.createServer( async (req, res) => {
     }
     
     
-    else if (pathSegments.length === 4 && pathSegments[1] === "cart_items_deletion") {
+    else if (pathSegments.length === 4 && pathSegments[2] === "cart_items_deletion") {
       const cartId = pathSegments[3];
 
       // Delete cart item using prepared statement for security
@@ -1122,7 +1122,7 @@ const server = http.createServer( async (req, res) => {
           return; // Exit the callback function to prevent unnecessary package deletion
         } else {
           res.writeHead(200, { "Content-Type": "application/json" });
-          res.end(JSON.stringify({ message: "cart_items deleted successfully" }));
+          res.end(JSON.stringify({success: true, message: "cart_items deleted successfully" }));
         }
       });
     }
