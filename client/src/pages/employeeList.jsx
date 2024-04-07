@@ -55,13 +55,16 @@ const EmployeeList = () => {
                     <td>{employee.Salary}</td>
                     <td>{employee.role}</td>
                     <td>{employee.DepartmentID}</td>
-                    <td>{new Date(employee.HireDate).toLocaleDateString("en-US")}</td>
-                    <td>{new Date(employee.Dob).toLocaleDateString("en-US")}</td>
+                    <td>{employee.HireDate ? new Date(employee.HireDate).toLocaleDateString("en-US") : ''}</td>
+                    <td>{employee.Dob ? new Date(employee.Dob).toLocaleDateString("en-US") : ''}</td>
                 </tr>
           
             ))}
             </tbody>
           </table>
+          <div className='button-div'>
+            <a href="/addEmployee" className='add-employee'>Add Employee</a>
+          </div>
         </div>
   );
 };
