@@ -227,6 +227,24 @@ const server = http.createServer( async (req, res) => {
       return;
     }
 
+    else if (req.url === "/api/departments"){
+      db.query(
+        "SELECT * FROM deparments",
+        (error, result) => {
+          if (error) {
+            res.writeHead(500, { "Content-Type": "application/json" });
+            res.end(JSON.stringify({ error: error }));
+            return;
+          } else {
+            res.writeHead(200, { "Content-Type": "application/json" });
+            res.end(JSON.stringify(result));
+            return;
+          }
+        }
+      );
+      return;
+    }
+
     else if (req.url === "/api/employeesanddepartments"){
       db.query(
         "SELECT e.EmployeeID, e.Fname, e.Lname, e.Phone, e.Email, e.DepartmentID, d.Address as DepartmentAddress, d.OperatingHours FROM employee e JOIN deparments d ON e.DepartmentID = d.DeparmentsID;",
