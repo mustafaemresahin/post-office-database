@@ -19,55 +19,54 @@ function Checkout() {
   const [expiration, setExpiration] = useState(''); 
   const [CVV, setCVV] = useState(''); 
   const [userId, setUserId] = useState(null);
-  const { cartItems, getTotalCartAmount } = useContext(ShopContext);
+  const { cartItems, getTotalCartAmount, checkout} = useContext(ShopContext);
   const totalAmount = getTotalCartAmount();
   const [unreceivedPackages, setUnreceivedPackages] = useState([]);
 
   const navigate = useNavigate();
 
-  
-
-
   const handleSubmit = async (e) => {
       e.preventDefault();
-
 
       if (!email || !cardNumber || !CVV) {
           alert("Please fill out all required fields.");
           return;
       }
-      const Items = Object.entries(CartItem).map(([id, quantity]) => {
+      const Items = Object.entries(CartItem).map(([id, quantity]) => 
+      {
           // Assuming PRODUCTS is an array where each product has an `id` and a `price`
-          const product = PRODUCTS.find(product => product.id.toString() === id);
-          return {
-            itemID: id,
-            quantity: quantity,
-            pricePerItem: product ? product.price : 0, // Default to 0 if product not found
-          };
-        });
-        console.log("Transformed Items:", Items);
-        console.log(totalAmount);
-        
-        
+        const product = PRODUCTS.find(product => product.id.toString() === id);
+        return {
+          itemID: id,
+          quantity: quantity,
+          pricePerItem: product ? product.price : 0, // Default to 0 if product not found
+        };
+      });
+      console.log("Transformed Items:", Items);
+      console.log(totalAmount);
+
+      const totalAmountWithPackages = parseFloat((totalAmount + unreceivedPackages.reduce(
+        (sum, pendingpackage) => sum + parseFloat(pendingpackage.cost || 0), 0)).toFixed(2));
+
+
+      console.log(totalAmountWithPackages);
 
       // Prepare data to send to the backend
       const orderData = {
-          firstName,
-          lastName,
-          email,
-          address,
-          city,
-          zip,
-          cardNumber,
-          cardHolder,
-          expiration,
-          CVV,
-          Items,
-          userId: userId 
+        firstName,
+        lastName,
+        email,
+        address,
+        city,
+        zip,
+        cardNumber,
+        cardHolder,
+        expiration,
+        CVV,
+        Items,
+        userId: userId,
+        TotalAmount: totalAmountWithPackages 
       };
-      
-
-
 
       try {
           // Using Axios for the API call
@@ -78,6 +77,7 @@ function Checkout() {
               // Handle successful checkout
               alert("Checkout successful!");
               navigate('/home');
+              checkout();
               // Reset form fields or redirect to success page here
           } else {
               // Handle errors or unsuccessful checkout
@@ -88,8 +88,6 @@ function Checkout() {
           alert("An error occurred. Please try again.");
       }
   };
-
-  
 
   useEffect(() => {
       const token = localStorage.getItem('token');
@@ -110,8 +108,6 @@ function Checkout() {
         })
         .catch(error => console.error('Error:', error));
 
-      
-  
       const fetchUserData = async () => {
         try {
           axios.get('/api/package')
@@ -237,7 +233,7 @@ function Checkout() {
                 <div className="checkout">
                   <p>Subtotal from cart: ${totalAmount} </p>
                   <p>Pending package fees: ${unreceivedPackages.reduce((sum, pendingpackage) => sum + parseFloat(pendingpackage.cost || 0), 0)}</p>
-                  <p>Total: ${totalAmount + (unreceivedPackages.reduce((sum, pendingpackage) => sum + parseFloat(pendingpackage.cost || 0), 0))}</p>
+                  <p>Total: ${parseFloat((totalAmount + unreceivedPackages.reduce((sum, pendingpackage) => sum + parseFloat(pendingpackage.cost || 0), 0)).toFixed(2))}</p>
                   <button onClick={() => navigate("/shop")}> Continue Shopping </button>
                 </div>
               ) : (
