@@ -59,3 +59,16 @@
     border-radius: 10px;
     text-decoration: none;
 }
+
+.add-employee {
+  background-color: #007bff;
+  color:#eee;
+  padding:10px;
+  border-radius: 10px;
+  text-decoration: none;
+}
+
+.button-div {
+  text-align: center;
+  margin-top:30px;
+}
