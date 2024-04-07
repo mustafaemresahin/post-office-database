@@ -27,7 +27,7 @@ import Notification from './pages/notification';
 import Employeesanddepartments from './pages/employeesanddepartments';
 import Vehiclesandemployees from './pages/vehiclesandemployees';
 import Packagesender from './pages/packagesender';
-
+import AddEmployee from './pages/addEmployee';
 
 const App = () => {
 
@@ -62,6 +62,8 @@ const App = () => {
           <Route path="/employeesanddepartments" element={<Employeesanddepartments />} />
           <Route path="/vehiclesandemployees" element={<Vehiclesandemployees />} />
           <Route path="/packagesender" element={<Packagesender />} />
+          <Route path="/addEmployee" element={<AddEmployee />} />
+
 
 
         </Routes>
