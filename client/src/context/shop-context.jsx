@@ -146,9 +146,22 @@ export const ShopContextProvider = (props) => {
     }
   };
 
-  const checkout = () => {
-    setCartItems(getDefaultCart());
-    console.log("Cart Items Cleared - Checkout Complete");
+  const checkout = async () => {
+    const cartId = localStorage.getItem('cartId');
+  
+    try {
+      const response = await axios.delete('/api/cart_items_deletion/' + cartId); // Inside the try block
+      console.log("API response:", response.data);
+      if (response.data.success) {
+        setCartItems(getDefaultCart());
+        console.log("Cart Items Cleared - Checkout Complete");
+      }else {
+        console.error("Error clearing cart:", response.data.error); // Handle errors
+        // You might consider reverting the state change or displaying an error message
+      }
+    } catch (error) {
+      console.error("Error clearing cart:", error);
+    }
   };
 
   const contextValue = {
