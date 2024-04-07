@@ -53,13 +53,11 @@ const App = () => {
           <Route path="/addvehicles" element={<VehicleAdd />} />
           <Route path="/adminPack" element={<AdminPack />} />
           <Route path="/adminUser" element={<AdminUser />} />
-          <Route path="/employees" element={<EmployeeList />} />
           <Route path="/adminStoreItems" element={<AdminStoreItems />} />
           <Route path="/notification" element={<Notification />} />
           <Route path="/reports" element={<Reports />} />
           <Route path="/employeesanddepartments" element={<Employeesanddepartments />} />
           <Route path="/employees" element={<EmployeeList />} />
-
           <Route path="/vehicleEdit" element={<VehicleEdit />} />
 
 

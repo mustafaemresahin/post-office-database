@@ -361,8 +361,9 @@ const server = http.createServer( async (req, res) => {
         )
       })
     }
-    else if (req.url === ("/api/vehicleEdit")) {
-      const vehicleID = localStorage.getItem('editVehicleId');
+    else if (req.url.startsWith("/api/vehicleEdit/")) {
+      const parts = req.url.split('/');
+      const vehicleID = parts[parts.length - 1];
     
       let body = '';
       req.on('data', (chunk) => {
@@ -371,14 +372,14 @@ const server = http.createServer( async (req, res) => {
       req.on('end', () => {
         const vehicle = JSON.parse(body);
         const timestamp = new Date().toISOString().slice(0, 19).replace('T', ' ');
-        const location = vehicle.location;
-        const status = vehicle.status;
-        const unit = vehicle.unit;
+        //const location = vehicle.location;
+        //const status = vehicle.status;
+        //const unit = vehicle.unit;
     
         // Update the vehicle record
         db.query(
           "UPDATE vehicles SET Timestamp = ?, Location = ?, Status = ?, Unit = ? WHERE VehicleID = ?",
-          [timestamp, location, status, unit, vehicleID],
+          [timestamp, vehicle.location, vehicle.status, vehicle.unit, vehicleID],
           (updateError) => {
             if (updateError) {
               console.error('Update error:', updateError);

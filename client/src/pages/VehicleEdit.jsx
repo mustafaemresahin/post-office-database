@@ -13,19 +13,24 @@ const VehicleEdit = () => {
 
 
   const handleChange = (event) => {
-    const { name, value, type } = event.target;
+    const { name, value} = event.target;
     setFormData((prevState) => ({
       ...prevState,
-      [name]: type === 'checkbox' ? event.target.checked : value,
+      [name]: value === '' ? prevState[name] : value,
     }));
   };
 
+
+
   const handleEditVehicle = async () => {
     try {
-      const response = await axios.put('/api/vehicleEdit', formData);
+      //const filteredFormData = Object.fromEntries(
+      ///Object.entries(formData).filter(([_, value]) => value !== ''))
+      const vehicleId = localStorage.getItem('editVehicleId');
+      const response = await axios.put(`/api/vehicleEdit/${vehicleId}`, formData);
       console.log('Vehicle updated successfully:', response.data);
       localStorage.removeItem('editVehicleId');
-      navigate("/vehicles")
+      //navigate("/vehicles")
       //const updatedVehicles = updatedResponse.data;
       //setVehicles(updatedVehicles);
     } catch (error) {
