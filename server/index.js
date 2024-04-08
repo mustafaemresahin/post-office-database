@@ -494,6 +494,88 @@ const server = http.createServer( async (req, res) => {
         );
       });
     }
+    else if (req.url.startsWith("/api/packageEdit/")) {
+      const parts = req.url.split('/');
+      const packageID = parts[parts.length - 1];
+      
+      let body = '';
+      req.on('data', (chunk) => {
+        body += chunk.toString();
+      });
+      req.on('end', () => {
+        const packageData = JSON.parse(body);
+        const timestamp = new Date().toISOString().slice(0, 19).replace('T', ' ');
+        let sql = "UPDATE package SET DateSent = ?";
+        const params = [timestamp];
+        
+        // checking to see if input is empty before putting in the params array
+        // had to do it like this or else blanks were placed in the DB
+        const { senderID, weight, dimensions, type, status, vehicleID, destination, expeditedShipping, recipientFirstName, recipientLastName, cost } = packageData;
+        if (senderID !== undefined && senderID !== '') {
+          sql += ", SenderID = ?";
+          params.push(senderID);
+        }
+        if (weight !== undefined && weight !== '') {
+          sql += ", Weight = ?";
+          params.push(weight);
+        }
+        if (dimensions !== undefined && dimensions !== '') {
+          sql += ", Dimensions = ?";
+          params.push(dimensions);
+        }
+        if (type !== undefined && type !== '') {
+          sql += ", Type = ?";
+          params.push(type);
+        }
+        if (status !== undefined && status !== '') {
+          sql += ", Status = ?";
+          params.push(status);
+        }
+        if (vehicleID !== undefined && vehicleID !== '') {
+          sql += ", VehicleID = ?";
+          params.push(vehicleID);
+        }
+        if (destination !== undefined && destination !== '') {
+          sql += ", Destination = ?";
+          params.push(destination);
+        }
+        if (expeditedShipping !== undefined && expeditedShipping !== '') {
+          sql += ", ExpeditedShipping = ?";
+          params.push(expeditedShipping);
+        }
+        if (recipientFirstName !== undefined && recipientFirstName !== '') {
+          sql += ", RecipientFirstName = ?";
+          params.push(recipientFirstName);
+        }
+        if (recipientLastName !== undefined && recipientLastName !== '') {
+          sql += ", RecipientLastName = ?";
+          params.push(recipientLastName);
+        }
+        if (cost !== undefined && cost !== '') {
+          sql += ", Cost = ?";
+          params.push(cost);
+        }
+        sql += " WHERE PackageID = ?";
+        // Add the packageID to the params array
+        params.push(packageID);
+    
+        // Updating package
+        db.query(
+          sql,
+          params,
+          (updateError) => {
+            if (updateError) {
+              console.error('Update error:', updateError);
+              res.writeHead(500, { "Content-Type": "application/json" });
+              res.end(JSON.stringify({ error: 'Failed to update package' }));
+              return;
+            }
+            res.writeHead(200, { "Content-Type": "application/json" });
+            res.end(JSON.stringify({ message: 'Package updated successfully' }));
+          }
+        );
+      });
+    }    
   }
  
   else if (req.method === "POST") {
