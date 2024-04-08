@@ -417,8 +417,8 @@ const server = http.createServer( async (req, res) => {
  
  
     // Update A USEr
-    if (pathSegments.length === 3 && pathSegments[1] === "users"){
-      const UserID = pathSegments[2];
+    if (pathSegments.length === 4 && pathSegments[2] === "users"){
+      const UserID = pathSegments[3];
  
       let data ="";
       req.on("data", (chunk) => {
@@ -514,13 +514,15 @@ const server = http.createServer( async (req, res) => {
         const phoneNumber = body.phoneNumber;
         const email = body.email;
         const dateSignup = formattedDate; 
-        const role = body.role;
+        const role = 'User';
         const address = body.address;
+        const cartid = uuidv4().substring(0,20);
+
         
 
         db.query(
-          "INSERT INTO customer_user (UserID, CustomerUser, CustomerPass, Email, firstname, lastname, address, phonenumber, dateSignedUp, role) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
-          [userid, username, password, email, firstname, lastname, address, phoneNumber, dateSignup, role],
+          "INSERT INTO customer_user (UserID, CustomerUser, CustomerPass, Email, firstname, lastname, address, phonenumber, dateSignedUp, role, CartID) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+          [userid, username, password, email, firstname, lastname, address, phoneNumber, dateSignup, role, cartid],
             (error) => {
                 if (error) {
                   console.log('Insertion error:' , error);
@@ -1080,43 +1082,24 @@ const server = http.createServer( async (req, res) => {
     const reqURL = url.parse(req.url, true);
     const pathSegments = reqURL.pathname.split("/");
 
-      // Delete A User
-    // if (pathSegments.length === 5 && pathSegments[2] === "users") {
-    //     const UserID = pathSegments[3];
+    if (pathSegments.length === 4 && pathSegments[2] === "users") {
+        const UserID = pathSegments[3];
 
-    //       db.query(
-    //           "DELETE FROM customer_user WHERE UserID = ?",
-    //           [UserID],
-    //           (error) => {
-    //               if (error) {
-    //                   res.writeHead(500, {"Content-Type": "application/json"});
-    //                   res.end(JSON.stringify({error: error}));
-    //               } else {
-    //                   res.writeHead(200, {"Content-Type": "application/json"});
-    //                   res.end(JSON.stringify({ message: "User has been deleted successfully" }));
-    //               }
-    //           }
-    //       );
-    //   }
-    if (req.url.startsWith("/api/userdelete/")) {
-      const parts = req.url.split('/');
-      const userID = parts[parts.length - 1];
-      db.query(
-        "DELETE FROM customer_user WHERE userID = ?",
-        [userID],
-        (error) => {
-          if (error) {
-            console.error('Vehicle deletion error:', error); // Corrected to use 'error'
-            res.writeHead(500, { "Content-Type": "application/json" });
-            res.end(JSON.stringify({ error: 'Failed to remove vehicle' }));
-            return;
-          } else {
-            res.writeHead(201, { "Content-Type": "application/json" });
-            res.end(JSON.stringify({ message: 'Vehicle deleted successfully' }));
-            return;
-          }
-        });
+          db.query(
+              "DELETE FROM customer_user WHERE UserID = ?",
+              [UserID],
+              (error) => {
+                  if (error) {
+                      res.writeHead(500, {"Content-Type": "application/json"});
+                      res.end(JSON.stringify({error: error}));
+                  } else {
+                      res.writeHead(200, {"Content-Type": "application/json"});
+                      res.end(JSON.stringify({ message: "User has been deleted successfully" }));
+                  }
+              }
+          );
       }
+      
       
     else if (pathSegments.length === 5 && pathSegments[2] === "cart_item_package") {
       const PackageID = pathSegments[4];

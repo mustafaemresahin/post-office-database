@@ -29,6 +29,7 @@ import Employeesanddepartments from './pages/employeesanddepartments';
 import Vehiclesandemployees from './pages/vehiclesandemployees';
 import Packagesender from './pages/packagesender';
 import AddEmployee from './pages/addEmployee';
+import AddUser from './pages/AddUser';
 
 const App = () => {
 
@@ -63,6 +64,9 @@ const App = () => {
           <Route path="/vehiclesandemployees" element={<Vehiclesandemployees />} />
           <Route path="/packagesender" element={<Packagesender />} />
           <Route path="/addEmployee" element={<AddEmployee />} />
+          <Route path="/AddUser" element={<AddUser />} />
+
+
 
 
 

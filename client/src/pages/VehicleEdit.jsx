@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import '../css/vehicles.css';
 import axios from 'axios';
 
 const VehicleEdit = () => {
@@ -34,7 +35,8 @@ const handleChange = (event) => {
   };
 
   return (
-    <div>
+    <div className="registration-container">
+    <div className="vehicle-card">
       <h2>Edit Vehicle</h2>
       <form onSubmit={handleEditVehicle}>
         <label>
@@ -53,6 +55,7 @@ const handleChange = (event) => {
       </form>
       {/* Button to navigate back to the vehicle list */}
       <button onClick={() => navigate("/vehicles")}>Back to Vehicle List</button>
+    </div>
     </div>
   );
 };
