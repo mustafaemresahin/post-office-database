@@ -117,7 +117,7 @@ export const Cart = () => {
             {totalAmount > 0 || unreceivedPackages.length > 0 ? (
               <div className="checkout">
                 <p>Subtotal from cart: ${totalAmount} </p>
-                <p>Pending package fees: ${unreceivedPackages.reduce((sum, pendingpackage) => sum + parseFloat(pendingpackage.cost || 0), 0)}</p>
+                <p>Pending package fees: ${unreceivedPackages.reduce((sum, pendingpackage) => sum + parseFloat(pendingpackage.cost || 0), 0).toFixed(2)}</p>
                 <p>Total: ${parseFloat((totalAmount + unreceivedPackages.reduce((sum, pendingpackage) => sum + parseFloat(pendingpackage.cost || 0), 0)).toFixed(2))}</p>
                 <button onClick={() => navigate("/shop")}> Continue Shopping </button>
                 <button
