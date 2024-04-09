@@ -69,8 +69,8 @@ const TrackingForm = () => {
               <div>
                 <p>Package Status: {trackingInfo.Status}</p>
                 <p>Location: {trackingInfo.Location}</p>
-                <p>Description: Your package is being processed</p>
-                <p>Estimated Delivery: 10 days </p>
+                <p>Description: {trackingInfo.Description}</p>
+                <p>Estimated Delivery: {trackingInfo.EstimatedDeliveryTime} </p>
               </div>
             )}
           </div>
