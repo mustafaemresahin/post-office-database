@@ -20,6 +20,8 @@ function Reports() {
         <button onClick={() => goToReport('/vehiclesandemployees')} className="report-link">Vehicles and Employees</button>
         <button onClick={() => goToReport('/packagesender')} className="report-link">Package Sender Report</button>
         <button onClick={() => goToReport('/totalamountuser')} className="report-link">Report on total amount user spent </button>
+        <button onClick={() => goToReport('/packagereport')} className="report-link">Report on packages </button>
+
       </div>
       <p className="report-description">
       Select a report to view.

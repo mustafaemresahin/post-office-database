@@ -410,7 +410,8 @@ const server = http.createServer( async (req, res) => {
         }
       );
     }
-    if(req.url === "/api/amountforallusers") {
+    // Queries/Reports
+    else if(req.url === "/api/amountforallusers") {
       db.query(
         "SELECT c.UserID, c.firstname,  c.lastname, SUM(t.TotalAmount) AS TotalSpent FROM customer_user AS c JOIN transaction AS t ON c.CartID = t.CartID GROUP BY c.UserID, c.firstname, c.lastname;" ,
         (error, result) => {
@@ -426,6 +427,23 @@ const server = http.createServer( async (req, res) => {
         }
       );
     }
+    else if(req.url === "/api/packageinfo") {
+      db.query(
+        "SELECT c.UserID, c.firstname,  c.lastname, COUNT(p.PackageID) AS TotalPackages,SUM(CASE WHEN p.status = 'Pending' THEN 1 ELSE 0 END) AS PendingPackages, SUM(CASE WHEN p.status = 'Accepted' THEN 1 ELSE 0 END) AS AcceptedPackages, SUM(CASE WHEN p.status = 'Delivered' THEN 1 ELSE 0 END) AS DeliveredPackages FROM customer_user AS c JOIN package AS p ON c.UserID = p.SenderID GROUP BY c.UserID, c.firstname, c.lastname;" ,
+        (error, result) => {
+          if (error) {
+            res.writeHead(500, { "Content-Type": "application/json" });
+            res.end(JSON.stringify({ error: error }));
+            return;
+          } else {
+            res.writeHead(200, { "Content-Type": "application/json" });
+            res.end(JSON.stringify(result));
+            return;
+          }
+        }
+      );
+    }
+
   }
   else if (req.method === "PUT") {
     const reqURL = url.parse(req.url, true);

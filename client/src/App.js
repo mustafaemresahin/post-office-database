@@ -31,6 +31,7 @@ import Packagesender from './pages/packagesender';
 import AddEmployee from './pages/addEmployee';
 import AddUser from './pages/AddUser';
 import TotalAmountUser from './pages/totalamountuser';
+import PackageReport from './pages/packagereport';
 
 const App = () => {
 
@@ -67,6 +68,8 @@ const App = () => {
           <Route path="/addEmployee" element={<AddEmployee />} />
           <Route path="/AddUser" element={<AddUser />} />
           <Route path="/totalamountuser" element={<TotalAmountUser />} />
+          <Route path="/packagereport" element={<PackageReport />} />
+
 
 
 
