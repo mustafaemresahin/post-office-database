@@ -48,6 +48,10 @@ export const Cart = () => {
   }, [navigate]);
   
   const deleteCartItem = async (packageID) => {
+    const isConfirmed = window.confirm('Are you sure you want to delete remove the package?');
+    if(!isConfirmed){
+      return;
+    }
     try {
       const response = await axios.delete('/api/cart_item_package/delete/'+ packageID, {
         headers: {
