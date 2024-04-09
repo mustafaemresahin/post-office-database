@@ -410,6 +410,22 @@ const server = http.createServer( async (req, res) => {
         }
       );
     }
+    if(req.url === "/api/amountforallusers") {
+      db.query(
+        "SELECT c.UserID, c.firstname,  c.lastname, SUM(t.TotalAmount) AS TotalSpent FROM customer_user AS c JOIN transaction AS t ON c.CartID = t.CartID GROUP BY c.UserID, c.firstname, c.lastname;" ,
+        (error, result) => {
+          if (error) {
+            res.writeHead(500, { "Content-Type": "application/json" });
+            res.end(JSON.stringify({ error: error }));
+            return;
+          } else {
+            res.writeHead(200, { "Content-Type": "application/json" });
+            res.end(JSON.stringify(result));
+            return;
+          }
+        }
+      );
+    }
   }
   else if (req.method === "PUT") {
     const reqURL = url.parse(req.url, true);
@@ -494,88 +510,32 @@ const server = http.createServer( async (req, res) => {
         );
       });
     }
-    else if (req.url.startsWith("/api/packageEdit/")) {
-      const parts = req.url.split('/');
-      const packageID = parts[parts.length - 1];
-      
-      let body = '';
-      req.on('data', (chunk) => {
-        body += chunk.toString();
+    else if (pathSegments.length === 4 && pathSegments[2] === "users"){
+      const UserID = pathSegments[3];
+ 
+      let data ="";
+      req.on("data", (chunk) => {
+        data+=chunk;
       });
-      req.on('end', () => {
-        const packageData = JSON.parse(body);
-        const timestamp = new Date().toISOString().slice(0, 19).replace('T', ' ');
-        let sql = "UPDATE package SET DateSent = ?";
-        const params = [timestamp];
-        
-        // checking to see if input is empty before putting in the params array
-        // had to do it like this or else blanks were placed in the DB
-        const { senderID, weight, dimensions, type, status, vehicleID, destination, expeditedShipping, recipientFirstName, recipientLastName, cost } = packageData;
-        if (senderID !== undefined && senderID !== '') {
-          sql += ", SenderID = ?";
-          params.push(senderID);
-        }
-        if (weight !== undefined && weight !== '') {
-          sql += ", Weight = ?";
-          params.push(weight);
-        }
-        if (dimensions !== undefined && dimensions !== '') {
-          sql += ", Dimensions = ?";
-          params.push(dimensions);
-        }
-        if (type !== undefined && type !== '') {
-          sql += ", Type = ?";
-          params.push(type);
-        }
-        if (status !== undefined && status !== '') {
-          sql += ", Status = ?";
-          params.push(status);
-        }
-        if (vehicleID !== undefined && vehicleID !== '') {
-          sql += ", VehicleID = ?";
-          params.push(vehicleID);
-        }
-        if (destination !== undefined && destination !== '') {
-          sql += ", Destination = ?";
-          params.push(destination);
-        }
-        if (expeditedShipping !== undefined && expeditedShipping !== '') {
-          sql += ", ExpeditedShipping = ?";
-          params.push(expeditedShipping);
-        }
-        if (recipientFirstName !== undefined && recipientFirstName !== '') {
-          sql += ", RecipientFirstName = ?";
-          params.push(recipientFirstName);
-        }
-        if (recipientLastName !== undefined && recipientLastName !== '') {
-          sql += ", RecipientLastName = ?";
-          params.push(recipientLastName);
-        }
-        if (cost !== undefined && cost !== '') {
-          sql += ", Cost = ?";
-          params.push(cost);
-        }
-        sql += " WHERE PackageID = ?";
-        // Add the packageID to the params array
-        params.push(packageID);
-    
-        // Updating package
+      req.on("end", () => {
+        const body = JSON.parse(data);
+ 
+ 
         db.query(
-          sql,
-          params,
-          (updateError) => {
-            if (updateError) {
-              console.error('Update error:', updateError);
-              res.writeHead(500, { "Content-Type": "application/json" });
-              res.end(JSON.stringify({ error: 'Failed to update package' }));
-              return;
-            }
-            res.writeHead(200, { "Content-Type": "application/json" });
-            res.end(JSON.stringify({ message: 'Package updated successfully' }));
+          "UPDATE package SET 'Status' = ?   WHERE 'PackageID'= ?",
+          [body.Email, body.firstname, body.lastname, body.address, body.phonenumber, UserID],
+          (error) => {
+            if (error) {
+              res.writeHead(500, { 'Content-Type': 'application/json' });
+              res.end(JSON.stringify({ error: 'Internal Server Error' }));
+          } else {
+              res.writeHead(200, { 'Content-Type': 'application/json' });
+              res.end(JSON.stringify({ message: 'User has been updated successfully' }));
           }
-        );
-      });
-    }    
+          }
+        )
+      })
+    }
   }
  
   else if (req.method === "POST") {

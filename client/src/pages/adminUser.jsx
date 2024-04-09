@@ -9,12 +9,6 @@ function AdminUser() {
     const [data, setData] = useState([])
     const navigate = useNavigate();
 
-    // useEffect(() => {
-    //     axios.get('/api/users')
-    //         .then(res => setData(res.data))
-    //         .catch(err => console.log(err));
-    // }, [])
-
     useEffect(() => {
       const fetchData = async () => {
         try {
@@ -61,23 +55,6 @@ function AdminUser() {
             console.log('User deletion cancelled');
         }
     };
-    
-
-    // const handleDeleteUser = async (userId) => {
-    //   try {
-    //     // Send DELETE request to delete the vehicle with the specified ID
-    //     await axios.delete(`/api/userdelete/${userId}`);
-    //     // Refresh list after deletion
-    //     const updatedUsers = data.filter(data => data.UserID !== userId);
-    //     setData(updatedUsers);
-    //   } catch (error) {
-    //     console.error('Error user vehicle:', error);
-    //   }
-    // };
-
-
-
-
 
     const handleClick = () => {
       // Use navigate function to navigate to the desired page
