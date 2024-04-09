@@ -25,6 +25,10 @@ const VehiclesTable = () => {
 
 
   const handleDeleteVehicle = async (vehicleId) => {
+    const isConfirmed = window.confirm('Are you sure you want to delete this vehicle?');
+    if(!isConfirmed){
+      return;
+    }
     try {
       // Send DELETE request to delete the vehicle with the specified ID
       await axios.delete(`/api/vehicledelete/${vehicleId}`);
@@ -87,6 +91,7 @@ const VehiclesTable = () => {
         <div className='add-vehicle-div'>
           <Link to="/addvehicles" className="add-vehicle-link">Add Vehicle</Link>
         </div>
+        
       </div>
     </div>
   );

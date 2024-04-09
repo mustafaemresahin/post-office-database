@@ -1,45 +1,44 @@
-import React, { useState, useRef } from 'react';
+
+import React, { useState } from 'react';
 import '../css/register.css';
 import '../css/tracking.css';
 import { useNavigate } from 'react-router-dom'; 
 import axios from 'axios';
 
 const TrackingForm = () => {
-  const [trackingNumber, setTrackingNumber] =  useState({trackingNumber: ''});
-  const navigate = useNavigate();
-  const statusRef = useRef('');
-  const locationRef = useRef('');
-  const descriptionRef = useRef('');
-  const estDeliveryRef = useRef('');
+  const [trackingNumber, setTrackingNumber] = useState('');
+  const [trackingInfo, setTrackingInfo] = useState(''); 
+  const [errorMessage, setErrorMessage] = useState(''); 
+  // const navigate = useNavigate();
 
   const handleChange = (event) => {
     setTrackingNumber(event.target.value);
+    setTrackingInfo(null);
+    setErrorMessage('');
   };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    const userPackageId = trackingNumber.trackingNumber;
     try {
       axios.get('/api/trackpackages')
       .then(response => {
-          const foundPackage = response.data.find(pkg => pkg.TrackingID === userPackageId); // Find the package by trackingID
+          const foundPackage = response.data.find(pkg => pkg.TrackingID === trackingNumber);
           if (!foundPackage) {
-            console.log('No packages that correspond to that tracking number');
-            statusRef.current = 'No record found';
-            setTrackingNumber({ ...trackingNumber });
-          }
-          else{
-            const { status, location, description, estimatedDelivery } = foundPackage;
-            statusRef.current = status;
-            locationRef.current = location;
-            descriptionRef.current = description;
-            estDeliveryRef.current = estimatedDelivery
+            // Update the errorMessage state to display a message
+            setErrorMessage('No packages that correspond to that tracking number');
+          } else {
+            // Update the trackingInfo state with the found package details
+            setTrackingInfo(foundPackage);
             console.log(foundPackage);
           }
       })
-      .catch(error => console.error('Error:', error));
+      .catch(error => {
+        console.error('Error:', error);
+        setErrorMessage('An error occurred while fetching the tracking information.');
+      });
     } catch (error) {
       console.error('Error:', error);
+      setErrorMessage('An unexpected error occurred.');
     }
   };
 
@@ -56,31 +55,24 @@ const TrackingForm = () => {
                   type="text"
                   id="trackingNumber"
                   name="trackingNumber"
-                  value={trackingNumber.trackingNumber}
+                  value={trackingNumber}
                   onChange={handleChange}
                   required
                   maxLength="16"
                   pattern="[0-9a-f]{16}"
                 />
               </div>
-              <button type="submit"> 
-                Track Package
-              </button>
+              <button type="submit">Track Package</button>
             </form>
-            {/* Conditionally render the message or package details */}
-              {statusRef.current && (
-              statusRef.current === 'No record found' ? (
-                <p>Tracking ID does not exist in our system.</p>
-              ) : (
-                trackingNumber.trackingNumber && (
-                  <div>
-                    <p>Package Status: {statusRef.current}</p>
-                    <p>Location: {locationRef.current}</p>
-                    <p>Description: {descriptionRef.current}</p>
-                    <p>Estimated Delivery: {estDeliveryRef.current}</p>
-                  </div>
-                )
-              ))}
+            {errorMessage && <p>{errorMessage}</p>}
+            {trackingInfo && (
+              <div>
+                <p>Package Status: {trackingInfo.Status}</p>
+                <p>Location: {trackingInfo.Location}</p>
+                <p>Description: {trackingInfo.Description}</p>
+                <p>Estimated Delivery: {trackingInfo.EstimatedDeliveryTime} </p>
+              </div>
+            )}
           </div>
         </div>
       </div> 
