@@ -45,7 +45,7 @@ function PackageReport() {
               </option>
             ))}
           </select>
-          <h2>Details for User: {selectedUserDetails.firstname} {selectedUserDetails.lastname}</h2>
+          {/* <h2>Details for User: {selectedUserDetails.firstname} {selectedUserDetails.lastname}</h2> */}
         
           {selectedUserDetails && (
             <table>
