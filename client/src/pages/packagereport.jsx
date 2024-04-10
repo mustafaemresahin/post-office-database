@@ -9,7 +9,7 @@ function PackageReport() {
       const navigate = useNavigate();
       
       useEffect(() => {
-        const fetchTotalAmount= async () => {
+        const fetchPackage= async () => {
           try {
             const response = await axios.get('/api/packageinfo');
             setValues(response.data);
@@ -18,7 +18,7 @@ function PackageReport() {
           }
         };
     
-        fetchTotalAmount();
+        fetchPackage();
       }, []);
     
       const handleChange = (e) => {
@@ -41,16 +41,17 @@ function PackageReport() {
             <option value="">Select a User</option>
             {values.map((option, index) => (
               <option key={index} value={option.UserID}>
-                {`${option.UserID} - ${option.firstname} ${option.lastname}`}
+                {`${option.firstname} ${option.lastname}`}
               </option>
             ))}
           </select>
-          <h2>Details for User: {selectedUserID}</h2>
+          {/* <h2>Details for User: {selectedUserDetails.firstname} {selectedUserDetails.lastname}</h2> */}
         
           {selectedUserDetails && (
             <table>
               <thead>
                 <tr> 
+                  <th>User ID</th>
                   <th>First Name</th>
                   <th>Last Name </th>
                   <th>Total Packages</th>
@@ -61,12 +62,13 @@ function PackageReport() {
               </thead>
               <tbody>
                 <tr>
-                    <td>{selectedUserDetails.firstname}</td>
-                    <td>{selectedUserDetails.lastname}</td>
-                    <td>{selectedUserDetails.TotalPackages}</td>
-                    <td>{selectedUserDetails.PendingPackages}</td>
-                    <td>{selectedUserDetails.AcceptedPackages}</td>
-                    <td>{selectedUserDetails.DeliveredPackages}</td>
+                  <td>{selectedUserDetails.UserID}</td>
+                  <td>{selectedUserDetails.firstname}</td>
+                  <td>{selectedUserDetails.lastname}</td>
+                  <td>{selectedUserDetails.TotalPackages}</td>
+                  <td>{selectedUserDetails.PendingPackages}</td>
+                  <td>{selectedUserDetails.AcceptedPackages}</td>
+                  <td>{selectedUserDetails.DeliveredPackages}</td>
                   </tr>
               </tbody>
             </table>

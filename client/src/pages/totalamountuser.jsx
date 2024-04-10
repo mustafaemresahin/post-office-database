@@ -46,11 +46,11 @@ function TotalAmountUser() {
             <option value="">Select a User</option>
             {values.map((option, index) => (
               <option key={index} value={option.UserID}>
-                {`${option.UserID} - ${option.firstname} ${option.lastname}`}
+                 {`${option.firstname} ${option.lastname}`}
               </option>
             ))}
           </select>
-          <h2>Details for User: {selectedUserID}</h2>
+
         
           {selectedUserDetails && (
             <table>
