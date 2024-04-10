@@ -62,10 +62,14 @@ const ProfilePage = () => {
       navigate('/login');
       window.location.reload();
     };
-    const handleEditProfile = (event) => {
-      event.preventDefault();
-      navigate('/editProfile');
-    };
+    const handleUserEdit = (event, userID) => {
+        event.preventDefault();   
+        // Set the user ID in local storage
+        localStorage.setItem('editUserId', userID);
+      
+        // Navigate to the profile edit page
+        navigate('/editprofile');
+        };
 
     return (
         <div className="package-container">
@@ -113,7 +117,7 @@ const ProfilePage = () => {
                         </tbody>
                     </table>
                     <div className="buttons">
-                        <button className="logout-button" type="button" onClick={handleEditProfile}>Edit</button>
+                        <button className="logout-button" type="button" onClick={(event) => handleUserEdit(event, user.UserID)}>Edit</button>
                         <button className="logout-button" type="button" onClick={handleLogout}>Log out</button>
                     </div>
                 </form>

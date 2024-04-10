@@ -42,13 +42,11 @@ const VehiclesTable = () => {
 
  const handleVehicleEdit = (event, vehicleID) => {
   event.preventDefault();
-  
   // Set the vehicle ID in local storage
   localStorage.setItem('editVehicleId', vehicleID);
-
   // Navigate to the vehicle edit page
   navigate('/vehicleEdit');
-};
+  };
 
   return (
     <div className='vehicles-employees-container'>

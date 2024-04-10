@@ -451,32 +451,95 @@ const server = http.createServer( async (req, res) => {
  
  
     // Update A USEr
-    if (pathSegments.length === 4 && pathSegments[2] === "users"){
-      const UserID = pathSegments[3];
+    // if (pathSegments.length === 4 && pathSegments[2] === "users"){
+    //   const UserID = pathSegments[3];
  
-      let data ="";
-      req.on("data", (chunk) => {
-        data+=chunk;
+    //   let data ="";
+    //   req.on("data", (chunk) => {
+    //     data+=chunk;
+    //   });
+    //   req.on("end", () => {
+    //     const body = JSON.parse(data);
+ 
+ 
+    //     db.query(
+    //       "UPDATE users SET 'Email' = ?, 'firstname'= ?, 'lastname'= ?, 'address'= ?, 'phonenumber' = ?,  WHERE 'UserID'= ?",
+    //       [body.Email, body.firstname, body.lastname, body.address, body.phonenumber, UserID],
+    //       (error) => {
+    //         if (error) {
+    //           res.writeHead(500, { 'Content-Type': 'application/json' });
+    //           res.end(JSON.stringify({ error: 'Internal Server Error' }));
+    //       } else {
+    //           res.writeHead(200, { 'Content-Type': 'application/json' });
+    //           res.end(JSON.stringify({ message: 'User has been updated successfully' }));
+    //       }
+    //       }
+    //     )
+    //   })
+    // }
+
+    // profile edit api
+    if (req.url.startsWith("/api/profileEdit/")) {
+      const parts = req.url.split('/');
+      const userID = parts[parts.length - 1];
+      
+      let body = '';
+      req.on('data', (chunk) => {
+        body += chunk.toString();
       });
-      req.on("end", () => {
-        const body = JSON.parse(data);
- 
- 
+      req.on('end', () => {
+        const user = JSON.parse(body);
+        let sql = "UPDATE customer_user SET";
+        const params = [];
+        // putting each const in here
+    
+        // checking to see if input is empty before putting in the params array
+        const { Email, firstname, lastname, address, phonenumber } = user;
+        if (Email !== undefined && Email !== '') {
+          sql += " Email = ?,";
+          params.push(Email);
+        }
+        if (firstname !== undefined && firstname !== '') {
+          sql += " firstname = ?,";
+          params.push(firstname);
+        }
+        if (lastname !== undefined && lastname !== '') {
+          sql += " lastname = ?,";
+          params.push(lastname);
+        }
+        if (address !== undefined && address !== '') {
+          sql += " address = ?,";
+          params.push(address);
+        }
+        if (phonenumber !== undefined && phonenumber !== '') {
+          sql += " phonenumber = ?,";
+          params.push(phonenumber);
+        }
+        if (sql.slice(-1) === ',') {
+          sql = sql.slice(0, -1);
+        }
+        sql += " WHERE UserID = ?";
+        // Add the userID to the params array
+        params.push(userID);
+    
+        // Updating profile
         db.query(
-          "UPDATE users SET 'Email' = ?, 'firstname'= ?, 'lastname'= ?, 'address'= ?, 'phonenumber' = ?,  WHERE 'UserID'= ?",
-          [body.Email, body.firstname, body.lastname, body.address, body.phonenumber, UserID],
-          (error) => {
-            if (error) {
-              res.writeHead(500, { 'Content-Type': 'application/json' });
-              res.end(JSON.stringify({ error: 'Internal Server Error' }));
-          } else {
-              res.writeHead(200, { 'Content-Type': 'application/json' });
-              res.end(JSON.stringify({ message: 'User has been updated successfully' }));
+          sql,
+          params,
+          (updateError) => {
+            if (updateError) {
+              console.error('Update error:', updateError);
+              res.writeHead(500, { "Content-Type": "application/json" });
+              res.end(JSON.stringify({ error: 'Failed to update profile' }));
+              return;
+            }
+            res.writeHead(200, { "Content-Type": "application/json" });
+            res.end(JSON.stringify({ message: 'Profile updated successfully' }));
           }
-          }
-        )
-      })
+        );
+      });
     }
+
     else if (req.url.startsWith("/api/vehicleEdit/")) {
       const parts = req.url.split('/');
       const vehicleID = parts[parts.length - 1];
