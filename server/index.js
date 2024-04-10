@@ -528,31 +528,35 @@ const server = http.createServer( async (req, res) => {
         );
       });
     }
-    else if (pathSegments.length === 4 && pathSegments[2] === "users"){
-      const UserID = pathSegments[3];
- 
+    else if (pathSegments.length === 4 && pathSegments[2] === "userspackages"){
+      const PackageID = pathSegments[3];
+
       let data ="";
       req.on("data", (chunk) => {
         data+=chunk;
       });
       req.on("end", () => {
         const body = JSON.parse(data);
+        const status = body.Status;
+        console.log(status);
+        console.log(PackageID);
  
  
         db.query(
-          "UPDATE package SET 'Status' = ?   WHERE 'PackageID'= ?",
-          [body.Email, body.firstname, body.lastname, body.address, body.phonenumber, UserID],
+          "UPDATE package SET `Status` = ? WHERE `PackageID`= ?",
+          [status, PackageID],
           (error) => {
             if (error) {
               res.writeHead(500, { 'Content-Type': 'application/json' });
               res.end(JSON.stringify({ error: 'Internal Server Error' }));
-          } else {
+            } else {
               res.writeHead(200, { 'Content-Type': 'application/json' });
-              res.end(JSON.stringify({ message: 'User has been updated successfully' }));
+              res.end(JSON.stringify({ message: 'package status has been updated successfully' }));
+            }
           }
-          }
-        )
-      })
+        );
+        return;
+      });
     }
   }
  
