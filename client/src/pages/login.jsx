@@ -76,13 +76,15 @@ const LoginPage = () => {
                   className="password-input"
                 />
               </div>
+              <div style={{textAlign: 'center'}}>
+                {showWarning && <p className='warning'>Incorrect Password!</p>}
+              </div>
               <div className="submit-button">
                 <button variant="primary" type="submit">
                   Submit
                 </button>
               </div>
             </form>
-            {showWarning && <p style={{color: 'red'}}>Incorrect Password!</p>}
           </div>
           <div className="register-link">
             <p>If you don't have an account <a href="/register">Register Account</a></p>
