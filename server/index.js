@@ -593,7 +593,7 @@ const server = http.createServer( async (req, res) => {
     }
     else if (pathSegments.length === 4 && pathSegments[2] === "userspackages"){
       const PackageID = pathSegments[3];
-
+      //console.log(PackageID)
       let data ="";
       req.on("data", (chunk) => {
         data+=chunk;
@@ -606,7 +606,7 @@ const server = http.createServer( async (req, res) => {
  
  
         db.query(
-          "UPDATE package SET `Status` = ? WHERE `PackageID`= ?",
+          "UPDATE package SET Status = ? WHERE PackageID = ?",
           [status, PackageID],
           (error) => {
             if (error) {

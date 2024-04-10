@@ -36,8 +36,8 @@ function AdminPack() {
 		let string = `/api/userspackages/${PackageID}`;
 		let separatedArray = string.split('/');
 
-		console.log(separatedArray[3]); 
-		console.log(newStatus);
+		//console.log(separatedArray[3]); 
+		//console.log(newStatus);
 
     try {
       const response = await axios.put(`/api/userspackages/${PackageID}`, { Status: newStatus });
@@ -96,7 +96,7 @@ function AdminPack() {
 													<option value="Pending">Pending</option>
 													<option value="In Transit">In Transit</option>
 													<option value="Delivered">Delivered</option>
-													<option value="Cancelled">Canceled</option>
+													<option value="Cancelled">Cancelled</option>
 											</select>
 									</td>
 													<td>{(new Date(p.DateSent).toLocaleString("en-US", { year: 'numeric', month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit', hour12: true }))}</td>
