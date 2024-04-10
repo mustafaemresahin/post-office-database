@@ -10,7 +10,7 @@ const EditProfile = () => {
     const navigate = useNavigate();
 
     const [formData, setFormData] = useState({
-        UserID: '',
+        // UserID: '',
         Email: '',
         firstname: '',
         lastname: '',
@@ -47,22 +47,25 @@ const EditProfile = () => {
     //       }
     //   };
 
+
     const handleChange = (event) => {
         const { name, value } = event.target;
-        setFormData((prevState) => {
-          const newValue = value !== '' ? value : prevState[name];
-          return {
+        setFormData((prevState) => ({
             ...prevState,
-            [name]: newValue,
-          };
-        });
-      };
+            [name]: value,
+        }));
+    };
       
         const handleUserEdit = async () => {
           try {
             const userId = localStorage.getItem('editUserId');
+            console.log('Form data:', formData);
+            const formDataString = JSON.stringify(formData, null, 2);
+        window.alert('Form data before submit:\n' + formDataString);
             const response = await axios.put(`/api/profileEdit/${userId}`, formData);
             console.log('Profile updated successfully:', response.data);
+            const responseDataString = JSON.stringify(response.data, null, 2);
+            window.alert('Response data:\n' + responseDataString);
             localStorage.removeItem('editUserId');
             //navigate("/profile");
           } catch (error) {
@@ -76,7 +79,7 @@ const EditProfile = () => {
                 <div className="registration-form"> 
                     <h1>Profile Editor</h1>
                         <form onSubmit={handleUserEdit}>
-                            <div>
+                             <div>
                                 <label htmlFor="Email">New e-mail:</label>
                                 <input
                                 type="string"
@@ -85,7 +88,7 @@ const EditProfile = () => {
                                 value={formData.Email}
                                 onChange={handleChange}
                                 />
-                            </div>
+                            </div> 
                             <div>
                                 <label htmlFor="firstname">New first name:</label>
                                 <input
