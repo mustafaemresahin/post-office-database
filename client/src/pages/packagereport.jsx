@@ -5,7 +5,7 @@ import axios from 'axios';
 function PackageReport() {
       const [selectedUserID, setSelectedUserID] = useState('');
       const [values, setValues] = useState([]); // This should be populated as before
-      const [selectedUserDetails, setSelectedUserDetails] = useState(null);
+      // const [selectedUserDetails, setSelectedUserDetails] = useState(null);
       const navigate = useNavigate();
       
       useEffect(() => {
@@ -22,16 +22,17 @@ function PackageReport() {
       }, []);
     
       const handleChange = (e) => {
-        const userID = e.target.value;
-        setSelectedUserID(userID);
-        // Assuming `values` includes detailed info, or you could fetch the details here
-        const userDetails = values.find(user => user.UserID === userID);
-        setSelectedUserDetails(userDetails);
+        setSelectedUserID(e.target.value);
       };
 
       const handleClick = () => {
         navigate('/reports');
       };
+
+      const selectedUserDetails = selectedUserID === 'all'
+      ? values
+      : values.filter(user => user.UserID === selectedUserID);
+  
     
       return (
         <div className='reports-page'>
@@ -39,6 +40,7 @@ function PackageReport() {
             <h1>Report on packages</h1>
           <select onChange={handleChange} value={selectedUserID}>
             <option value="">Select a User</option>
+            <option value="all">All Users</option>
             {values.map((option, index) => (
               <option key={index} value={option.UserID}>
                 {`${option.firstname} ${option.lastname}`}
@@ -61,15 +63,18 @@ function PackageReport() {
                 </tr>
               </thead>
               <tbody>
-                <tr>
-                  <td>{selectedUserDetails.UserID}</td>
-                  <td>{selectedUserDetails.firstname}</td>
-                  <td>{selectedUserDetails.lastname}</td>
-                  <td>{selectedUserDetails.TotalPackages}</td>
-                  <td>{selectedUserDetails.PendingPackages}</td>
-                  <td>{selectedUserDetails.AcceptedPackages}</td>
-                  <td>{selectedUserDetails.DeliveredPackages}</td>
+                {selectedUserDetails.map((user, index) => (
+                   <tr key={index}>
+
+                  <td>{user.UserID}</td>
+                  <td>{user.firstname}</td>
+                  <td>{user.lastname}</td>
+                  <td>{user.TotalPackages}</td>
+                  <td>{user.PendingPackages}</td>
+                  <td>{user.AcceptedPackages}</td>
+                  <td>{user.DeliveredPackages}</td>
                   </tr>
+                ))}
               </tbody>
             </table>
           )}
@@ -79,3 +84,4 @@ function PackageReport() {
     
 
 export default PackageReport;
+
