@@ -494,11 +494,10 @@ const server = http.createServer( async (req, res) => {
         // putting each const in here
     
         // checking to see if input is empty before putting in the params array
-        const { email, firstname, lastname, address, phonenumber } = user;
-        if (email !== undefined && email !== '') {
-          console.log("Email value:", email);
+        const { Email, firstname, lastname, address, phonenumber } = user;
+        if (Email !== undefined && Email !== '') {
           sql += " Email = ?,";
-          params.push(email);
+          params.push(Email);
         }
         if (firstname !== undefined && firstname !== '') {
           sql += " firstname = ?,";

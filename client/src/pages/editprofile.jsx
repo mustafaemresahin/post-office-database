@@ -60,14 +60,10 @@ const EditProfile = () => {
           try {
             const userId = localStorage.getItem('editUserId');
             console.log('Form data:', formData);
-            const formDataString = JSON.stringify(formData, null, 2);
-        window.alert('Form data before submit:\n' + formDataString);
             const response = await axios.put(`/api/profileEdit/${userId}`, formData);
             console.log('Profile updated successfully:', response.data);
-            const responseDataString = JSON.stringify(response.data, null, 2);
-            window.alert('Response data:\n' + responseDataString);
             localStorage.removeItem('editUserId');
-            //navigate("/profile");
+            navigate("/profile");
           } catch (error) {
             console.error('Failed to update profile', error);
           }
@@ -132,6 +128,7 @@ const EditProfile = () => {
                             <button type="submit">
                             Submit
                             </button>
+                            <button onClick={() => navigate("/profile")}>profile</button>
                         </form>
                 </div>
             </div>
