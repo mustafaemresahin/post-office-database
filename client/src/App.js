@@ -69,17 +69,8 @@ const App = () => {
           <Route path="/AddUser" element={<AddUser />} />
           <Route path="/totalamountuser" element={<TotalAmountUser />} />
           <Route path="/packagereport" element={<PackageReport />} />
-
-
-
-
-
-
-
           <Route path="/employees" element={<EmployeeList />} />
           <Route path="/vehicleEdit" element={<VehicleEdit />} />
-
-
         </Routes>
         </ShopContextProvider>
       </div>      
