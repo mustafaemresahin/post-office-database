@@ -64,13 +64,16 @@ const TrackingForm = () => {
               </div>
               <button type="submit">Track Package</button>
             </form>
+            
             {errorMessage && <p>{errorMessage}</p>}
             {trackingInfo && (
               <div>
                 <p>Package Status: {trackingInfo.Status}</p>
                 <p>Location: {trackingInfo.Location}</p>
-                <p>Description: {trackingInfo.Description}</p>
-                <p>Estimated Delivery: {trackingInfo.EstimatedDeliveryTime} </p>
+                <p>Description: Status last updated on {trackingInfo.Description}</p>
+                { (trackingInfo.Status === 'Pending Shipment' || trackingInfo.Status === 'In Transit'||trackingInfo.Status === 'Accepted') ? (
+                <p>Estimated Delivery: {trackingInfo.EstimatedDeliveryTime}</p>
+                ) : null}
               </div>
             )}
           </div>
