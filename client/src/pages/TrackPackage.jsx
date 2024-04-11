@@ -70,7 +70,7 @@ const TrackingForm = () => {
               <div>
                 <p>Package Status: {trackingInfo.Status}</p>
                 <p>Location: {trackingInfo.Location}</p>
-                <p>Description: Status last updated on {trackingInfo.Description}</p>
+                <p>Status last updated on {trackingInfo.Description}</p>
                 { (trackingInfo.Status === 'Pending Shipment' || trackingInfo.Status === 'In Transit'||trackingInfo.Status === 'Accepted') ? (
                 <p>Estimated Delivery: {trackingInfo.EstimatedDeliveryTime}</p>
                 ) : null}
