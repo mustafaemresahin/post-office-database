@@ -131,8 +131,8 @@ function SalesReport() {
       </div>
       {error && <div className="error-message">{error}</div>}
       <button onClick={fetchSalesData}>Get Report</button>
-      <button onClick={lastMonth} style={{'backgroundColor':'#6c757d'}}>Get Report for the this month</button>
-      <button onClick={lastWeek} style={{'backgroundColor':'#6c757d'}}>Get Report for the this week</button>
+      <button onClick={lastMonth} style={{'backgroundColor':'#6c757d'}}>Get Report for the last 30 days</button>
+      <button onClick={lastWeek} style={{'backgroundColor':'#6c757d'}}>Get Report for the last 7 days</button>
       <button onClick={today} style={{'backgroundColor':'#6c757d'}}>Get Report for today</button>
 
       {isReportVisible && (
