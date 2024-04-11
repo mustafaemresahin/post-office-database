@@ -216,7 +216,7 @@ const server = http.createServer( async (req, res) => {
     else if (req.url === "/api/package") 
     {
       db.query(
-        "SELECT * FROM package",
+        "SELECT * FROM package ORDER BY DateSent DESC;",
         (error, result) => {
           if (error) {
             res.writeHead(500, { "Content-Type": "application/json" });
@@ -235,7 +235,7 @@ const server = http.createServer( async (req, res) => {
     else if (req.url === "/api/transaction") 
     {
       db.query(
-        "SELECT * FROM transaction",
+        "SELECT * FROM transaction  ORDER BY TransactionDate DESC;",
         (error, result) => {
           if (error) {
             res.writeHead(500, { "Content-Type": "application/json" });
@@ -417,7 +417,7 @@ const server = http.createServer( async (req, res) => {
     }
     else if(req.url === "/api/notify") {
       db.query(
-        "SELECT * FROM notifications" ,
+        "SELECT * FROM notifications ORDER BY timestamp DESC;" ,
         (error, result) => {
           if (error) {
             res.writeHead(500, { "Content-Type": "application/json" });
