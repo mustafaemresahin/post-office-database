@@ -108,3 +108,18 @@ option {
   color: #333; /* Dark text color for better readability */
 }
 
+.warning {
+  background-color: #d9534f; /* Danger background color */
+  color: #ffffff;
+  padding: 10px;
+  border-radius: 4px;
+  text-align: center;
+  margin-bottom: 10px;
+  border: 1px solid transparent;
+  border-color: #d43f3a; /* Danger border color */
+  font-family: 'Arial', sans-serif;
+  font-size: 14px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.075);
+  display: inline-block;
+  max-width: 200px;
+}

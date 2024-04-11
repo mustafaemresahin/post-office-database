@@ -38,10 +38,15 @@ const ProfilePage = () => {
             setUser(userData); // Set the found user into the users state, as an array for consistency
             setRole(localStorage.getItem('role'));
             setemail(userData.Email);
+            localStorage.setItem('Email',userData.Email);
             setfirst(userData.firstname);
+            localStorage.setItem('firstname',userData.firstname);
             setlast(userData.lastname);
+            localStorage.setItem('lastname',userData.lastname);
             setaddress(userData.address);
+            localStorage.setItem('address',userData.address);
             setphone(userData.phonenumber);
+            localStorage.setItem('phonenumber',userData.phonenumber);
             } else {
             console.log('User not found');
             // Handle the case where the user is not found
@@ -62,10 +67,14 @@ const ProfilePage = () => {
       navigate('/login');
       window.location.reload();
     };
-    const handleEditProfile = (event) => {
-      event.preventDefault();
-      navigate('/editProfile');
-    };
+    const handleUserEdit = (event, userID) => {
+        event.preventDefault();   
+        // Set the user ID in local storage
+        localStorage.setItem('editUserId', userID);
+      
+        // Navigate to the profile edit page
+        navigate('/editprofile');
+        };
 
     return (
         <div className="package-container">
@@ -113,7 +122,7 @@ const ProfilePage = () => {
                         </tbody>
                     </table>
                     <div className="buttons">
-                        <button className="logout-button" type="button" onClick={handleEditProfile}>Edit</button>
+                        <button className="logout-button" type="button" onClick={(event) => handleUserEdit(event, user.UserID)}>Edit</button>
                         <button className="logout-button" type="button" onClick={handleLogout}>Log out</button>
                     </div>
                 </form>

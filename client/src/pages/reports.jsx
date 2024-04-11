@@ -16,11 +16,13 @@ function Reports() {
         <h1 className="reports-title">Admin Reports</h1>
       </div>
       <div className="report-buttons">
+        <button onClick={() => goToReport('/salesreport')} className="report-link">Sales Report</button>
         <button onClick={() => goToReport('/employeesanddepartments')} className="report-link">Employees and Depratments</button>
         <button onClick={() => goToReport('/vehiclesandemployees')} className="report-link">Vehicles and Employees</button>
         <button onClick={() => goToReport('/packagesender')} className="report-link">Package Sender Report</button>
         <button onClick={() => goToReport('/totalamountuser')} className="report-link">Report on total amount user spent </button>
         <button onClick={() => goToReport('/packagereport')} className="report-link">Report on packages </button>
+        <button onClick={() => goToReport('/reportE&P')} className="report-link">Report on employee's handling packages </button>
 
       </div>
       <p className="report-description">
