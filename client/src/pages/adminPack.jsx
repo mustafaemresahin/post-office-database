@@ -30,6 +30,8 @@ function AdminPack() {
     try {
       const response = await axios.get('/api/package');
       setPack(response.data);
+      console.log(pack);
+      console.log("here00");
       // Also update local storage
       localStorage.setItem('packages', JSON.stringify(response.data));
     } catch (error) {
