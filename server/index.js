@@ -21,7 +21,8 @@ const generateToken = (user) => {
       id: user.id,
       username: user.username,
       email: user.email,
-      cart: user.cart
+      cart: user.cart, 
+      role: user.role
     },
     'postofficeproject',
     {
