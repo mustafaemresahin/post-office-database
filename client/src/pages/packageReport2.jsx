@@ -137,8 +137,8 @@ function PackageReport2() {
       </div>
       {error && <div className="error-message">{error}</div>}
       <button onClick={fetchPackageData}>Get Report</button>
-      <button onClick={lastMonth} style={{'backgroundColor':'#6c757d'}}>Get Report for the this month</button>
-      <button onClick={lastWeek} style={{'backgroundColor':'#6c757d'}}>Get Report for the this week</button>
+      <button onClick={lastMonth} style={{'backgroundColor':'#6c757d'}}>Get Report for the past 30 days</button>
+      <button onClick={lastWeek} style={{'backgroundColor':'#6c757d'}}>Get Report for the past 7 days</button>
       <button onClick={today} style={{'backgroundColor':'#6c757d'}}>Get Report for today</button>
 
       {isReportVisible && data.packagesSummary.length > 0 ? (
