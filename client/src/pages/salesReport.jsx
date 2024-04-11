@@ -32,7 +32,6 @@ function SalesReport() {
       return;
     }
     setError('');
-    setIsReportVisible(false);
 
     try {
       const response = await axios.get('/api/sales', { params: { startDate, endDate } });
@@ -108,6 +107,7 @@ function SalesReport() {
 
   return (
     <div className='report-div'>
+      <a href="/reports" className='back-button'>Back</a>
       <h2>Sales Report</h2>
       <div className='input-div'>
         <label>
@@ -131,9 +131,9 @@ function SalesReport() {
       </div>
       {error && <div className="error-message">{error}</div>}
       <button onClick={fetchSalesData}>Get Report</button>
-      <button onClick={lastMonth}>Get Report for the this month</button>
-      <button onClick={lastWeek}>Get Report for the this week</button>
-      <button onClick={today}>Get Report for today</button>
+      <button onClick={lastMonth} style={{'backgroundColor':'#6c757d'}}>Get Report for the this month</button>
+      <button onClick={lastWeek} style={{'backgroundColor':'#6c757d'}}>Get Report for the this week</button>
+      <button onClick={today} style={{'backgroundColor':'#6c757d'}}>Get Report for today</button>
 
       {isReportVisible && (
         <>
