@@ -46,6 +46,7 @@ function MonthlySignups() {
 
   return (
     <div className='report-div'>
+        <a href="/reports" className='back-button'>Back</a>
       <h2>Monthly Signups</h2>
       <div className='input-div-signups'>
         <label>
