@@ -554,7 +554,7 @@ else if(req.url.startsWith("/api/monthlysignups")) {
   `;
 
   const usersQuery = `
-    SELECT UserID, CustomerUser, Email, dateSignedUp
+    SELECT firstname, lastname, CustomerUser, Email, dateSignedUp
     FROM customer_user
     WHERE DATE_FORMAT(dateSignedUp, '%Y-%m') = ?
     ORDER BY dateSignedUp;
