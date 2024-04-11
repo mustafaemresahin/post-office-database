@@ -413,7 +413,7 @@ const server = http.createServer( async (req, res) => {
     // Queries/Reports
     else if(req.url === "/api/amountforallusers") {
       db.query(
-        "SELECT c.UserID, c.firstname,  c.lastname, SUM(t.TotalAmount) AS TotalSpent FROM customer_user AS c JOIN transaction AS t ON c.CartID = t.CartID GROUP BY c.UserID, c.firstname, c.lastname;" ,
+        "SELECT c.UserID, c.firstname,  c.lastname, c.Email, SUM(t.TotalAmount) AS TotalSpent FROM customer_user AS c JOIN transaction AS t ON c.CartID = t.CartID GROUP BY c.UserID, c.firstname, c.lastname, c.Email;" ,
         (error, result) => {
           if (error) {
             res.writeHead(500, { "Content-Type": "application/json" });
@@ -429,7 +429,23 @@ const server = http.createServer( async (req, res) => {
     }
     else if(req.url === "/api/packageinfo") {
       db.query(
-        "SELECT c.UserID, c.firstname,  c.lastname, COUNT(p.PackageID) AS TotalPackages,SUM(CASE WHEN p.status = 'Pending' THEN 1 ELSE 0 END) AS PendingPackages, SUM(CASE WHEN p.status = 'Accepted' THEN 1 ELSE 0 END) AS AcceptedPackages, SUM(CASE WHEN p.status = 'Delivered' THEN 1 ELSE 0 END) AS DeliveredPackages FROM customer_user AS c JOIN package AS p ON c.UserID = p.SenderID GROUP BY c.UserID, c.firstname, c.lastname;" ,
+        "SELECT c.UserID, c.firstname,  c.lastname, c.Email, COUNT(p.PackageID) AS TotalPackages,SUM(CASE WHEN p.status = 'Pending' THEN 1 ELSE 0 END) AS PendingPackages, SUM(CASE WHEN p.status = 'Accepted' THEN 1 ELSE 0 END) AS AcceptedPackages, SUM(CASE WHEN p.status = 'Delivered' THEN 1 ELSE 0 END) AS DeliveredPackages FROM customer_user AS c JOIN package AS p ON c.UserID = p.SenderID GROUP BY c.UserID, c.firstname, c.lastname, c.Email;" ,
+        (error, result) => {
+          if (error) {
+            res.writeHead(500, { "Content-Type": "application/json" });
+            res.end(JSON.stringify({ error: error }));
+            return;
+          } else {
+            res.writeHead(200, { "Content-Type": "application/json" });
+            res.end(JSON.stringify(result));
+            return;
+          }
+        }
+      );
+    }
+    else if(req.url === "/api/employeepackage") {
+      db.query(
+        "SELECT e.EmployeeID, e.Fname, e.Minit, e.Lname, e.Email, e.Phone, v.Type, COUNT(p.PackageID) AS TotalPackages FROM employee AS e JOIN vehicles AS v ON e.EmployeeID = v.EmployeeID JOIN package AS p ON v.VehicleID = p.VehicleID GROUP BY e.EmployeeID, v.VehicleID" ,
         (error, result) => {
           if (error) {
             res.writeHead(500, { "Content-Type": "application/json" });

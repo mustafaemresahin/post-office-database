@@ -56,6 +56,7 @@ function PackageReport() {
                   <th>User ID</th>
                   <th>First Name</th>
                   <th>Last Name </th>
+                  <th>Email</th>
                   <th>Total Packages</th>
                   <th>Pending Packages</th>
                   <th>Accepted Packages</th>
@@ -69,6 +70,7 @@ function PackageReport() {
                   <td>{user.UserID}</td>
                   <td>{user.firstname}</td>
                   <td>{user.lastname}</td>
+                  <td>{user.Email}</td>
                   <td>{user.TotalPackages}</td>
                   <td>{user.PendingPackages}</td>
                   <td>{user.AcceptedPackages}</td>
