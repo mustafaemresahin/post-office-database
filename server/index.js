@@ -541,7 +541,45 @@ const server = http.createServer( async (req, res) => {
     });
 }
   
-  
+else if(req.url.startsWith("/api/monthlysignups")) {
+  const reqUrl = new URL(req.url, `http://${req.headers.host}`);
+  const year = reqUrl.searchParams.get('year');
+  const month = reqUrl.searchParams.get('month');
+
+  const countQuery = `
+    SELECT COUNT(*) AS TotalSignUps
+    FROM customer_user
+    WHERE DATE_FORMAT(dateSignedUp, '%Y-%m') = ?;
+  `;
+
+  const usersQuery = `
+    SELECT UserID, CustomerUser, Email, dateSignedUp
+    FROM customer_user
+    WHERE DATE_FORMAT(dateSignedUp, '%Y-%m') = ?
+    ORDER BY dateSignedUp;
+  `;
+
+  // First, get the total signups count
+  db.query(countQuery, [`${year}-${month}`], (error, countResults) => {
+    if (error) {
+      return res.status(500).json({ error: error.toString() });
+    }
+
+    // Then, get the list of users who signed up
+    db.query(usersQuery, [`${year}-${month}`], (error, usersResults) => {
+      if (error) {
+        return res.status(500).json({ error: error.toString() });
+      }
+
+      const response = {
+        totalSignUps: countResults[0].TotalSignUps,
+        users: usersResults
+      };
+      res.writeHead(200, { "Content-Type": "application/json" });
+      res.end(JSON.stringify(response));
+    });
+  });
+} 
   
 
   }
