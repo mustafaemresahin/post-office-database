@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import '../css/vehicles.css';
+import { useNavigate } from 'react-router-dom';
 
 const VehicleAdd = () => {
   const [vehicleData, setVehicleData] = useState({
@@ -18,6 +19,7 @@ const VehicleAdd = () => {
       [name]: value,
     });
   };
+  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -36,6 +38,7 @@ const VehicleAdd = () => {
         unit: '',
         employeeID:''
       });
+      navigate("/vehicles");
     } catch (error) {
       console.error('Error adding vehicle:', error);
     }
