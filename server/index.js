@@ -119,6 +119,29 @@ const server = http.createServer( async (req, res) => {
       });
       return;
     }
+
+    // api for filling out profile efit fields, not working :)
+    else if (req.url.startsWith("/api/users/")) {
+    const parts = req.url.split('/');
+    const userID = parts[parts.length - 1];
+    {
+      db.query("SELECT Email, firstname, lastname, address, phonenumber FROM customer_user WHERE UserID = ?",
+      [userID],
+       (error, result) => {
+        if (error) {
+          res.writeHead(500, { "Content-Type": "application/json" });
+          res.end(JSON.stringify({ error: error }));
+          return;
+        } else {
+          res.writeHead(200, { "Content-Type": "application/json" });
+          res.end(JSON.stringify(result));
+          //console.log(result);
+          return;
+        }
+      });
+      return;
+    }}
+  
     // Get Admin
     else if (req.url === "/api/admin") 
     {
@@ -340,7 +363,7 @@ const server = http.createServer( async (req, res) => {
           }
       );
       return;
-  }
+    }
 
     else if (req.url === "/api/cart_items") 
     {
@@ -440,7 +463,7 @@ const server = http.createServer( async (req, res) => {
         }
       );
     }
-
+  
   }
   else if (req.method === "PUT") {
     const reqURL = url.parse(req.url, true);
@@ -622,45 +645,36 @@ const server = http.createServer( async (req, res) => {
     }
   }
  
-  // update VehicleID on packages
+   // update VehicleID on packages, does not work
    else if (pathSegments.length === 4 && pathSegments[2] === "packageToVehicle"){
-     const PackageID = pathSegments[3];
-    //console.log('q', vehicleID)
-    console.log('s',PackageID)
-     let data ="";
-     req.on("data", (chunk) => {
-       data+=chunk;
-     });
-     req.on("end", () => {
-       const body = JSON.parse(data);
-       const vehicleID = body.VehicleID;
-       console.log('c',vehicleID);
-       console.log('d',PackageID);
-
-
+    const PackageID = pathSegments[3];
+    let data ="";
+    req.on("data", (chunk) => {
+      data+=chunk;
+    });
+    req.on("end", () => {
+      const body = JSON.parse(data);
+      const vehicleID = body.VehicleID; // Updated to use VehicleID
+      console.log(vehicleID);
+      console.log(PackageID);
+  
       db.query(
-        "UPDATE package SET VehicleID = ? WHERE PackageID = ? AND EXISTS (SELECT 1 FROM vehicles WHERE VehicleID = ?)",
-        [vehicleID, PackageID, vehicleID],
-        (error, result) => {
+        "UPDATE package SET VehicleID = ? WHERE PackageID = ?", // Updated to set VehicleID
+        [vehicleID, PackageID],
+        (error) => {
           if (error) {
             res.writeHead(500, { 'Content-Type': 'application/json' });
             res.end(JSON.stringify({ error: 'Internal Server Error' }));
           } else {
-            if (result.affectedRows === 0) {
-              // If no rows were affected, it means the provided VehicleID does not exist
-              res.writeHead(400, { 'Content-Type': 'application/json' });
-              res.end(JSON.stringify({ error: 'VehicleID does not exist' }));
-            } else {
-              // If at least one row was affected, it means the update was successful
-              res.writeHead(200, { 'Content-Type': 'application/json' });
-              res.end(JSON.stringify({ message: 'Package status has been updated successfully' }));
-            }
+            res.writeHead(200, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify({ message: 'package status has been updated successfully' }));
           }
         }
       );
       return;
     });
   }
+  
 
 
   else if (req.method === "POST") {

@@ -7,28 +7,39 @@ const VehicleEdit = () => {
   const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
-    location: '',
-    status: '',
-    unit: ''
+    location: localStorage.getItem('location'),
+    status: localStorage.getItem('status'),
+    unit: localStorage.getItem('unit')
   });
   
+// const handleChange = (event) => {
+//   const { name, value } = event.target;
+//   setFormData((prevState) => {
+//     const newValue = value !== '' ? value : prevState[name];
+//     return {
+//       ...prevState,
+//       [name]: newValue,
+//     };
+//   });
+// };
+
 const handleChange = (event) => {
   const { name, value } = event.target;
-  setFormData((prevState) => {
-    const newValue = value !== '' ? value : prevState[name];
-    return {
+  setFormData((prevState) => ({
       ...prevState,
-      [name]: newValue,
-    };
-  });
+      [name]: value,
+  }));
 };
 
-  const handleEditVehicle = async () => {
+  const handleEditVehicle = async (event) => {
+    event.preventDefault();
     try {
       const vehicleId = localStorage.getItem('editVehicleId');
       const response = await axios.put(`/api/vehicleEdit/${vehicleId}`, formData);
       console.log('Vehicle updated successfully:', response.data);
       localStorage.removeItem('editVehicleId');
+      navigate("/vehicles");
+      window.location.reload();
     } catch (error) {
       console.error('Failed to update vehicle', error);
     }
