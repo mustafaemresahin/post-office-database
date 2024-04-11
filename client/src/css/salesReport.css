@@ -67,3 +67,21 @@
     margin-top: 20px;
     border-collapse: collapse;
   }
+
+.success-rate {
+  color: green;
+  font-size: 1em;
+  margin-top: 0.5em;
+  margin-bottom: 0.5em;
+  display: flex;
+  text-align: center;
+}
+
+.success-rate-value {
+  display: inline-block;
+  background-color: #daf5d7;
+  padding: 0.2em 1em;
+  margin:20px;
+  border-radius: 5px;
+  font-weight: bold;
+}
