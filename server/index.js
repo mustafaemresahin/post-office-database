@@ -479,7 +479,56 @@ const server = http.createServer( async (req, res) => {
         }
       );
     }
+    else if(req.url.startsWith("/api/sales")) { // Use startsWith to allow query parameters
+      // Parse the request URL
+      const reqUrl = new URL(req.url, `http://${req.headers.host}`);
+      // Extract startDate and endDate from query parameters
+      const startDate = reqUrl.searchParams.get('startDate');
+      const endDate = reqUrl.searchParams.get('endDate');
   
+      // First query for summarizing sales data
+      const summaryQuery = "SELECT TransactionType, COUNT(*) AS NumberOfTransactions, SUM(TotalAmount) AS TotalRevenue, AVG(TotalAmount) AS AverageTransactionValue FROM transaction WHERE TransactionDate BETWEEN ? AND ? GROUP BY TransactionType;";
+  
+      // Second query for fetching detailed transactions with user info
+      const detailQuery = `
+          SELECT t.TransactionID, t.TransactionDate, t.TotalAmount, t.TransactionType, 
+                 cu.UserID, cu.firstname, cu.lastname, cu.Email 
+          FROM transaction t
+          JOIN customer_user cu ON t.CartID = cu.CartID
+          WHERE t.TransactionDate BETWEEN ? AND ?
+          ORDER BY t.TransactionDate ASC;
+      `;
+  
+      // Perform the first query
+      db.query(summaryQuery, [startDate, endDate], (error, summaryResult) => {
+          if (error) {
+              res.writeHead(500, { "Content-Type": "application/json" });
+              res.end(JSON.stringify({ error: error.toString() }));
+              return;
+          }
+  
+          // Perform the second query
+          db.query(detailQuery, [startDate, endDate], (error, detailResult) => {
+              if (error) {
+                  res.writeHead(500, { "Content-Type": "application/json" });
+                  res.end(JSON.stringify({ error: error.toString() }));
+                  return;
+              }
+  
+              // Combine results from both queries into a single response
+              const response = {
+                  salesSummary: summaryResult,
+                  transactionDetails: detailResult,
+              };
+              res.writeHead(200, { "Content-Type": "application/json" });
+              res.end(JSON.stringify(response));
+          });
+      });
+  }
+  
+  
+  
+
   }
   else if (req.method === "PUT") {
     const reqURL = url.parse(req.url, true);
