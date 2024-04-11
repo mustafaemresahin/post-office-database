@@ -119,6 +119,29 @@ const server = http.createServer( async (req, res) => {
       });
       return;
     }
+
+    // api for filling out profile efit fields, not working :)
+    else if (req.url.startsWith("/api/users/")) {
+    const parts = req.url.split('/');
+    const userID = parts[parts.length - 1];
+    {
+      db.query("SELECT Email, firstname, lastname, address, phonenumber FROM customer_user WHERE UserID = ?",
+      [userID],
+       (error, result) => {
+        if (error) {
+          res.writeHead(500, { "Content-Type": "application/json" });
+          res.end(JSON.stringify({ error: error }));
+          return;
+        } else {
+          res.writeHead(200, { "Content-Type": "application/json" });
+          res.end(JSON.stringify(result));
+          //console.log(result);
+          return;
+        }
+      });
+      return;
+    }}
+  
     // Get Admin
     else if (req.url === "/api/admin") 
     {
@@ -318,13 +341,10 @@ const server = http.createServer( async (req, res) => {
       return;
     }
 
-    else if (req.url.startsWith("/api/vehicleSelect/")) {
-      const parts = req.url.split('/');
-      const vehicleID = parts[parts.length - 1];
-  
+    else if (req.url === ("/api/vehicleSelect")) {
+ 
       db.query(
-          "SELECT Timestamp, Location, Status, Unit FROM vehicles WHERE VehicleID = ?",
-          [vehicleID],
+          "SELECT v.VehicleID, e.Fname, e.Lname, v.Type FROM mydb.employee as e, mydb.vehicles as v WHERE e.EmployeeID = v.EmployeeID",
           (error, result) => {
               if (error) {
                   res.writeHead(500, { "Content-Type": "application/json" });
@@ -337,13 +357,13 @@ const server = http.createServer( async (req, res) => {
                       return;
                   }
                   res.writeHead(200, { "Content-Type": "application/json" });
-                  res.end(JSON.stringify(result[0])); // Assuming only one vehicle with the specified ID
+                  res.end(JSON.stringify(result)); 
                   return;
               }
           }
       );
       return;
-  }
+    }
 
     else if (req.url === "/api/cart_items") 
     {
@@ -671,9 +691,11 @@ const server = http.createServer( async (req, res) => {
         );
       });
     }
+
+    // update status on packages
     else if (pathSegments.length === 4 && pathSegments[2] === "userspackages"){
       const PackageID = pathSegments[3];
-
+      //console.log(PackageID)
       let data ="";
       req.on("data", (chunk) => {
         data+=chunk;
@@ -686,7 +708,7 @@ const server = http.createServer( async (req, res) => {
  
  
         db.query(
-          "UPDATE package SET `Status` = ? WHERE `PackageID`= ?",
+          "UPDATE package SET Status = ? WHERE PackageID = ?",
           [status, PackageID],
           (error) => {
             if (error) {
@@ -703,6 +725,38 @@ const server = http.createServer( async (req, res) => {
     }
   }
  
+   // update VehicleID on packages, does not work
+   else if (pathSegments.length === 4 && pathSegments[2] === "packageToVehicle"){
+    const PackageID = pathSegments[3];
+    let data ="";
+    req.on("data", (chunk) => {
+      data+=chunk;
+    });
+    req.on("end", () => {
+      const body = JSON.parse(data);
+      const vehicleID = body.VehicleID; // Updated to use VehicleID
+      console.log(vehicleID);
+      console.log(PackageID);
+  
+      db.query(
+        "UPDATE package SET VehicleID = ? WHERE PackageID = ?", // Updated to set VehicleID
+        [vehicleID, PackageID],
+        (error) => {
+          if (error) {
+            res.writeHead(500, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify({ error: 'Internal Server Error' }));
+          } else {
+            res.writeHead(200, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify({ message: 'package status has been updated successfully' }));
+          }
+        }
+      );
+      return;
+    });
+  }
+  
+
+
   else if (req.method === "POST") {
     if (req.url === "/api/adminAdd") {
       let data = "";

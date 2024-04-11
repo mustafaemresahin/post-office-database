@@ -38,10 +38,15 @@ const ProfilePage = () => {
             setUser(userData); // Set the found user into the users state, as an array for consistency
             setRole(localStorage.getItem('role'));
             setemail(userData.Email);
+            localStorage.setItem('Email',userData.Email);
             setfirst(userData.firstname);
+            localStorage.setItem('firstname',userData.firstname);
             setlast(userData.lastname);
+            localStorage.setItem('lastname',userData.lastname);
             setaddress(userData.address);
+            localStorage.setItem('address',userData.address);
             setphone(userData.phonenumber);
+            localStorage.setItem('phonenumber',userData.phonenumber);
             } else {
             console.log('User not found');
             // Handle the case where the user is not found
