@@ -8,10 +8,26 @@ function SalesReport() {
   const [data, setData] = useState({ salesSummary: [], transactionDetails: [] });
   const [isReportVisible, setIsReportVisible] = useState(false);
   const [error, setError] = useState('');
+  const [isPressed, setIsPressed] = useState(false);
 
   const fetchSalesData = async () => {
     if (new Date(startDate) > new Date(endDate)) {
       setError('Start date must be before end date.');
+      setIsReportVisible(false);
+      return;
+    }
+    else if (startDate === '' && endDate === ''){
+      setError('Select a date range');
+      setIsReportVisible(false);
+      return;
+    }
+    else if (startDate === ''){
+      setError('Select a start date');
+      setIsReportVisible(false);
+      return;
+    }
+    else if (endDate === ''){
+      setError('Select an end date');
       setIsReportVisible(false);
       return;
     }
@@ -22,14 +38,18 @@ function SalesReport() {
       const response = await axios.get('/api/sales', { params: { startDate, endDate } });
       setData(response.data);
       setIsReportVisible(true);
+      setIsPressed(false);
     } catch (err) {
       console.error(err);
       setError('Failed to fetch sales data. Please try again later.');
       setIsReportVisible(false);
     }
+
   };
 
   function lastMonth() {
+
+    setIsPressed(false);
 
     const today = new Date();
     const oneMonthAgo = new Date(today.getFullYear(), today.getMonth() - 1, today.getDate());
@@ -40,9 +60,13 @@ function SalesReport() {
     setStartDate(formattedStartDate);
     setEndDate(formattedEndDate);
 
+    setIsPressed(true);
+
   }
 
   function lastWeek() {
+
+    setIsPressed(false);
 
     const today = new Date();
     const oneMonthAgo = new Date(today.getFullYear(), today.getMonth(), today.getDate()-7);
@@ -53,9 +77,12 @@ function SalesReport() {
     setStartDate(formattedStartDate);
     setEndDate(formattedEndDate);
 
+    setIsPressed(true);
   }
 
   function today() {
+
+    setIsPressed(false);
 
     const today = new Date();
     const oneMonthAgo = new Date(today.getFullYear(), today.getMonth(), today.getDate()-1);
@@ -66,10 +93,12 @@ function SalesReport() {
     setStartDate(formattedStartDate);
     setEndDate(formattedEndDate);
 
+    setIsPressed(true);
+
   }
 
   useEffect(() => {
-    if (startDate && endDate) {
+    if (startDate && endDate && isPressed) {
       console.log(endDate);
       console.log(startDate);
       fetchSalesData();
@@ -102,8 +131,8 @@ function SalesReport() {
       </div>
       {error && <div className="error-message">{error}</div>}
       <button onClick={fetchSalesData}>Get Report</button>
-      <button onClick={lastMonth}>Get Report for the last month</button>
-      <button onClick={lastWeek}>Get Report for the last week</button>
+      <button onClick={lastMonth}>Get Report for the this month</button>
+      <button onClick={lastWeek}>Get Report for the this week</button>
       <button onClick={today}>Get Report for today</button>
 
       {isReportVisible && (
