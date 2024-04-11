@@ -40,15 +40,16 @@ const VehiclesTable = () => {
     }
   };
 
- const handleVehicleEdit = (event, vehicleID) => {
+ const handleVehicleEdit = (event, vehicleID, location, status, unit) => {
   event.preventDefault();
-  
   // Set the vehicle ID in local storage
   localStorage.setItem('editVehicleId', vehicleID);
-
+  localStorage.setItem('location', location);
+  localStorage.setItem('status', status);
+  localStorage.setItem('unit', unit);
   // Navigate to the vehicle edit page
   navigate('/vehicleEdit');
-};
+  };
 
   return (
     <div className='vehicles-employees-container'>
@@ -79,7 +80,7 @@ const VehiclesTable = () => {
                                 <td>{user.Unit}</td>
                                 <td>{user.EmployeeID}</td>
                                 <td>
-                                  <button onClick={(event) => handleVehicleEdit(event, user.VehicleID)}>Edit</button>
+                                  <button onClick={(event) => handleVehicleEdit(event, user.VehicleID, user.Location, user.Status, user.Unit)}>Edit</button>
                                   <button onClick={() => handleDeleteVehicle(user.VehicleID)}>Delete</button>
                                 </td>
                             </tr>

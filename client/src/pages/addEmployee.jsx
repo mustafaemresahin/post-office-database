@@ -30,6 +30,10 @@ const AddEmployee = () => {
     }, []);
 
     const handleChangeRole = async (user) => {
+        const isConfirmed = window.confirm('Are you sure you want to change the role ');
+         if(!isConfirmed){
+             return;
+             }
         if (selectedRoles[user.UserID]) {
             try {
                 const newRole = selectedRoles[user.UserID];

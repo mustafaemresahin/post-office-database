@@ -3,12 +3,17 @@ import '../css/LoginPage.css';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
+
 const LoginPage = () => {
   const navigate = useNavigate();
   const [values, setValues] = useState({username:"",password:"",role:""});
+  const [showWarning, setShowWarning] = useState(false);
 
   const handleSubmit = async (event) => {
     event.preventDefault(); // Prevent default form submission behavior
+    if (showWarning) {
+      setShowWarning(false);
+    }
 
     try {
       // Send POST request to login endpoint
@@ -18,14 +23,20 @@ const LoginPage = () => {
       localStorage.setItem('id', response.data.id);
       localStorage.setItem('role', response.data.role);
       localStorage.setItem('cartId',response.data.cart);
+      setShowWarning(false);
       navigate('/profile');
       window.location.reload();
     } catch (error) {
       // Handle login error
+      setShowWarning(true);
       console.error('Login failed:', error);
     }
   };
   const handleChange = (event) => {
+
+    if (showWarning) {
+      setShowWarning(false);
+    }
     const { name, value } = event.target;
     setValues(prevValues => ({
       ...prevValues,
@@ -65,13 +76,15 @@ const LoginPage = () => {
                   className="password-input"
                 />
               </div>
+              <div style={{textAlign: 'center'}}>
+                {showWarning && <p className='warning'>Incorrect Password!</p>}
+              </div>
               <div className="submit-button">
                 <button variant="primary" type="submit">
                   Submit
                 </button>
               </div>
             </form>
-            
           </div>
           <div className="register-link">
             <p>If you don't have an account <a href="/register">Register Account</a></p>

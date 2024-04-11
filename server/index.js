@@ -120,6 +120,29 @@ const server = http.createServer( async (req, res) => {
       });
       return;
     }
+
+    // api for filling out profile efit fields, not working :)
+    else if (req.url.startsWith("/api/users/")) {
+    const parts = req.url.split('/');
+    const userID = parts[parts.length - 1];
+    {
+      db.query("SELECT Email, firstname, lastname, address, phonenumber FROM customer_user WHERE UserID = ?",
+      [userID],
+       (error, result) => {
+        if (error) {
+          res.writeHead(500, { "Content-Type": "application/json" });
+          res.end(JSON.stringify({ error: error }));
+          return;
+        } else {
+          res.writeHead(200, { "Content-Type": "application/json" });
+          res.end(JSON.stringify(result));
+          //console.log(result);
+          return;
+        }
+      });
+      return;
+    }}
+  
     // Get Admin
     else if (req.url === "/api/admin") 
     {
@@ -319,13 +342,10 @@ const server = http.createServer( async (req, res) => {
       return;
     }
 
-    else if (req.url.startsWith("/api/vehicleSelect/")) {
-      const parts = req.url.split('/');
-      const vehicleID = parts[parts.length - 1];
-  
+    else if (req.url === ("/api/vehicleSelect")) {
+ 
       db.query(
-          "SELECT Timestamp, Location, Status, Unit FROM vehicles WHERE VehicleID = ?",
-          [vehicleID],
+          "SELECT v.VehicleID, e.Fname, e.Lname, v.Type FROM mydb.employee as e, mydb.vehicles as v WHERE e.EmployeeID = v.EmployeeID",
           (error, result) => {
               if (error) {
                   res.writeHead(500, { "Content-Type": "application/json" });
@@ -338,13 +358,13 @@ const server = http.createServer( async (req, res) => {
                       return;
                   }
                   res.writeHead(200, { "Content-Type": "application/json" });
-                  res.end(JSON.stringify(result[0])); // Assuming only one vehicle with the specified ID
+                  res.end(JSON.stringify(result)); 
                   return;
               }
           }
       );
       return;
-  }
+    }
 
     else if (req.url === "/api/cart_items") 
     {
@@ -414,7 +434,7 @@ const server = http.createServer( async (req, res) => {
     // Queries/Reports
     else if(req.url === "/api/amountforallusers") {
       db.query(
-        "SELECT c.UserID, c.firstname,  c.lastname, SUM(t.TotalAmount) AS TotalSpent FROM customer_user AS c JOIN transaction AS t ON c.CartID = t.CartID GROUP BY c.UserID, c.firstname, c.lastname;" ,
+        "SELECT c.UserID, c.firstname,  c.lastname, c.Email, SUM(t.TotalAmount) AS TotalSpent FROM customer_user AS c JOIN transaction AS t ON c.CartID = t.CartID GROUP BY c.UserID, c.firstname, c.lastname, c.Email;" ,
         (error, result) => {
           if (error) {
             res.writeHead(500, { "Content-Type": "application/json" });
@@ -430,7 +450,7 @@ const server = http.createServer( async (req, res) => {
     }
     else if(req.url === "/api/packageinfo") {
       db.query(
-        "SELECT c.UserID, c.firstname,  c.lastname, COUNT(p.PackageID) AS TotalPackages,SUM(CASE WHEN p.status = 'Pending' THEN 1 ELSE 0 END) AS PendingPackages, SUM(CASE WHEN p.status = 'Accepted' THEN 1 ELSE 0 END) AS AcceptedPackages, SUM(CASE WHEN p.status = 'Delivered' THEN 1 ELSE 0 END) AS DeliveredPackages FROM customer_user AS c JOIN package AS p ON c.UserID = p.SenderID GROUP BY c.UserID, c.firstname, c.lastname;" ,
+        "SELECT c.UserID, c.firstname,  c.lastname, c.Email, COUNT(p.PackageID) AS TotalPackages,SUM(CASE WHEN p.status = 'Pending' THEN 1 ELSE 0 END) AS PendingPackages, SUM(CASE WHEN p.status = 'Accepted' THEN 1 ELSE 0 END) AS AcceptedPackages, SUM(CASE WHEN p.status = 'Delivered' THEN 1 ELSE 0 END) AS DeliveredPackages FROM customer_user AS c JOIN package AS p ON c.UserID = p.SenderID GROUP BY c.UserID, c.firstname, c.lastname, c.Email;" ,
         (error, result) => {
           if (error) {
             res.writeHead(500, { "Content-Type": "application/json" });
@@ -444,6 +464,86 @@ const server = http.createServer( async (req, res) => {
         }
       );
     }
+    else if(req.url === "/api/employeepackage") {
+      db.query(
+        "SELECT e.EmployeeID, e.Fname, e.Minit, e.Lname, e.Email, e.Phone, v.Type, COUNT(p.PackageID) AS TotalPackages FROM employee AS e JOIN vehicles AS v ON e.EmployeeID = v.EmployeeID JOIN package AS p ON v.VehicleID = p.VehicleID GROUP BY e.EmployeeID, v.VehicleID" ,
+        (error, result) => {
+          if (error) {
+            res.writeHead(500, { "Content-Type": "application/json" });
+            res.end(JSON.stringify({ error: error }));
+            return;
+          } else {
+            res.writeHead(200, { "Content-Type": "application/json" });
+            res.end(JSON.stringify(result));
+            return;
+          }
+        }
+      );
+    }
+    else if(req.url.startsWith("/api/sales")) {
+      const reqUrl = new URL(req.url, `http://${req.headers.host}`);
+      const startDate = reqUrl.searchParams.get('startDate');
+      const endDate = reqUrl.searchParams.get('endDate');
+  
+      const summaryQuery = "SELECT TransactionType, COUNT(*) AS NumberOfTransactions, SUM(TotalAmount) AS TotalRevenue, AVG(TotalAmount) AS AverageTransactionValue FROM transaction WHERE TransactionDate BETWEEN ? AND ? GROUP BY TransactionType;";
+  
+      const detailQuery = `
+          SELECT t.TransactionID, t.TransactionDate, t.TotalAmount, t.TransactionType, 
+                 cu.UserID, cu.firstname, cu.lastname, cu.Email 
+          FROM transaction t
+          JOIN customer_user cu ON t.CartID = cu.CartID
+          WHERE t.TransactionDate BETWEEN ? AND ?
+          ORDER BY t.TransactionDate ASC;
+      `;
+  
+      db.query(summaryQuery, [startDate, endDate], (error, summaryResult) => {
+          if (error) {
+              res.writeHead(500, { "Content-Type": "application/json" });
+              res.end(JSON.stringify({ error: error.toString() }));
+              return;
+          }
+  
+          db.query(detailQuery, [startDate, endDate], (error, detailResult) => {
+              if (error) {
+                  res.writeHead(500, { "Content-Type": "application/json" });
+                  res.end(JSON.stringify({ error: error.toString() }));
+                  return;
+              }
+  
+              const response = {
+                  salesSummary: summaryResult,
+                  transactionDetails: detailResult,
+              };
+              res.writeHead(200, { "Content-Type": "application/json" });
+              res.end(JSON.stringify(response));
+          });
+      });
+  }
+
+  else if(req.url.startsWith("/api/packagereport")) {
+    const reqUrl = new URL(req.url, `http://${req.headers.host}`);
+    const startDate = reqUrl.searchParams.get('startDate');
+    const endDate = reqUrl.searchParams.get('endDate');
+
+    const summaryQuery = "SELECT p.Status, COUNT(*) AS `Number of Packages`, COUNT(*) / (SELECT COUNT(*) FROM `package` WHERE DateSent BETWEEN ? AND ?) * 100 AS `Percentage of Total Packages` FROM `package` p WHERE p.DateSent BETWEEN ? AND ? GROUP BY p.Status ORDER BY `Number of Packages` DESC;";
+
+    db.query(summaryQuery, [startDate, endDate, startDate, endDate], (error, summaryResult) => {
+        if (error) {
+            res.writeHead(500, { "Content-Type": "application/json" });
+            res.end(JSON.stringify({ error: error.toString() }));
+            return;
+        }
+
+      const response = {
+          packagesSummary: summaryResult,
+      };
+      res.writeHead(200, { "Content-Type": "application/json" });
+      res.end(JSON.stringify(response));
+    });
+}
+  
+  
+  
 
   }
   else if (req.method === "PUT") {
@@ -452,32 +552,95 @@ const server = http.createServer( async (req, res) => {
  
  
     // Update A USEr
-    if (pathSegments.length === 4 && pathSegments[2] === "users"){
-      const UserID = pathSegments[3];
+    // if (pathSegments.length === 4 && pathSegments[2] === "users"){
+    //   const UserID = pathSegments[3];
  
-      let data ="";
-      req.on("data", (chunk) => {
-        data+=chunk;
+    //   let data ="";
+    //   req.on("data", (chunk) => {
+    //     data+=chunk;
+    //   });
+    //   req.on("end", () => {
+    //     const body = JSON.parse(data);
+ 
+ 
+    //     db.query(
+    //       "UPDATE users SET 'Email' = ?, 'firstname'= ?, 'lastname'= ?, 'address'= ?, 'phonenumber' = ?,  WHERE 'UserID'= ?",
+    //       [body.Email, body.firstname, body.lastname, body.address, body.phonenumber, UserID],
+    //       (error) => {
+    //         if (error) {
+    //           res.writeHead(500, { 'Content-Type': 'application/json' });
+    //           res.end(JSON.stringify({ error: 'Internal Server Error' }));
+    //       } else {
+    //           res.writeHead(200, { 'Content-Type': 'application/json' });
+    //           res.end(JSON.stringify({ message: 'User has been updated successfully' }));
+    //       }
+    //       }
+    //     )
+    //   })
+    // }
+
+    // profile edit api
+    if (req.url.startsWith("/api/profileEdit/")) {
+      const parts = req.url.split('/');
+      const userID = parts[parts.length - 1];
+      
+      let body = '';
+      req.on('data', (chunk) => {
+        body += chunk.toString();
       });
-      req.on("end", () => {
-        const body = JSON.parse(data);
- 
- 
+      req.on('end', () => {
+        const user = JSON.parse(body);
+        let sql = "UPDATE customer_user SET";
+        const params = [];
+        // putting each const in here
+    
+        // checking to see if input is empty before putting in the params array
+        const { Email, firstname, lastname, address, phonenumber } = user;
+        if (Email !== undefined && Email !== '') {
+          sql += " Email = ?,";
+          params.push(Email);
+        }
+        if (firstname !== undefined && firstname !== '') {
+          sql += " firstname = ?,";
+          params.push(firstname);
+        }
+        if (lastname !== undefined && lastname !== '') {
+          sql += " lastname = ?,";
+          params.push(lastname);
+        }
+        if (address !== undefined && address !== '') {
+          sql += " address = ?,";
+          params.push(address);
+        }
+        if (phonenumber !== undefined && phonenumber !== '') {
+          sql += " phonenumber = ?,";
+          params.push(phonenumber);
+        }
+        if (sql.slice(-1) === ',') {
+          sql = sql.slice(0, -1);
+        }
+        sql += " WHERE UserID = ?";
+        // Add the userID to the params array
+        params.push(userID);
+    
+        // Updating profile
         db.query(
-          "UPDATE users SET 'Email' = ?, 'firstname'= ?, 'lastname'= ?, 'address'= ?, 'phonenumber' = ?,  WHERE 'UserID'= ?",
-          [body.Email, body.firstname, body.lastname, body.address, body.phonenumber, UserID],
-          (error) => {
-            if (error) {
-              res.writeHead(500, { 'Content-Type': 'application/json' });
-              res.end(JSON.stringify({ error: 'Internal Server Error' }));
-          } else {
-              res.writeHead(200, { 'Content-Type': 'application/json' });
-              res.end(JSON.stringify({ message: 'User has been updated successfully' }));
+          sql,
+          params,
+          (updateError) => {
+            if (updateError) {
+              console.error('Update error:', updateError);
+              res.writeHead(500, { "Content-Type": "application/json" });
+              res.end(JSON.stringify({ error: 'Failed to update profile' }));
+              return;
+            }
+            res.writeHead(200, { "Content-Type": "application/json" });
+            res.end(JSON.stringify({ message: 'Profile updated successfully' }));
           }
-          }
-        )
-      })
+        );
+      });
     }
+
     else if (req.url.startsWith("/api/vehicleEdit/")) {
       const parts = req.url.split('/');
       const vehicleID = parts[parts.length - 1];
@@ -529,9 +692,11 @@ const server = http.createServer( async (req, res) => {
         );
       });
     }
+
+    // update status on packages
     else if (pathSegments.length === 4 && pathSegments[2] === "userspackages"){
       const PackageID = pathSegments[3];
-
+      //console.log(PackageID)
       let data ="";
       req.on("data", (chunk) => {
         data+=chunk;
@@ -544,7 +709,7 @@ const server = http.createServer( async (req, res) => {
  
  
         db.query(
-          "UPDATE package SET `Status` = ? WHERE `PackageID`= ?",
+          "UPDATE package SET Status = ? WHERE PackageID = ?",
           [status, PackageID],
           (error) => {
             if (error) {
@@ -559,8 +724,39 @@ const server = http.createServer( async (req, res) => {
         return;
       });
     }
+    // update VehicleID on packages, does not work
+   else if (pathSegments.length === 4 && pathSegments[2] === "packageToVehicle"){
+    const PackageID = pathSegments[3];
+    let data ="";
+    req.on("data", (chunk) => {
+      data+=chunk;
+    });
+    req.on("end", () => {
+      const body = JSON.parse(data);
+      const vehicleID = body.VehicleID; // Updated to use VehicleID
+      console.log(vehicleID);
+      console.log(PackageID);
+  
+      db.query(
+        "UPDATE package SET VehicleID = ? WHERE PackageID = ?", // Updated to set VehicleID
+        [vehicleID, PackageID],
+        (error) => {
+          if (error) {
+            res.writeHead(500, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify({ error: 'Internal Server Error' }));
+          } else {
+            res.writeHead(200, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify({ message: 'package status has been updated successfully' }));
+          }
+        }
+      );
+      return;
+    });
   }
- 
+  }
+  
+
+
   else if (req.method === "POST") {
     if (req.url === "/api/adminAdd") {
       let data = "";
