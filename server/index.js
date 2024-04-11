@@ -723,9 +723,7 @@ const server = http.createServer( async (req, res) => {
         return;
       });
     }
-  }
- 
-   // update VehicleID on packages, does not work
+    // update VehicleID on packages, does not work
    else if (pathSegments.length === 4 && pathSegments[2] === "packageToVehicle"){
     const PackageID = pathSegments[3];
     let data ="";
@@ -753,6 +751,7 @@ const server = http.createServer( async (req, res) => {
       );
       return;
     });
+  }
   }
   
 
