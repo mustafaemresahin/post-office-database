@@ -32,6 +32,7 @@ import AddEmployee from './pages/addEmployee';
 import AddUser from './pages/AddUser';
 import TotalAmountUser from './pages/totalamountuser';
 import PackageReport from './pages/packagereport';
+import SalesReport from './pages/salesReport';
 
 const App = () => {
 
@@ -71,6 +72,7 @@ const App = () => {
           <Route path="/packagereport" element={<PackageReport />} />
           <Route path="/employees" element={<EmployeeList />} />
           <Route path="/vehicleEdit" element={<VehicleEdit />} />
+          <Route path="/salesreport" element={<SalesReport />} />
         </Routes>
         </ShopContextProvider>
       </div>      
