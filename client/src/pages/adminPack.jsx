@@ -5,17 +5,24 @@ import {useNavigate} from 'react-router-dom';
 
 
 function AdminPack() {
-  const [pack, setPack] = useState([])
+  const [pack, setPack] = useState([]);
+  const [role, setRole] = useState(null);
    
   const navigate = useNavigate();
 
   useEffect(() => {
     // Try to load packages from local storage first
+    const token = localStorage.getItem('token');
     const storedPackages = localStorage.getItem('packages');
-    if (storedPackages) {
+	  const Userrole = localStorage.getItem('role');
+    setRole(Userrole);
+	  if (!token) {
+      navigate("/login");
+    } else if (Userrole === 'User') {
+      navigate('/home');
+    } else if (storedPackages) {
       setPack(JSON.parse(storedPackages));
     } else {
-        // If not in local storage, fetch from the API
       fetchPackages();
     }
 	}, []);

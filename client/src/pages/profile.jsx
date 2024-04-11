@@ -55,8 +55,7 @@ const ProfilePage = () => {
       event.preventDefault(); // Prevent default form submission behavior
   
       // Remove token from localStorage
-      localStorage.removeItem('token');
-      localStorage.removeItem('role');
+      localStorage.clear();
   
       // Navigate to the home route
       navigate('/login');
