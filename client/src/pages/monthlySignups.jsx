@@ -84,7 +84,7 @@ function MonthlySignups() {
               <thead>
                 <tr>
                   <th>#</th>
-                  <th>Username</th>
+                  <th>Customer Name</th>
                   <th>Email</th>
                   <th>Date Signed Up</th>
                 </tr>
@@ -93,7 +93,7 @@ function MonthlySignups() {
                 {data.users.map((user, index) => (
                   <tr key={index}>
                     <td>{index + 1}</td>
-                    <td>{user.CustomerUser}</td>
+                    <td>{user.firstname} {user.lastname}</td>
                     <td>{user.Email}</td>
                     <td>{new Date(user.dateSignedUp).toLocaleDateString()}</td>
                   </tr>
