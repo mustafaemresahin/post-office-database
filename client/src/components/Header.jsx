@@ -56,6 +56,7 @@ const Header = () => {
           {!isAdmin && !isEmployee && <NavLink to="/track" className={({ isActive }) => isActive ? "activeLink" : ""}>Track Package</NavLink>}
           {isAdmin && <NavLink to="/adminDash" className={({ isActive }) => isActive ? "activeLink" : ""}>Admin Dashboard</NavLink>}
           {isAdmin && <NavLink to="/adminPack" className={({ isActive }) => isActive ? "activeLink" : ""}>Packages</NavLink>}
+          {isEmployee && <NavLink to="/adminPack" className={({ isActive }) => isActive ? "activeLink" : ""}>Packages</NavLink>}
           {isAdmin && <NavLink to="/adminUser" className={({ isActive }) => isActive ? "activeLink" : ""}>Customers</NavLink>}
           {isAdmin && <NavLink to="/employees" className={({ isActive }) => isActive ? "activeLink" : ""}>Employees</NavLink>}
           {isAdmin && <NavLink to="/adminStoreItems" className={({ isActive }) => isActive ? "activeLink" : ""}>Store Items</NavLink>}
