@@ -85,3 +85,41 @@
   border-radius: 5px;
   font-weight: bold;
 }
+
+.input-div-signups {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+}
+
+.input-div-signups label {
+  margin: 0 20px; 
+  font-size: 20px;
+}
+
+.input-div-signups select {
+  margin: 0 10px;
+  padding: 10px;
+  font-size: 16px;
+}
+
+.signup-report-button-div {
+  text-align: center;
+  margin-top: 20px;
+}
+
+.signup-report-button {
+  padding: 10px 20px;
+  font-size: 20px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.signup-report-button:hover {
+  background-color: #0056b3;
+}
