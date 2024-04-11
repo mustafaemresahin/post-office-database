@@ -318,13 +318,10 @@ const server = http.createServer( async (req, res) => {
       return;
     }
 
-    else if (req.url.startsWith("/api/vehicleSelect/")) {
-      const parts = req.url.split('/');
-      const vehicleID = parts[parts.length - 1];
-  
+    else if (req.url === ("/api/vehicleSelect")) {
+ 
       db.query(
-          "SELECT Timestamp, Location, Status, Unit FROM vehicles WHERE VehicleID = ?",
-          [vehicleID],
+          "SELECT v.VehicleID, e.Fname, e.Lname, v.Type FROM mydb.employee as e, mydb.vehicles as v WHERE e.EmployeeID = v.EmployeeID",
           (error, result) => {
               if (error) {
                   res.writeHead(500, { "Content-Type": "application/json" });
@@ -337,7 +334,7 @@ const server = http.createServer( async (req, res) => {
                       return;
                   }
                   res.writeHead(200, { "Content-Type": "application/json" });
-                  res.end(JSON.stringify(result[0])); // Assuming only one vehicle with the specified ID
+                  res.end(JSON.stringify(result)); 
                   return;
               }
           }
@@ -591,6 +588,8 @@ const server = http.createServer( async (req, res) => {
         );
       });
     }
+
+    // update status on packages
     else if (pathSegments.length === 4 && pathSegments[2] === "userspackages"){
       const PackageID = pathSegments[3];
       //console.log(PackageID)
@@ -623,6 +622,47 @@ const server = http.createServer( async (req, res) => {
     }
   }
  
+  // update VehicleID on packages
+   else if (pathSegments.length === 4 && pathSegments[2] === "packageToVehicle"){
+     const PackageID = pathSegments[3];
+    //console.log('q', vehicleID)
+    console.log('s',PackageID)
+     let data ="";
+     req.on("data", (chunk) => {
+       data+=chunk;
+     });
+     req.on("end", () => {
+       const body = JSON.parse(data);
+       const vehicleID = body.VehicleID;
+       console.log('c',vehicleID);
+       console.log('d',PackageID);
+
+
+      db.query(
+        "UPDATE package SET VehicleID = ? WHERE PackageID = ? AND EXISTS (SELECT 1 FROM vehicles WHERE VehicleID = ?)",
+        [vehicleID, PackageID, vehicleID],
+        (error, result) => {
+          if (error) {
+            res.writeHead(500, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify({ error: 'Internal Server Error' }));
+          } else {
+            if (result.affectedRows === 0) {
+              // If no rows were affected, it means the provided VehicleID does not exist
+              res.writeHead(400, { 'Content-Type': 'application/json' });
+              res.end(JSON.stringify({ error: 'VehicleID does not exist' }));
+            } else {
+              // If at least one row was affected, it means the update was successful
+              res.writeHead(200, { 'Content-Type': 'application/json' });
+              res.end(JSON.stringify({ message: 'Package status has been updated successfully' }));
+            }
+          }
+        }
+      );
+      return;
+    });
+  }
+
+
   else if (req.method === "POST") {
     if (req.url === "/api/adminAdd") {
       let data = "";
