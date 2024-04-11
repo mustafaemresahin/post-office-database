@@ -459,17 +459,13 @@ const server = http.createServer( async (req, res) => {
         }
       );
     }
-    else if(req.url.startsWith("/api/sales")) { // Use startsWith to allow query parameters
-      // Parse the request URL
+    else if(req.url.startsWith("/api/sales")) {
       const reqUrl = new URL(req.url, `http://${req.headers.host}`);
-      // Extract startDate and endDate from query parameters
       const startDate = reqUrl.searchParams.get('startDate');
       const endDate = reqUrl.searchParams.get('endDate');
   
-      // First query for summarizing sales data
       const summaryQuery = "SELECT TransactionType, COUNT(*) AS NumberOfTransactions, SUM(TotalAmount) AS TotalRevenue, AVG(TotalAmount) AS AverageTransactionValue FROM transaction WHERE TransactionDate BETWEEN ? AND ? GROUP BY TransactionType;";
   
-      // Second query for fetching detailed transactions with user info
       const detailQuery = `
           SELECT t.TransactionID, t.TransactionDate, t.TotalAmount, t.TransactionType, 
                  cu.UserID, cu.firstname, cu.lastname, cu.Email 
@@ -479,7 +475,6 @@ const server = http.createServer( async (req, res) => {
           ORDER BY t.TransactionDate ASC;
       `;
   
-      // Perform the first query
       db.query(summaryQuery, [startDate, endDate], (error, summaryResult) => {
           if (error) {
               res.writeHead(500, { "Content-Type": "application/json" });
@@ -487,7 +482,6 @@ const server = http.createServer( async (req, res) => {
               return;
           }
   
-          // Perform the second query
           db.query(detailQuery, [startDate, endDate], (error, detailResult) => {
               if (error) {
                   res.writeHead(500, { "Content-Type": "application/json" });
@@ -495,7 +489,6 @@ const server = http.createServer( async (req, res) => {
                   return;
               }
   
-              // Combine results from both queries into a single response
               const response = {
                   salesSummary: summaryResult,
                   transactionDetails: detailResult,
@@ -505,6 +498,28 @@ const server = http.createServer( async (req, res) => {
           });
       });
   }
+
+  else if(req.url.startsWith("/api/packagereport")) {
+    const reqUrl = new URL(req.url, `http://${req.headers.host}`);
+    const startDate = reqUrl.searchParams.get('startDate');
+    const endDate = reqUrl.searchParams.get('endDate');
+
+    const summaryQuery = "SELECT p.Status, COUNT(*) AS `Number of Packages`, COUNT(*) / (SELECT COUNT(*) FROM `package` WHERE DateSent BETWEEN ? AND ?) * 100 AS `Percentage of Total Packages` FROM `package` p WHERE p.DateSent BETWEEN ? AND ? GROUP BY p.Status ORDER BY `Number of Packages` DESC;";
+
+    db.query(summaryQuery, [startDate, endDate, startDate, endDate], (error, summaryResult) => {
+        if (error) {
+            res.writeHead(500, { "Content-Type": "application/json" });
+            res.end(JSON.stringify({ error: error.toString() }));
+            return;
+        }
+
+      const response = {
+          packagesSummary: summaryResult,
+      };
+      res.writeHead(200, { "Content-Type": "application/json" });
+      res.end(JSON.stringify(response));
+    });
+}
   
   
   
