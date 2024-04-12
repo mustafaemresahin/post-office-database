@@ -817,11 +817,52 @@ else if(req.url.startsWith("/api/monthlysignups")) {
         const address = body.address;
         const cartid = uuidv4().substring(0,20);
 
-        
-
         db.query(
           "INSERT INTO customer_user (UserID, CustomerUser, CustomerPass, Email, firstname, lastname, address, phonenumber, dateSignedUp, role, CartID) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
           [userid, username, password, email, firstname, lastname, address, phoneNumber, dateSignup, role, cartid],
+            (error) => {
+                if (error) {
+                  console.log('Insertion error:' , error);
+                  res.writeHead(500, {"Content-Type": "application/json"});
+                  res.end(JSON.stringify({error: "Do we get this far?"}));
+                  return;
+                } else {
+                  res.writeHead(200, {"Content-Type": "application/json"});
+                  res.end(JSON.stringify({ message: "User has signed up successfully" }));
+                  return;
+                }
+              }
+        )
+      }); 
+    }
+    else if (req.url === "/api/employeeadd") {
+      let data = "";
+      req.on("data",(chunk) => {
+        data += chunk;
+      });
+      const currentDate = new Date();
+      const formattedDate = currentDate.toISOString().slice(0, 19).replace('T', ' ');
+      req.on("end", () => {
+        const body = JSON.parse(data);
+        const employeeid = uuidv4().substring(0, `10`);
+        const fname = body.fname;
+        const minit = body.minit;
+        const lname = body.lname;
+        const ssn = body.ssn;
+        const dob = body.dob;
+        const phone =  body.phone;
+        const email = body.email;
+        const address = body.address;
+        const sex = body.sex;
+        const salary = body.salary;
+        const role = body.role;
+        const hiredate = formattedDate;
+        const schedule = null;
+        const departmentid = null; 
+
+        db.query(
+          "INSERT employee (EmployeeID, Fname, Minit, Lname, Ssn, Dob, Phone, Email, Address, Sex, Salary, role, HireDate, Schedule, DepartmentID) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+          [employeeid, fname, minit, lname, ssn, dob, phone, email, address, sex, salary, role, hiredate, schedule, departmentid],
             (error) => {
                 if (error) {
                   console.log('Insertion error:' , error);

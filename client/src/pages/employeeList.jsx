@@ -63,8 +63,10 @@ const EmployeeList = () => {
             </tbody>
           </table>
           <div className='button-div'>
-            <a href="/addEmployee" className='add-employee'>Add Employee</a>
+            <a href="/addEmployee" className='add-employee'>Change Employee Role</a>
+            <a href="/employeeAdd" className='add-employee'>Add employee</a>
           </div>
+
         </div>
   );
 };
