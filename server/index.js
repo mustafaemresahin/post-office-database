@@ -365,6 +365,31 @@ const server = http.createServer( async (req, res) => {
       );
       return;
     }
+    // get all employees that are drivers
+    else if (req.url === '/api/employeeDrivers'){
+      db.query(
+        "SELECT Fname, Lname, EmployeeID FROM employee WHERE Role = 'Driver' ",
+        (error, result) => {
+            if (error) {
+                //console.log('oof');
+                res.writeHead(500, { "Content-Type": "application/json" });
+                res.end(JSON.stringify({ error: error }));
+                return;
+            } else {
+                if (result.length === 0) {
+                    res.writeHead(404, { "Content-Type": "application/json" });
+                    res.end(JSON.stringify({ error: 'Drivers not found' }));
+                    return;
+                }
+                //console.log('Drivers found:', result);
+                res.writeHead(200, { "Content-Type": "application/json" });
+                res.end(JSON.stringify(result)); 
+                return;
+            }
+        }
+    );
+    return;
+    }
 
     else if (req.url === "/api/cart_items") 
     {
@@ -791,6 +816,38 @@ else if(req.url.startsWith("/api/monthlysignups")) {
       return;
     });
   }
+
+  // select driver for vehicle
+  else if (pathSegments.length === 4 && pathSegments[2] === "vehiclelist"){
+    const vehicleID = pathSegments[3];
+    let data ="";
+    req.on("data", (chunk) => {
+      data+=chunk;
+    });
+    req.on("end", () => {
+      const body = JSON.parse(data);
+      const driverID = body.EmployeeID;
+      //console.log(driverID);
+      //console.log(vehicleID);
+
+
+      db.query(
+        "UPDATE vehicles SET EmployeeID = ? WHERE VehicleID = ?",
+        [driverID, vehicleID],
+        (error) => {
+          if (error) {
+            res.writeHead(500, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify({ error: 'Internal Server Error' }));
+          } else {
+            res.writeHead(200, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify({ message: 'Vehicle driver designated successfully' }));
+          }
+        }
+      );
+      return;
+    });
+  }
+
   }
   
 

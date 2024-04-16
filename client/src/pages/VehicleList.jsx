@@ -8,6 +8,7 @@ const VehiclesTable = () => {
   const navigate = useNavigate();
 
   const [vehicles, setVehicles] = useState([]);
+  const [drivers, setDrivers] = useState([]);
   //const navigate = useNavigate();
 
   useEffect(() => {
@@ -22,6 +23,37 @@ const VehiclesTable = () => {
 
     fetchVehicles();
   }, []);
+
+
+  // added here for employees drop down menu
+  useEffect(() => {
+    const fetchDrivers = async () => {
+      try {
+      const response = await axios.get('/api/employeeDrivers');
+      setDrivers(response.data);
+      } catch (error) {
+      console.error('Error fetching drivers:', error);
+      }
+    };
+    
+    fetchDrivers();
+    }, []);
+    console.log('drivers:',drivers);
+
+    const handleSetDriver = async (VehicleID, DriverID) => {
+      try {
+        const response = await axios.put(`/api/vehiclelist/${VehicleID}`, { EmployeeID: DriverID });
+        console.log(response);
+        console.log('Update success:', response.data);
+  
+        // Update both the local state and local storage
+        const updatedVehicles = vehicles.map(user => user.VehicleID === VehicleID ? { ...user, EmployeeID: DriverID } : user);
+        setVehicles(updatedVehicles);
+        localStorage.setItem('vehicles', JSON.stringify(updatedVehicles));
+      } catch (error) {
+        console.error('Error designating driver:', error);
+      }
+    };
 
 
   const handleDeleteVehicle = async (vehicleId) => {
@@ -78,7 +110,15 @@ const VehiclesTable = () => {
                                 <td>{user.Status}</td>
                                 <td>{user.Type}</td>
                                 <td>{user.Unit}</td>
-                                <td>{user.EmployeeID}</td>
+                                <select onChange={(e) => handleSetDriver(user.VehicleID, e.target.value)} value={user.EmployeeID || ''}>
+  						                    <option value="">Driver</option>
+  						                    {drivers.map((driver) => (
+    					                    <option key={driver.EmployeeID} value={driver.EmployeeID}>
+      				                		{`${driver.EmployeeID} - ${driver.Fname+' '+driver.Lname}`}
+    					                    </option>
+  				                    		))}
+					                      </select>
+                                {/* <td>{user.EmployeeID}</td> */}
                                 <td>
                                   <button onClick={(event) => handleVehicleEdit(event, user.VehicleID, user.Location, user.Status, user.Unit)}>Edit</button>
                                   <button onClick={() => handleDeleteVehicle(user.VehicleID)}>Delete</button>
