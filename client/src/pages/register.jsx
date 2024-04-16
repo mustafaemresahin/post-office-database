@@ -50,6 +50,7 @@ const Registration = () => {
                 name="firstname"
                 value={userData.firstname}
                 onChange={handleChange}
+                placeholder='Enter first name'
                 required
               />
             </div>
@@ -61,6 +62,7 @@ const Registration = () => {
                 name="lastname"
                 value={userData.lastname}
                 onChange={handleChange}
+                placeholder='Enter last name'
                 required
               />
             </div>
@@ -72,6 +74,7 @@ const Registration = () => {
                 name="email"
                 value={userData.email}
                 onChange={handleChange}
+                placeholder='Enter Email'
                 required
               />
             </div>
@@ -83,6 +86,7 @@ const Registration = () => {
                 name="username"
                 value={userData.username}
                 onChange={handleChange}
+                placeholder='Create username'
                 required
               />
             </div>
@@ -94,6 +98,7 @@ const Registration = () => {
                 name="password"
                 value={userData.password}
                 onChange={handleChange}
+                placeholder='Create password'
                 required
               />
             </div>
@@ -105,6 +110,7 @@ const Registration = () => {
                 name="address"
                 value={userData.address}
                 onChange={handleChange}
+                placeholder='Enter address'
                 required
               />
             </div>
@@ -116,6 +122,7 @@ const Registration = () => {
                 name="phoneNumber"
                 value={userData.phoneNumber}
                 onChange={handleChange}
+                placeholder='Enter phone number'
                 required
               />
             </div>

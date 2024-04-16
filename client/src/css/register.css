@@ -37,11 +37,12 @@
 }
 
 .registration-form input {
-  padding: 10px 15px;
+  /* original padding was 10px 15px, changed to better fit in the register page, commented in case other jsx used this */
+  padding: 7px 15px;
   border-radius: 5px;
   border: 1px solid #ddd;
   font-size: 1rem;
-  width: 90%;
+   width: 100%; 
   transition: border-color 0.2s;
 }
 
