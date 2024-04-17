@@ -52,7 +52,7 @@ const EmployeeList = () => {
                     <td>{employee.Email}</td>
                     <td>{employee.Address}</td>
                     <td>{employee.Sex}</td>
-                    <td>{employee.Salary}</td>
+                    <td>{employee.Salary ? employee.Salary.toLocaleString('en-US') : 'N/A'}</td>
                     <td>{employee.role}</td>
                     <td>{employee.DepartmentID}</td>
                     <td>{employee.HireDate ? new Date(employee.HireDate).toLocaleDateString("en-US") : ''}</td>
