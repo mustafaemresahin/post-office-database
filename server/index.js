@@ -581,6 +581,32 @@ else if(req.url.startsWith("/api/monthlysignups")) {
     });
   });
 } 
+
+else if (req.url.startsWith("/api/packagesbystatus")){
+  const reqUrl = new URL(req.url, `http://${req.headers.host}`);
+  const startDate = reqUrl.searchParams.get('startDate');
+  const endDate = reqUrl.searchParams.get('endDate');
+  const status = reqUrl.searchParams.get('status');
+
+  const statusQuery = `SELECT Status, DateSent, Type, Destination, firstname, lastname
+                       FROM package
+                       JOIN customer_user ON package.SenderID = customer_user.UserID
+                       WHERE Status = ? AND DateSent BETWEEN ? AND ?;`;
+
+  db.query(statusQuery, [status, startDate, endDate], (error, packageResults) => {
+    if (error) {
+      res.writeHead(500, { "Content-Type": "application/json" });
+      res.end(JSON.stringify({ error: error.toString() }));
+      return;
+    }
+  
+    const response = {
+      packages: packageResults
+    };
+    res.writeHead(200, { "Content-Type": "application/json" });
+    res.end(JSON.stringify(response));
+  });
+}
   
 
   }
@@ -1544,3 +1570,4 @@ const port = process.env.PORT || 4000; // Use environment variable or default po
 server.listen(port, () => {
   console.log(`Server listening on port ${port}`);
 });
+
