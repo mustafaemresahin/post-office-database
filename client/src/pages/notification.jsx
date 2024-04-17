@@ -40,12 +40,10 @@ function Notification() {
   return (
     <div className='notification-page'>
       <div className="container-notify">
+        <div className="notification-header">
+          <h1>Notifications</h1>
+        </div>
         <div className="notifcation-container">
-          <header className="header-notify">   
-            <div className="notification-header">
-              <h1>Notifications</h1>
-            </div>
-          </header>
           <main className="notification-card">
             <div className="description-notify">
               {notify.length > 0 ? (
