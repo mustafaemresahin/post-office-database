@@ -194,24 +194,41 @@ const server = http.createServer( async (req, res) => {
       );
       return;
     }
-    else if (req.url === "/api/trackpackages") 
-    {
+    else if (req.url.startsWith("/api/trackpackages")) {
+      // Extract the tracking number from the query string
+      const url = new URL(req.url, `http://${req.headers.host}`);
+      const trackingNumber = url.searchParams.get("trackingNumber");
+  
+      // Check if trackingNumber is provided
+      if (!trackingNumber) {
+          res.writeHead(400, { "Content-Type": "application/json" });
+          res.end(JSON.stringify({ error: "Tracking number is required" }));
+          return;
+      }
+  
+      // Database query to select records based on trackingNumber
       db.query(
-        "SELECT * FROM trackinghistory",
-        (error, result) => {
-          if (error) {
-            res.writeHead(500, { "Content-Type": "application/json" });
-            res.end(JSON.stringify({ error: error }));
-            return;
-          } else {
-             res.writeHead(200, { "Content-Type": "application/json" });
-            res.end(JSON.stringify(result));
-            return;
+          "SELECT * FROM trackinghistory WHERE TrackingID = ?",
+          [trackingNumber],  // Use parameterized query to prevent SQL injection
+          (error, result) => {
+              if (error) {
+                  res.writeHead(500, { "Content-Type": "application/json" });
+                  res.end(JSON.stringify({ error: "Database error" }));
+                  return;
+              }
+              if (result.length === 0) {
+                  res.writeHead(404, { "Content-Type": "application/json" });
+                  res.end(JSON.stringify({ error: "No tracking information found" }));
+                  return;
+              }
+              res.writeHead(200, { "Content-Type": "application/json" });
+              res.end(JSON.stringify(result));
+              return;
           }
-        }
       );
       return;
-    }
+  }
+  
     // Get ALL packages
     else if (req.url === "/api/package") 
     {
