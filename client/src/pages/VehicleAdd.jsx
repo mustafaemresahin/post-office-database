@@ -9,7 +9,7 @@ const VehicleAdd = () => {
     status: '',
     type: '',
     unit: '',
-    employeeID: ''
+    //employeeID: ''
   });
 
   const handleChange = (e) => {
@@ -36,7 +36,7 @@ const VehicleAdd = () => {
         status:'',
         type: '',
         unit: '',
-        employeeID:''
+        //employeeID:''
       });
       navigate("/vehicles");
     } catch (error) {
@@ -57,8 +57,6 @@ const VehicleAdd = () => {
         <input type="text" id="type" name="type" value={vehicleData.type} onChange={handleChange} />
         <label htmlFor="unit">unit:</label>
         <input type="text" id="unit" name="unit" value={vehicleData.unit} onChange={handleChange} />
-        <label htmlFor="employeeID">Employee ID:</label>
-        <input type="text" id="employeeID" name="employeeID" value={vehicleData.employeeID} onChange={handleChange} />
         <button type="submit">Add Vehicle</button>
       </form>
     </div>

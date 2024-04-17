@@ -21,6 +21,10 @@ const EmployeeList = () => {
   return (
     <div className='employees'>
         <h2>Employee List</h2>
+        <div className='button-div'>
+            <a href="/addEmployee" className='add-employee'>Change Employee Role</a>
+            <a href="/employeeAdd" className='add-employee'>Add employee</a>
+          </div>
           <table>
             <thead>
               <tr>
@@ -62,10 +66,10 @@ const EmployeeList = () => {
             ))}
             </tbody>
           </table>
-          <div className='button-div'>
+          {/* <div className='button-div'>
             <a href="/addEmployee" className='add-employee'>Change Employee Role</a>
             <a href="/employeeAdd" className='add-employee'>Add employee</a>
-          </div>
+          </div> */}
 
         </div>
   );
