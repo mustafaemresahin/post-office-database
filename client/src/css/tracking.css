@@ -79,32 +79,32 @@
 
 
 .tracking-details {
-  position: relative; /* This is necessary for absolute positioning of children */
+  position: relative; 
   padding: 15px;
   background: white;
-  margin-bottom: 10px; /* Spacing between each tracking detail */
+  margin-bottom: 10px; 
   font-size: 1rem;
   border-radius: 5px;
 }
 
 .tracking-details.recent {
-  font-size: 1.1rem; /* Larger text for the most recent update */
+  font-size: 1.1rem; 
 }
 
 .tracking-details.past {
-  font-size: 0.85rem; /* Smaller text for past updates */
+  font-size: 0.85rem; 
 }
 
 .tracking-details p {
-  margin: 5px 0; /* Tighter spacing between lines */
+  margin: 5px 0; 
 }
 
 .tracking-details hr {
   border: 0;
   height: 1px;
   background: #ccc;
-  margin-top: 15px; /* Spacing before the horizontal line */
-  margin-bottom: 15px; /* Spacing after the horizontal line */
+  margin-top: 15px; 
+  margin-bottom: 15px; 
 }
 
 
@@ -112,29 +112,28 @@
 .tracking-details:not(:first-child)::before {
   content: '';
   position: absolute;
-  top: -21px; /* Adjust as necessary */
-  left: 50%; /* Center the line */
-  width: 2px; /* Line width */
-  height: 20px; /* This determines the length of the vertical line */
+  top: -21px; 
+  left: 50%; 
+  width: 2px; 
+  height: 20px; 
   background: green;
   z-index: 1;
 }
 
-/* Optional: Add an arrowhead or bullet at the top of the line */
+
 .tracking-details:not(:first-child)::after {
   content: '';
   position: absolute;
-  top: -24px; /* Adjust so it sits nicely on top of the vertical line */
-  left: calc(50% - 3.8px); /* Adjust width of arrowhead/bullet to center */
-  width: 10px; /* Width of the arrowhead/bullet */
-  height: 10px; /* Height of the arrowhead/bullet */
+  top: -24px; 
+  left: calc(50% - 3.8px); 
+  width: 10px; 
+  height: 10px; 
   background: white;
-  border-radius: 50%; /* Makes it a bullet */
-  border: 2px solid green; /* Give the bullet a border */
+  border-radius: 50%; 
+  border: 2px solid green; 
   z-index: 2;
 }
 
-/* Hide the bullet/arrowhead on the first element since there is no line above it */
 .tracking-details:first-child::after {
   display: none;
 } 

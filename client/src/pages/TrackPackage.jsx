@@ -85,7 +85,6 @@ const TrackingForm = () => {
                     {info.Status !== "Delivered" && <p className="delivery">Estimated Delivery: {info.EstimatedDeliveryTime}</p>}
                   </>
                 )}
-                {/* {index !== trackingInfo.length - 1 && <hr />} */}
               </div>
               </div>
                 ))}
