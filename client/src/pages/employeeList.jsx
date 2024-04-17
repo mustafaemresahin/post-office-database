@@ -21,6 +21,10 @@ const EmployeeList = () => {
   return (
     <div className='employees'>
         <h2>Employee List</h2>
+        <div className='button-div'>
+            <a href="/addEmployee" className='add-employee'>Change Employee Role</a>
+            <a href="/employeeAdd" className='add-employee'>Add employee</a>
+          </div>
           <table>
             <thead>
               <tr>
@@ -52,7 +56,7 @@ const EmployeeList = () => {
                     <td>{employee.Email}</td>
                     <td>{employee.Address}</td>
                     <td>{employee.Sex}</td>
-                    <td>{employee.Salary}</td>
+                    <td>{employee.Salary ? employee.Salary.toLocaleString('en-US') : 'N/A'}</td>
                     <td>{employee.role}</td>
                     <td>{employee.DepartmentID}</td>
                     <td>{employee.HireDate ? new Date(employee.HireDate).toLocaleDateString("en-US") : ''}</td>
@@ -62,10 +66,10 @@ const EmployeeList = () => {
             ))}
             </tbody>
           </table>
-          <div className='button-div'>
+          {/* <div className='button-div'>
             <a href="/addEmployee" className='add-employee'>Change Employee Role</a>
             <a href="/employeeAdd" className='add-employee'>Add employee</a>
-          </div>
+          </div> */}
 
         </div>
   );
