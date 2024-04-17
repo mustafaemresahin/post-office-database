@@ -1,0 +1,62 @@
+.add-container {
+    max-width: 500px;
+    margin: 100px auto;
+    padding: 20px;
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  }
+  
+  .employeeAdd-card h2 {
+    text-align: center;
+    color: #333;
+  }
+  
+  .employeeAdd-card form {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 16px;
+    margin-top: 20px;
+  }
+  
+  .employeeAdd-card label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+    color: #444;
+  }
+  
+  .employeeAdd-card input[type="text"],
+  .employeeAdd-card input[type="tel"],
+  .employeeAdd-card input[type="email"],
+  .employeeAdd-card input[type="number"],
+  .employeeAdd-card input[type="date"],
+  .employeeAdd-card select {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
+  
+  .employeeAdd-card select {
+    padding: 10px;
+    background-color: white;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    appearance: none;
+  }
+  
+  .employeeAdd-card button {
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .employeeAdd-card button:hover {
+    background-color: #0056b3;
+  }
+  

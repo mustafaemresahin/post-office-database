@@ -6,11 +6,27 @@ function PackageReport2() {
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
   const [data, setData] = useState({ packagesSummary: [] });
-  const [success, setSuccess] = useState(0);
+  /*const [success, setSuccess] = useState(0);*/
   const [error, setError] = useState('');
   const [isPressed, setIsPressed] = useState(false);
   const [isReportVisible, setIsReportVisible] = useState(false);
   const [isStart, setIsStart] = useState(false);
+  const [packages, setPackages] = useState({ packages: [] });
+  const [status, setStatus] = useState('');
+
+
+  const getPackagesByStatus = async (status) => {
+    try {
+      const packagesByStatus = await axios.get('/api/packagesbystatus', { params: { startDate, endDate, status } });
+      setPackages(packagesByStatus.data);
+      console.log(packagesByStatus.data);
+      console.log({ startDate, endDate, status });
+      setStatus(status);
+
+    } catch (err) {
+      console.error(err);
+    }
+  }
 
   const fetchPackageData = async () => {
     if (new Date(startDate) > new Date(endDate)) {
@@ -42,10 +58,11 @@ function PackageReport2() {
       setData(fetchedData);
       setIsReportVisible(true);
       setIsPressed(false);
-      const totalPackages = fetchedData.packagesSummary.reduce((total, current) => total + current['Number of Packages'], 0);
-      const acceptedPackagesData = fetchedData.packagesSummary.find(item => item.Status === 'Delivered'); // Use 'Accepted' as per your status
-      const deliveredPercentage = acceptedPackagesData ? (acceptedPackagesData['Number of Packages'] / totalPackages * 100) : 0;
-      setSuccess(deliveredPercentage);
+      //const totalPackages = fetchedData.packagesSummary.reduce((total, current) => total + current['Number of Packages'], 0);
+      //const acceptedPackagesData = fetchedData.packagesSummary.find(item => item.Status === 'Delivered'); // Use 'Accepted' as per your status
+      //const deliveredPercentage = acceptedPackagesData ? (acceptedPackagesData['Number of Packages'] / totalPackages * 100) : 0;
+      //setSuccess(deliveredPercentage);
+      getPackagesByStatus("Delivered");
 
     } catch (err) {
       console.error(err);
@@ -144,6 +161,7 @@ function PackageReport2() {
       {isReportVisible && data.packagesSummary.length > 0 ? (
   <>
     <h3>Package Summary</h3>
+    <h3>({startDate} - {endDate})</h3>
     <table className='package-table'>
       <thead>
         <tr>
@@ -162,16 +180,59 @@ function PackageReport2() {
         ))}
       </tbody>
     </table>
+    {/*
     <div className="success-rate">
-        <h2>Success Rate:</h2>
-        <p className="success-rate-value">{success.toFixed(2)}%</p>
+          <h2>Success Rate:</h2>
+          <p className="success-rate-value">{success.toFixed(2)}%</p>
       </div>
+    */}
+    <br></br>
+      <hr></hr>
+      <h3>List of Packages by Status</h3>
+      <div className='status-select-div'>
+          <h1 className='status-select-label'>Status:</h1>
+          <select value={status} onChange={(event) => getPackagesByStatus(event.target.value)} className='select-status'>
+                <option value="Delivered">Delivered</option>
+                <option value="Pending">Pending</option>
+                <option value="In Transit">In Transit</option>
+                <option value="Accepted">Accepted</option>
+          </select>
+      </div>
+      {packages.packages.length > 0 ? (
+        <>
+        <table>
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Status</th>
+          <th>Date Sent</th>
+          <th>Type</th>
+          <th>Destination</th>
+          <th>Sender</th>
+        </tr>
+      </thead>
+      <tbody>
+      {packages.packages.map((item, index) => (
+          <tr key={index}>
+            <td>{index + 1}</td>
+            <td>{item.Status}</td>
+            <td>{(new Date(item.DateSent).toLocaleString("en-US", { year: 'numeric', month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit', hour12: true }))}</td>
+            <td>{item.Type}</td>
+            <td>{item.Destination}</td>
+            <td>{item.firstname} {item.lastname}</td>
+          </tr>
+        ))}
+
+      </tbody>
+    </table>
+        </>
+      ): <p style={{'textAlign':'center'}}>0 {status} packages from {startDate} to  {endDate}.</p> }
+      
   </>
 ) : isStart ? (
-  <p>No data available for the selected date range.</p>
+  <p>No data available for the selected date range ({startDate} - {endDate}).</p>
 ) : null}
-
-
+      
     </div>
   );
 }
