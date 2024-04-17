@@ -1,37 +1,54 @@
 .notification-page {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
-
-.container-notify {
-    display: flex;
-    justify-content: center;
-    background-color: white;
-    width:  100%;
-    height: 94vh;
-}
-
-.notifcation-container {
-    background-color: lightgray;
-    width: 700px;
-    margin: 2rem;
-    padding: 1rem 1rem;
-    border-radius: 1rem;
-}
-
-.header-notify {
-    display: flex;
-    align-items:center;
-    justify-content: space-between;
-    margin-bottom: 2rem;
-}
-
-.notifcation-header {
-    display: flex;
-    align-items: center;
-}
-
-.notify-td {
-    text-decoration: none;
-}
+    background-color: #f4f4f9;
+    font-family: Arial, sans-serif;
+    padding: 20px;
+  }
+  
+  .container-notify {
+    max-width: 800px;
+    margin: auto;
+    background-color: #fff;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    padding: 20px;
+    border-radius: 8px;
+  }
+  
+  .notification-header h1 {
+    color: #333;
+    text-align: center;
+  }
+  
+  .notifcation-container {
+    margin-top: 20px;
+    max-height: 400px;
+    overflow-y: auto;
+  }
+  
+  .notification-card {
+    border-top: 2px solid #007bff;
+    padding: 15px;
+    background-color: #ffffff;
+  }
+  
+  .description-notify {
+    color: #666;
+  }
+  
+  table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  .notify-tr:hover {
+    background-color: #f9f9f9;
+  }
+  
+  .notify-td {
+    padding: 8px;
+    border-bottom: 1px solid #ddd;
+  }
+  
+  table tbody tr:last-child .notify-td {
+    border-bottom: none;
+  }
+  
