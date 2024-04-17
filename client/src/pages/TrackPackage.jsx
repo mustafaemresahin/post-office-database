@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import '../css/register.css';
 import '../css/tracking.css';
@@ -7,31 +6,27 @@ import axios from 'axios';
 
 const TrackingForm = () => {
   const [trackingNumber, setTrackingNumber] = useState('');
-  const [trackingInfo, setTrackingInfo] = useState(''); 
+  const [trackingInfo, setTrackingInfo] = useState([]);  // Initialize as an empty array
   const [errorMessage, setErrorMessage] = useState(''); 
-  // const navigate = useNavigate();
 
   const handleChange = (event) => {
     setTrackingNumber(event.target.value);
-    setTrackingInfo(null);
+    setTrackingInfo([]);
     setErrorMessage('');
   };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
-      axios.get('/api/trackpackages')
+      axios.get(`/api/trackpackages?trackingNumber=${trackingNumber}`)
       .then(response => {
-          const foundPackage = response.data.find(pkg => pkg.TrackingID === trackingNumber);
-          if (!foundPackage) {
-            // Update the errorMessage state to display a message
+        if (response.data.length === 0) {
             setErrorMessage('No packages that correspond to that tracking number');
-          } else {
-            // Update the trackingInfo state with the found package details
-            setTrackingInfo(foundPackage);
-            console.log(foundPackage);
-          }
-      })
+        } else {
+          const sortedInfo = [...response.data].sort((a, b) => new Date(b.Timestamp) - new Date(a.Timestamp));
+          setTrackingInfo(sortedInfo);
+        }
+    })
       .catch(error => {
         console.error('Error:', error);
         setErrorMessage('An error occurred while fetching the tracking information.');
@@ -64,18 +59,38 @@ const TrackingForm = () => {
               </div>
               <button type="submit">Track Package</button>
             </form>
-            
-            {errorMessage && <p>{errorMessage}</p>}
-            {trackingInfo && (
-              <div>
-                <p>Package Status: {trackingInfo.Status}</p>
-                <p>Location: {trackingInfo.Location}</p>
-                <p>Status last updated on {trackingInfo.Description}</p>
-                { (trackingInfo.Status === 'Pending Shipment' || trackingInfo.Status === 'In Transit'||trackingInfo.Status === 'Accepted') ? (
-                <p>Estimated Delivery: {trackingInfo.EstimatedDeliveryTime}</p>
-                ) : null}
+
+            {errorMessage && <p className="error-message">{errorMessage}</p>}
+            {trackingInfo.length > 0 ? (
+              <div className="tracking-info">
+                
+                {trackingInfo.map((info, index) => (
+                  <div key={index} className={`tracking-details ${index === 0 ? 'recent' : 'past'}`}>
+                    <div className="details-wrapper">
+                    <p>Package Status: {info.Status}</p>
+                    <p>Location: {info.Location}</p>
+                    <p>Status last updated on {
+                      new Date(info.Timestamp).toLocaleString("en-US", {
+                        year: 'numeric',
+                        month: 'long', 
+                        day: 'numeric',
+                        hour: '2-digit',
+                        minute: '2-digit',
+                        hour12: true
+                      })
+                    }</p>
+                     {index === 0 && (
+                  <>
+                    <p className="type">Package Type: {info.Description}</p>
+                    {info.Status !== "Delivered" && <p className="delivery">Estimated Delivery: {info.EstimatedDeliveryTime}</p>}
+                  </>
+                )}
+                {/* {index !== trackingInfo.length - 1 && <hr />} */}
               </div>
-            )}
+              </div>
+                ))}
+              </div>
+            ) : <p>No tracking information available.</p>}
           </div>
         </div>
       </div> 

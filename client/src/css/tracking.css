@@ -5,8 +5,11 @@
     min-height: 60vh;
     width: 60vw;
     padding: 2rem;
-    margin:20px;
+    /* margin:20px; */
     background-color: #f2f2f2;
+    width: 80%;
+    margin: 0 auto;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
 }
 
 .tracking-page{
@@ -18,3 +21,120 @@
   margin:0px;
   background-color: #f2f2f2;
 }
+
+.tracking-info {
+  background: #e9e9e9;
+  padding: 15px;
+  border-radius: 5px;
+  margin-top: 20px;
+}
+
+.tracking-info > div {
+  background: #fff;
+  padding: 10px;
+  margin-bottom: 25px;
+  border-radius: 5px;
+  border-left: 5px solid #5cb85c;
+}
+
+/* Error message */
+.error-message {
+  color: #d9534f;
+}
+
+/* Placeholders for the status timeline */
+.timeline-container {
+  padding: 20px;
+}
+
+.timeline-milestone {
+  display: flex;
+  align-items: center;
+}
+
+.timeline-milestone:not(:last-child) {
+  margin-bottom: 15px;
+}
+
+.timeline-icon {
+  width: 30px;
+  height: 30px;
+  line-height: 30px;
+  border-radius: 50%;
+  background: #5cb85c;
+  color: white;
+  text-align: center;
+  margin-right: 10px;
+}
+
+.timeline-line {
+  flex-grow: 1;
+  height: 2.5px;
+  background: #ccc;
+}
+
+.timeline-text {
+  margin-left: 10px;
+}
+
+
+.tracking-details {
+  position: relative; /* This is necessary for absolute positioning of children */
+  padding: 15px;
+  background: white;
+  margin-bottom: 10px; /* Spacing between each tracking detail */
+  font-size: 1rem;
+  border-radius: 5px;
+}
+
+.tracking-details.recent {
+  font-size: 1.1rem; /* Larger text for the most recent update */
+}
+
+.tracking-details.past {
+  font-size: 0.85rem; /* Smaller text for past updates */
+}
+
+.tracking-details p {
+  margin: 5px 0; /* Tighter spacing between lines */
+}
+
+.tracking-details hr {
+  border: 0;
+  height: 1px;
+  background: #ccc;
+  margin-top: 15px; /* Spacing before the horizontal line */
+  margin-bottom: 15px; /* Spacing after the horizontal line */
+}
+
+
+
+.tracking-details:not(:first-child)::before {
+  content: '';
+  position: absolute;
+  top: -21px; /* Adjust as necessary */
+  left: 50%; /* Center the line */
+  width: 2px; /* Line width */
+  height: 20px; /* This determines the length of the vertical line */
+  background: green;
+  z-index: 1;
+}
+
+/* Optional: Add an arrowhead or bullet at the top of the line */
+.tracking-details:not(:first-child)::after {
+  content: '';
+  position: absolute;
+  top: -24px; /* Adjust so it sits nicely on top of the vertical line */
+  left: calc(50% - 3.8px); /* Adjust width of arrowhead/bullet to center */
+  width: 10px; /* Width of the arrowhead/bullet */
+  height: 10px; /* Height of the arrowhead/bullet */
+  background: white;
+  border-radius: 50%; /* Makes it a bullet */
+  border: 2px solid green; /* Give the bullet a border */
+  z-index: 2;
+}
+
+/* Hide the bullet/arrowhead on the first element since there is no line above it */
+.tracking-details:first-child::after {
+  display: none;
+} 
