@@ -11,6 +11,37 @@
   align-items: center;
 }
 
+button {
+    color: #ffffff;
+    background-color: #007bff;
+    border-color: #007bff;
+    padding: 0.375rem 0.75rem; /* Similar padding to Bootstrap */
+    font-size: 1rem; /* Standard font size */
+    line-height: 1.5;
+    border-radius: 0.7rem; /* Rounded corners like Bootstrap */
+    transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out; /* Smooth transition for hover state */
+    display: inline-block;
+    font-weight: 400;
+    text-align: center;
+    vertical-align: middle;
+    user-select: none;
+    background-clip: padding-box;
+    border: 1px solid transparent; /* Border style similar to Bootstrap */
+    cursor: pointer;
+}
+
+button:hover {
+  background-color: #0056b3;
+  border-color: #0056b3;
+  color: #ffffff;
+}
+
+button:focus {
+  box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.5);
+  outline: 0;
+}
+
+
 .container {
   display: flex;
   justify-content: center; /* Center items within the container */
