@@ -32,6 +32,10 @@ function Checkout() {
           alert("Please fill out all required fields.");
           return;
       }
+      if (parseFloat((totalAmount + unreceivedPackages.reduce((sum, pendingpackage) => sum + parseFloat(pendingpackage.cost || 0), 0))) === 0){
+        alert("Total is zero! Add products!");
+        return;
+      }
       const Items = Object.entries(CartItem).map(([id, quantity]) => 
       {
           // Assuming PRODUCTS is an array where each product has an `id` and a `price`
@@ -190,7 +194,7 @@ function Checkout() {
         <div style={{ display: 'flex'}}>
           <div className="cartItem">                
             <div className="description">
-              <p>Shopping Cart</p>
+              <h3>Shopping Cart</h3>
               {Object.keys(cartItems).some(itemId => cartItems[itemId] > 0) ?(
                 <ul className="cart-item-list"> {/* Added unordered list with class */}
                   {Object.keys(cartItems).map((itemId) => {
@@ -210,9 +214,10 @@ function Checkout() {
               ) : (
                 <p>Cart Empty</p>
               )}
-              <p>Packages</p>
+              <h3>Packages</h3>
+              
+              <div className="pending-packages2">
               {unreceivedPackages.length > 0 ? (
-              <div className="pending-packages">
                 <ul>
                   {_.uniqBy(unreceivedPackages, 'PackageID').map((pendingpackage) => (
                     <li key={pendingpackage.PackageID}> {/* Corrected key prop */}
@@ -221,25 +226,29 @@ function Checkout() {
                     </li>
                   ))}
                 </ul>
+                ) : (
+                  <p>No pending packages found.</p>
+                )}
               </div>
-              ) : (
-                <p>No pending packages found.</p>
-              )}
+              
             </div>
           </div>
             <div className="checkout-confirm">
               <div className="confirm-header">Cart Totals</div>
-              {totalAmount > 0 || unreceivedPackages.length > 0 ? (
-                <div className="checkout">
+                <div className="checkout2">
                   <p>Subtotal from cart: ${totalAmount} </p>
                   <p>Pending package fees: ${unreceivedPackages.reduce((sum, pendingpackage) => sum + parseFloat(pendingpackage.cost || 0), 0).toFixed(2)}</p>
+                  <br></br>
+                  <hr></hr>
                   <p>Total: ${parseFloat((totalAmount + unreceivedPackages.reduce((sum, pendingpackage) => sum + parseFloat(pendingpackage.cost || 0), 0)).toFixed(2))}</p>
-                  <button onClick={() => navigate("/shop")}> Continue Shopping </button>
+                  <p>
+                  <div className="button-container">
+                    <button onClick={() => navigate("/shop")}> Continue Shopping </button>
+                    <button onClick={() => navigate("/cart")}> Go to Cart </button>
+                    <button onClick={handleSubmit}>Place order</button>
+                  </div>
+                  </p>
                 </div>
-              ) : (
-                <h1> Your Shopping Cart is Empty</h1>
-              )}
-                <button onClick={handleSubmit}>Place order</button>
               </div>
             </div>
           </div> 
