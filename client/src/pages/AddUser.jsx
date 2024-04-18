@@ -14,6 +14,7 @@ function AddUser() {
         try {
           const response = await axios.get('/api/users');
           setData(response.data.filter(user => user.role === "User"));
+          console.log(data);
         } catch (error) {
           console.error('Error users:', error);
         }
