@@ -90,10 +90,15 @@ export const Cart = () => {
           })
         ) : (
           // Display message if the cart is empty
-          <p>No store items in cart</p>
+          <div className="cart-message cart-message-empty">
+              <p>No store items in cart</p>
+          </div>
         )}
       </div>
-      <h1>Pending Packages</h1>
+      <br></br>
+      <br></br>
+      <br></br>
+      <h1 className="cartHeader">Pending Packages</h1>
       {isLoading ? (
         <p>Loading...</p>
             ) : unreceivedPackages.length > 0 ? (
@@ -114,13 +119,17 @@ export const Cart = () => {
                 </ul>
               </div>
             ) : (
-              <p>No pending packages found.</p>
+              <div className="cart-message cart-message-empty">
+                  <p>No pending packages found.</p>
+              </div>
             )}
 
-      
+            <br></br>
+            <br></br>
+            <br></br>
             {totalAmount > 0 || unreceivedPackages.length > 0 ? (
               <div className="checkout">
-                <p>Subtotal from cart: ${totalAmount} </p>
+                <p>Subtotal from cart: ${parseFloat(totalAmount).toFixed(2)} </p>
                 <p>Pending package fees: ${unreceivedPackages.reduce((sum, pendingpackage) => sum + parseFloat(pendingpackage.cost || 0), 0).toFixed(2)}</p>
                 <p>Total: ${parseFloat((totalAmount + unreceivedPackages.reduce((sum, pendingpackage) => sum + parseFloat(pendingpackage.cost || 0), 0)).toFixed(2))}</p>
                 <button onClick={() => navigate("/shop")}> Continue Shopping </button>
