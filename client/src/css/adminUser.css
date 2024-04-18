@@ -59,7 +59,7 @@ table tr:hover {
   text-decoration: none;
 }
 
-.user-container {
+.add-user-container {
   max-width: 600px;
   margin: auto;
   padding: 20px;
@@ -68,32 +68,32 @@ table tr:hover {
   box-shadow: 0 2px 5px rgba(0,0,0,0.1);
 }
 
-.user-container h2 {
+.add-user-container h2 {
   color: #333;
   font-family: Arial, sans-serif;
 }
 
-.user-container form {
+.add-user-container form {
   display: grid;
   grid-gap: 15px;
   padding: 20px;
 }
 
-.user-container label {
+.add-user-container label {
   display: block;
   font-size: 14px;
   color: #4b4b4b;
   margin-bottom: 5px;
 }
 
-.user-container input {
+.add-user-container input {
   width: 100%;
   padding: 8px;
   border: 1px solid #ccc;
   border-radius: 4px;
 }
 
-.user-container button {
+.add-user-container button {
   background-color: #0056b3;
   color: white;
   border: none;
@@ -104,6 +104,6 @@ table tr:hover {
   transition: background-color 0.3s ease;
 }
 
-.user-container button:hover {
+.add-user-container button:hover {
   background-color: #003d80;
 }
