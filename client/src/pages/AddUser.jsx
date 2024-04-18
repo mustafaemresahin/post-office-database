@@ -57,7 +57,7 @@ const handleAddSubmit = async (event) => {
     
 
     return (
-        <div className="user-container">
+        <div className="add-user-container">
             <h2>Add new user</h2>
             <form onSubmit={handleAddSubmit}>
 
