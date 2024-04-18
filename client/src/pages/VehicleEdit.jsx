@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import '../css/vehicles.css';
+import '../css/vehicleEdit.css';
 import axios from 'axios';
 
 const VehicleEdit = () => {
@@ -46,8 +46,8 @@ const handleChange = (event) => {
   };
 
   return (
-    <div className="registration-container">
-    <div className="vehicle-card">
+    <div className="registration-container-vehicles">
+    <div className="vehicle-edit-card">
       <h2>Edit Vehicle</h2>
       <form onSubmit={handleEditVehicle}>
         <label>
@@ -64,7 +64,6 @@ const handleChange = (event) => {
         </label>
         <button type="submit">Update Vehicle</button>
       </form>
-      {/* Button to navigate back to the vehicle list */}
       <button onClick={() => navigate("/vehicles")}>Back to Vehicle List</button>
     </div>
     </div>
