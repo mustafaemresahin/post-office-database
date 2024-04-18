@@ -1,73 +1,73 @@
 .shopTitle {
-    margin-top: 100px;
-    text-align: center;
-    font-size: 40px;
-  }
-  .products {
-    width: 100%;
-    height: auto;
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
-    place-items: center;
-  }
-   .product {
-    border-radius: 15px;
-    width: 300px;
-    height: 350px;
-    margin: 100px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-  }
-   .product img {
-    width: 400px;
-  }
-   .product .description {
-    text-align: center;
-  }
-   .product:hover {
-    transition: 0.3s ease-in;
-    cursor: pointer;
-  }
-   .addToCartBttn {
-    background-color: gray;
-    border: 2px solid rgb(19, 19, 19);
-    min-width: 100px;
-    padding-left: 10px;
-    padding-right: 10px;
-    padding-top: 5px;
-    padding-bottom: 5px;
-    border-radius: 15px;
-  }
- 
-  .addToCartBttn:hover {
-    background-color: rgb(19, 19, 19);
-    color: white;
-    cursor: pointer;
-  }
+  text-align: center;
+  margin-top: 20px;
+  margin-bottom: 40px;
+}
 
-  /* shop.css */
-.shopTitle {
-  margin: auto;
-  padding: 0 1rem; /* Add padding on smaller screens */
+.shopTitle h3 {
+  font-size: 32px;
+  color: #333;
+  font-weight: normal;
+  margin-bottom: 20px;
 }
 
 .products {
   display: flex;
-  flex-wrap: wrap; /* Ensure items can wrap on small screens */
-  justify-content: center; /* Center items for a nice layout */
-  gap: 1rem; /* Add some space between items */
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 20px;
 }
 
 .product {
-  flex: 1 1 200px; /* Example: Allow flex items to grow and shrink, but not smaller than 200px */
-  /* Adjust other styles as necessary */
+  width: 320px;
+  padding: 10px;
+  background-color: #ffffff;
+  border: 1px solid #dddddd;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  transition: box-shadow 0.3s ease-in-out;
+  justify-content: space-between;
+  align-items: center;
 }
 
-/* General CSS for images in cart items and shop products */
-img {
-  max-width: 100%;
-  height: auto;
-  display: block; /* Remove extra space below the image */
+.product:hover {
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+}
+
+.product img {
+  width: 300px;
+  height: 150px;
+  border-radius: 4px;
+  object-fit: contain;
+  background-color: #f7f7f7;
+  align-self: center;
+}
+
+
+.product h5 {
+  font-size: 16px;
+  color: #2a2a2a;
+}
+
+.product p {
+  font-size: 14px;
+  color: #666;
+  line-height: 1.5;
+}
+
+.product button {
+  width: 80%;
+  padding: 8px;
+  margin-left:28px;
+  background-color: #007BFF;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  text-align: center;
+  display: block;
+}
+
+.product button:hover {
+  background-color: #0056b3;
 }
