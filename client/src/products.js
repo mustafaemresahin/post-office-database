@@ -11,6 +11,7 @@ axios.get('/api/storeitem')
       id: product.ItemID,
       productName: product.Name,
       price: product.Cost,
+      quantity: product.Inventory,
       productImage: product.productImage // Assuming productImage contains the URL of the image
     }));
 
@@ -21,5 +22,20 @@ axios.get('/api/storeitem')
     console.error('Error fetching product data:', error);
   });
 
-  
-export { PRODUCTS };
+// Function to fetch products
+const fetchProducts = () => {
+  return axios.get('/api/storeitem')
+    .then(response => response.data.map(product => ({
+      id: product.ItemID,
+      productName: product.Name,
+      price: product.Cost,
+      quantity: product.Inventory,
+      productImage: product.productImage
+    })))
+    .catch(error => {
+      console.error('Error fetching product data:', error);
+      return [];  // Return an empty array in case of error
+    });
+};
+
+export { fetchProducts, PRODUCTS };
