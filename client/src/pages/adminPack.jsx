@@ -122,7 +122,7 @@ function AdminPack() {
                 <td>{p.Dimensions}</td>
                 <td>{p.Type}</td>
                 <td>
-                  <select value={p.Status} onChange={(e) => handleChangeStatus(p.PackageID, e.target.value)}>
+                  <select value={p.Status} onChange={(e) => handleChangeStatus(p.PackageID, e.target.value)} style={{'min-width':'80px'}}>
                     <option value="Pending">Pending</option>
                     <option value="In Transit">In Transit</option>
                     <option value="Delivered">Delivered</option>
@@ -131,7 +131,7 @@ function AdminPack() {
                 </td>
                 <td>{(new Date(p.DateSent).toLocaleString("en-US", { year: 'numeric', month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit', hour12: true }))}</td>
                 <td>
-				<select onChange={(e) => handleChangeVehicle(p.PackageID, e.target.value)} value={p.VehicleID || ''}>
+				<select onChange={(e) => handleChangeVehicle(p.PackageID, e.target.value)} value={p.VehicleID || ''} style={{'min-width':'150px'}}>
   						<option value="">Vehicle</option>
   						{vehicles.map((vehicle) => (
     					<option key={vehicle.VehicleID} value={vehicle.VehicleID}>
