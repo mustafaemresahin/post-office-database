@@ -66,6 +66,7 @@ const Header = () => {
           {isEmployee && <NavLink to="/vehicles" className={({ isActive }) => isActive ? "activeLink" : ""}>Vehicles</NavLink>}
           {!isLoggedIn && <NavLink to="/login" className={({ isActive }) => isActive ? "activeLink" : ""}>Login/Signup</NavLink>}
           {isUser && <NavLink to="/transactionHistory" className={({ isActive }) => isActive ? "activeLink" : ""}>Transaction History</NavLink>}
+          {isUser && <NavLink to="/sentPackages" className={({ isActive }) => isActive ? "activeLink" : ""}>Sent Packages</NavLink>}
           {isLoggedIn && <NavLink to="/Profile" className={({ isActive }) => isActive ? "activeLink" : ""}>Logged in as {name}</NavLink>}
           {isLoggedIn && <NavLink to="/notification" className={({ isActive }) => isActive ? "activeLink" : ""}>Notifications</NavLink>}
 
