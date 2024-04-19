@@ -13,6 +13,7 @@ export const Cart = () => {
   const totalAmount = getTotalCartAmount();
   const [unreceivedPackages, setUnreceivedPackages] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [isLoaded, setIsLoaded] = useState(false);
 
   const navigate = useNavigate();
 
@@ -42,6 +43,15 @@ export const Cart = () => {
         console.error('Error:', error);
       }
     };    
+
+    async function fetchCartItems() {
+      const fetchedCartItems = await getTotalCartAmount();
+      console.log(Object.keys(fetchedCartItems).length, "cartItems length");
+      console.log(fetchedCartItems, "cartItems");
+      setIsLoaded(true);
+    }
+    
+    fetchCartItems();
   
     fetchUserData();
     setIsLoading(false);
@@ -77,74 +87,117 @@ export const Cart = () => {
       <div>
         <h1 className="cartHeader">Your Cart Items</h1>
       </div>
-      <div>
-        {Object.keys(cartItems).some(itemId => cartItems[itemId] > 0) ? (
-          // Only render cart items if there are items in the cart
-          Object.keys(cartItems).map((itemId) => {
-            const product = PRODUCTS.find(product => product.id === parseInt(itemId));
-            if (product && cartItems[itemId] > 0) {
-              return <CartItem key={product.id} data={product} />;
-            }
-            // Handle cases where the product might not exist in PRODUCTS
-            return null;
-          })
-        ) : (
-          // Display message if the cart is empty
+      <div style={{'margin-left':'30px'}}>
+        {Object.keys(cartItems).reduce((sum, key) => {
+        const product = PRODUCTS.find(p => p.id.toString() === key);
+        return sum + (product ? cartItems[key] * product.price : 0);
+      }, 0) > 0 ? (
+          // Render CartItem components for products that are in the cart (quantity > 0)
+          PRODUCTS.filter(product => cartItems[product.id] > 0)
+            .map(product => {
+              return (
+                <CartItem 
+                  key={product.id} 
+                  data={{ ...product, quantity: cartItems[product.id] }} 
+                />
+              );
+            })
+        ) : isLoaded && (
           <div className="cart-message cart-message-empty">
-              <p>No store items in cart</p>
+            <p>No store items in cart</p>
           </div>
         )}
       </div>
-      <br></br>
-      <br></br>
-      <br></br>
+      <div>
+      {Object.keys(cartItems).reduce((sum, key) => {
+        const product = PRODUCTS.find(p => p.id.toString() === key);
+        return sum + (product ? cartItems[key] * product.price : 0);
+      }, 0) > 0 ? (
+          <div>
+            <p style={{'textAlign':'right', 'margin-right':'100px'}}>Subtotal from cart: ${parseFloat(totalAmount).toFixed(2)} </p>
+            <hr></hr>
+            <br></br>
+          </div>
+        ) : (
+          <div>
+            
+          </div>
+        )}
+      </div>
       <h1 className="cartHeader">Pending Packages</h1>
       {isLoading ? (
         <p>Loading...</p>
             ) : unreceivedPackages.length > 0 ? (
-              <div className="pending-packages">
-                <ul>
-                {_.uniqBy(unreceivedPackages, 'PackageID').map((pendingpackage) => (
-                  <li key={pendingpackage.PackageID}>
-                    Package ID: {pendingpackage.PackageID},
-                    Cost: {pendingpackage.cost}
-                    <button 
-                      className="packageRemove" 
-                      onClick={() => deleteCartItem(pendingpackage.PackageID)}
-                    >
-                      Remove
-                    </button>
-                  </li>
-                ))}
-                </ul>
-              </div>
-            ) : (
+              <div className="packageTable">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Recipient</th>
+                    <th>Destination</th>
+                    <th>Type</th>
+                    <th>Dimensions</th>
+                    <th>Weight</th>
+                    <th>Expedited Shipping</th>
+                    <th>Cost</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {_.uniqBy(unreceivedPackages, 'PackageID').map((pendingpackage) => (
+                    <tr key={pendingpackage.PackageID}>
+                      <td>{pendingpackage.recipientFirstName} {pendingpackage.recipientLastName}</td>
+                      <td>{pendingpackage.destination}</td>
+                      <td>{pendingpackage.Type}</td>
+                      <td>{pendingpackage.Dimensions}</td>
+                      <td>{parseFloat(pendingpackage.Weight).toFixed(2)} lbs</td>
+                      <td>{pendingpackage.expeditedShipping ? "Yes" : "No"}</td>
+                      <td>${pendingpackage.cost}</td>
+                      <td>
+                        <button className="packageRemove" onClick={() => deleteCartItem(pendingpackage.PackageID)}>
+                          Remove
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+              <p style={{'textAlign':'right', 'margin-right':'125px'}}>Total: ${unreceivedPackages.reduce((sum, pendingpackage) => sum + parseFloat(pendingpackage.cost || 0), 0).toFixed(2)}</p>
+            </div>
+
+            ) : isLoaded && (
               <div className="cart-message cart-message-empty">
                   <p>No pending packages found.</p>
               </div>
             )}
-
-            <br></br>
-            <br></br>
-            <br></br>
-            {totalAmount > 0 || unreceivedPackages.length > 0 ? (
+            {isLoading ? (
+              <p>Loading...</p>
+            ) : unreceivedPackages.length > 0 ? (
+              <div>
+                <hr></hr>
+                <br></br>
+              </div>
+            ) : (
+              <div>
+              </div>
+            )}
               <div className="checkout">
                 <p>Subtotal from cart: ${parseFloat(totalAmount).toFixed(2)} </p>
                 <p>Pending package fees: ${unreceivedPackages.reduce((sum, pendingpackage) => sum + parseFloat(pendingpackage.cost || 0), 0).toFixed(2)}</p>
                 <p>Total: ${parseFloat((totalAmount + unreceivedPackages.reduce((sum, pendingpackage) => sum + parseFloat(pendingpackage.cost || 0), 0)).toFixed(2))}</p>
                 <button onClick={() => navigate("/shop")}> Continue Shopping </button>
-                <button
-                  onClick={() => {
-                    navigate("/checkout");
-                  }}
-                >
-                  {" "}
-                  Checkout{" "}
-                </button>
+                {totalAmount > 0 || unreceivedPackages.length > 0 ? (
+                      <button
+                        onClick={() => {
+                          navigate("/checkout");
+                        }}
+                      >
+                        {" "}
+                        Checkout{" "}
+                      </button>
+                  ) : (
+                    ""
+                  )}
               </div>
-            ) : (
-              ""
-            )}
     </div>
   );
 };
