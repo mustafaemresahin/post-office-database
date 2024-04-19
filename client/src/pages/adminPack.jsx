@@ -54,7 +54,23 @@ function AdminPack() {
   console.log('vehicles:',vehicles);
 
   const handleChangeStatus = async (PackageID, newStatus) => {
-    const isConfirmed = window.confirm('Are you sure you want to change the status of package');
+
+    const currentPackage = pack.find(p => p.PackageID === PackageID);
+    if (!currentPackage) {
+      alert("Package not found!");
+      return;
+    }
+
+    if (currentPackage.Status === 'Delivered') {
+      alert("Cannot change status once delivered!");
+      return;
+    }
+
+    if (!currentPackage.VehicleID && (newStatus === 'In Transit' || newStatus === 'Delivered'|| newStatus === 'Cancelled')) {
+      alert("A vehicle must be assigned before updating the status.");
+      return;
+    }
+    const isConfirmed = window.confirm('Are you sure you want to change the status of package?');
     if(!isConfirmed){
         return;
         }
