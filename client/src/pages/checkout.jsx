@@ -196,14 +196,26 @@ function Checkout() {
             <div className="description">
               <h3>Shopping Cart</h3>
               {Object.keys(cartItems).some(itemId => cartItems[itemId] > 0) ?(
-                <ul className="cart-item-list"> {/* Added unordered list with class */}
+                <ul className="cart-item-list">
                   {Object.keys(cartItems).map((itemId) => {
                     const product = PRODUCTS.find(product => product.id === parseInt(itemId));
                     if (product && cartItems[itemId] > 0) {
                       return (
-                        <li key={product.id}> {/* Each item now within a list item */}
-                          {product.productName},
-                          quantity: {cartItems[itemId]}
+                        <li key={product.id}>
+                          <table className="packageTable2" style={{'max-width':'630px', 'margin-left':'20px', 'margin-bottom':'20px'}}>
+                          <thead>
+                            <tr>
+                              <th>Name</th>
+                              <th>Quantity</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                              <tr key={product.id}>
+                                <td>{product.productName}</td>
+                                <td>{cartItems[itemId]}</td>
+                              </tr>
+                          </tbody>
+                        </table>
                         </li>
                       );
                     }
@@ -220,10 +232,34 @@ function Checkout() {
               {unreceivedPackages.length > 0 ? (
                 <ul>
                   {_.uniqBy(unreceivedPackages, 'PackageID').map((pendingpackage) => (
-                    <li key={pendingpackage.PackageID}> {/* Corrected key prop */}
-                      Package ID: {pendingpackage.PackageID},
-                      Cost: {pendingpackage.cost}
-                    </li>
+                    <div className="packageTable">
+                    <table className="packageTable2">
+                      <thead>
+                        <tr>
+                          <th>Recipient</th>
+                          <th>Destination</th>
+                          <th>Type</th>
+                          <th>Dimensions</th>
+                          <th>Weight</th>
+                          <th>Expedited Shipping</th>
+                          <th>Cost</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {_.uniqBy(unreceivedPackages, 'PackageID').map((pendingpackage) => (
+                          <tr key={pendingpackage.PackageID}>
+                            <td>{pendingpackage.recipientFirstName} {pendingpackage.recipientLastName}</td>
+                            <td>{pendingpackage.destination}</td>
+                            <td>{pendingpackage.Type}</td>
+                            <td>{pendingpackage.Dimensions}</td>
+                            <td>{parseFloat(pendingpackage.Weight).toFixed(2)} lbs</td>
+                            <td>{pendingpackage.expeditedShipping ? "Yes" : "No"}</td>
+                            <td>${pendingpackage.cost}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
                   ))}
                 </ul>
                 ) : (
@@ -243,8 +279,7 @@ function Checkout() {
                   <p>Total: ${parseFloat((totalAmount + unreceivedPackages.reduce((sum, pendingpackage) => sum + parseFloat(pendingpackage.cost || 0), 0)).toFixed(2))}</p>
                   <p>
                   <div className="button-container">
-                    <button onClick={() => navigate("/shop")}> Continue Shopping </button>
-                    <button onClick={() => navigate("/cart")}> Go to Cart </button>
+                    <button onClick={() => navigate("/cart")}> Go back to Cart </button>
                     <button onClick={handleSubmit}>Place order</button>
                   </div>
                   </p>
