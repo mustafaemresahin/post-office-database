@@ -234,7 +234,7 @@ function Checkout() {
               {unreceivedPackages.length > 0 ? (
                 <ul>
                   {_.uniqBy(unreceivedPackages, 'PackageID').map((pendingpackage) => (
-                    <div className="packageTable">
+                    <div className="packageTable" key={pendingpackage.PackageID}>
                     <table className="packageTable2">
                       <thead>
                         <tr>
