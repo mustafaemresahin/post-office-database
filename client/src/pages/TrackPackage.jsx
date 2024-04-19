@@ -1,17 +1,16 @@
 import React, { useState } from 'react';
-import '../css/register.css';
 import '../css/tracking.css';
-import { useNavigate } from 'react-router-dom'; 
 import axios from 'axios';
 
 const TrackingForm = () => {
   const [trackingNumber, setTrackingNumber] = useState('');
   const [trackingInfo, setTrackingInfo] = useState([]);  // Initialize as an empty array
-  const [errorMessage, setErrorMessage] = useState(''); 
+  const [errorMessage, setErrorMessage] = useState('');
+  const [clicked, setClicked] = useState(false);
 
   const handleChange = (event) => {
     setTrackingNumber(event.target.value);
-    setTrackingInfo([]);
+    //setTrackingInfo([]);
     setErrorMessage('');
   };
 
@@ -25,10 +24,12 @@ const TrackingForm = () => {
         } else {
           const sortedInfo = [...response.data].sort((a, b) => new Date(b.Timestamp) - new Date(a.Timestamp));
           setTrackingInfo(sortedInfo);
+          setClicked(true);
         }
     })
       .catch(error => {
         console.error('Error:', error);
+        setTrackingInfo([]);
         setErrorMessage('An error occurred while fetching the tracking information.');
       });
     } catch (error) {
@@ -57,7 +58,7 @@ const TrackingForm = () => {
                   pattern="[0-9a-f]{16}"
                 />
               </div>
-              <button type="submit">Track Package</button>
+              <button type="submit" style={{'margin-left':'10px'}}>Track Package</button>
             </form>
 
             {errorMessage && <p className="error-message">{errorMessage}</p>}
@@ -89,7 +90,7 @@ const TrackingForm = () => {
               </div>
                 ))}
               </div>
-            ) : <p>No tracking information available.</p>}
+            ) : clicked && <p>No tracking information available.</p>}
           </div>
         </div>
       </div> 

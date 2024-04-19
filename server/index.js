@@ -1146,6 +1146,8 @@ else if (req.url.startsWith("/api/packagesbystatus")){
         const body = JSON.parse(data);
         const itemId = body.itemId;
         const cartId = body.cartId;
+        const amount = body.amount;
+
     
         try {
           // Check for existing entry
@@ -1161,7 +1163,7 @@ else if (req.url.startsWith("/api/packagesbystatus")){
             } else {
               // Existing item found, decrement quantity
               const existingItem = results[0];
-              const newQuantity = Math.max(existingItem.Quantity - 1, 0); // Ensure quantity doesn't go below 0
+              const newQuantity = Math.max(existingItem.Quantity - amount, 0); // Ensure quantity doesn't go below 0
 
               if (newQuantity === 0) {
                 // Remove item completely

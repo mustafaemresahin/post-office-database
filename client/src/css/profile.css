@@ -17,6 +17,9 @@
   max-width: 500px; /* Slightly larger to accommodate more content */
   width: 100%;
   margin: 20px; /* Ensure some space around the card */
+  border-top: 8px solid #007bff;
+  padding: 15px;
+  background-color: #ffffff;
 }
 
 /* Style adjustments for the table and its content */

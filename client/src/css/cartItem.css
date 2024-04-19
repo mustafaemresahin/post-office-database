@@ -1,23 +1,24 @@
-/* cartItem.css */
 .cartItem {
-    display: flex;
-    align-items: center;
-    gap: 1rem; /* Space between image and description */
-  }
-  
-  .description {
-    flex: 1; /* Allow description to fill available space */
-  }
-  
-  .countHandler {
-    display: flex;
-    align-items: center;
-  }
-  
-  .countHandler button,
-  .countHandler input {
-    /* Ensure buttons and input do not overflow */
-    min-width: 30px; /* Adjust based on your design */
-    max-width: 100%; /* Prevent overflow */
-  }
-  
+  justify-content: space-between;
+  background-color: #f5f5f5;
+  border-radius: 4px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.cart-input {
+  text-align: center;
+  width: 40px;
+  padding: 5px;
+  border: 1px solid #cccccc;
+  border-radius: 4px;
+  margin: 0px;
+  font-size: 16px;
+}
+
+.cart-remove {
+  background-color:#ff6258;
+}
+
+.cart-remove:hover{
+  background-color:#e55650;
+}

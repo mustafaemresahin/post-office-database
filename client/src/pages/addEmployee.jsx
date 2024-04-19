@@ -30,7 +30,7 @@ const AddEmployee = () => {
     }, []);
 
     const handleChangeRole = async (user) => {
-        const isConfirmed = window.confirm('Are you sure you want to change the role ');
+        const isConfirmed = window.confirm('Are you sure you want to change the role?');
          if(!isConfirmed){
              return;
              }
@@ -83,6 +83,7 @@ const AddEmployee = () => {
                                 <td>{user.role}</td>
                                 <td>
                                     <select
+                                        style={{'min-width':'100px'}}
                                         value={selectedRoles[user.UserID] || ''}
                                         onChange={(e) => handleRoleSelection(user.UserID, e.target.value)}
                                         >

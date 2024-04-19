@@ -14,6 +14,7 @@ function AddUser() {
         try {
           const response = await axios.get('/api/users');
           setData(response.data.filter(user => user.role === "User"));
+          console.log(data);
         } catch (error) {
           console.error('Error users:', error);
         }
@@ -44,6 +45,10 @@ const handleAddChange = (event) => {
 
 const handleAddSubmit = async (event) => {
     event.preventDefault();
+    const isConfirmed = window.confirm('Are you sure you want to add user?');
+    if(!isConfirmed){
+        return;
+        }
     try {
         const response = await axios.post('/api/adminAdd',  JSON.stringify(addFormData));
         console.log('Added Users successful:', response.data);
@@ -56,7 +61,7 @@ const handleAddSubmit = async (event) => {
     
 
     return (
-        <div className="user-container">
+        <div className="add-user-container">
             <h2>Add new user</h2>
             <form onSubmit={handleAddSubmit}>
 

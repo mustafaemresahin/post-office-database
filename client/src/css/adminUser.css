@@ -58,3 +58,52 @@ table tr:hover {
   border-radius: 10px;
   text-decoration: none;
 }
+
+.add-user-container {
+  max-width: 600px;
+  margin: auto;
+  padding: 20px;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.add-user-container h2 {
+  color: #333;
+  font-family: Arial, sans-serif;
+}
+
+.add-user-container form {
+  display: grid;
+  grid-gap: 15px;
+  padding: 20px;
+}
+
+.add-user-container label {
+  display: block;
+  font-size: 14px;
+  color: #4b4b4b;
+  margin-bottom: 5px;
+}
+
+.add-user-container input {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.add-user-container button {
+  background-color: #0056b3;
+  color: white;
+  border: none;
+  letter-spacing: 1px;
+  font-size: 16px;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: background-color 0.3s ease;
+}
+
+.add-user-container button:hover {
+  background-color: #003d80;
+}

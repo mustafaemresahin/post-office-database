@@ -114,7 +114,7 @@ const VehiclesTable = () => {
                                 <td>{user.Type}</td>
                                 <td>{user.Unit}</td>
                                 <br></br>
-                                <select onChange={(e) => handleSetDriver(user.VehicleID, e.target.value)} value={user.EmployeeID || ''} style={{display:'block', margin: 'auto', textAlign: 'center'}}>
+                                <select onChange={(e) => handleSetDriver(user.VehicleID, e.target.value)} value={user.EmployeeID || ''} style={{'min-width':'220px', display:'block', margin: 'auto', textAlign: 'center'}}>
   						                    <option value="">Driver</option>
   						                    {drivers.map((driver) => (
     					                    <option key={driver.EmployeeID} value={driver.EmployeeID}>

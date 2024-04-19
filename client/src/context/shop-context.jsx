@@ -14,34 +14,41 @@ const getDefaultCart = async () => {
 
   try {
     const response = await axios.get('/api/cart_items'); // Replace with your actual API endpoint
-    const cartItems = response.data.items || [];
+    const cartItems = response.data;
 
     // Filter cart items based on user ID (if necessary)
-    const filteredCartItems = id ? cartItems.filter(item => item.userId === id) : cartItems;
-    console.log("Filtered cart items:", filteredCartItems);
+    const filteredCartItems = cartItems.filter(item => item.CartID === cartId && item.PackageID === null);
 
     // Create a cart object with quantities for each product
     let cart = {};
     PRODUCTS.forEach(product => {
       cart[product.id] = 0;
-      const matchingItem = filteredCartItems.find(cartItem => cartItem.productId === product.id);
+      const matchingItem = filteredCartItems.find(cartItem => cartItem.StoreItemID === product.id);
       if (matchingItem) {
-        cart[product.id] = matchingItem.quantity;
-        console.log("Found matching item for product:", product.id, "Quantity:", matchingItem.quantity);
+        cart[product.id] = matchingItem.Quantity;
       } else {
-        console.log("No matching item found for product:", product.id);
       }
     });
 
     return cart;
   } catch (error) {
-    console.error("Error fetching cart:", error);
     return {}; // Return an empty cart on error
   }
 };
 
 export const ShopContextProvider = (props) => {
-  const [cartItems, setCartItems] = useState(getDefaultCart());
+  const [cartItems, setCartItems] = useState({}); // Set initial state to an empty object
+
+  useEffect(() => {
+    // Define an async function within the useEffect
+    const fetchCart = async () => {
+      const defaultCart = await getDefaultCart(); // Await the async call
+      setCartItems(defaultCart); // Set the state with the resolved value
+    };
+
+    fetchCart(); // Call the async function
+  }, []);
+  
 
   useEffect(() => {
     console.log("Cart Items Updated:", cartItems);
@@ -49,14 +56,17 @@ export const ShopContextProvider = (props) => {
 
   const getTotalCartAmount = () => {
     let totalAmount = 0;
-    for (const item in cartItems) {
-      if (cartItems[item] > 0) {
-        let itemInfo = PRODUCTS.find((product) => product.id === Number(item));
-        totalAmount += cartItems[item] * itemInfo.price;
-      }
+    if (Object.keys(cartItems).length > 0) {
+      totalAmount = Object.keys(cartItems).reduce((sum, key) => {
+        const product = PRODUCTS.find(p => p.id.toString() === key);
+        return sum + (product ? cartItems[key] * product.price : 0);
+      }, 0);
     }
     return totalAmount;
   };
+  
+
+  
 
   const addToCart = async (itemId) => {
     const cartId = localStorage.getItem('cartId');
@@ -87,7 +97,7 @@ export const ShopContextProvider = (props) => {
     }
   };
   
-  const removeFromCart = async (itemId) => {
+  const removeFromCart = async (itemId, amount) => {
     const cartId = localStorage.getItem('cartId');
   
     try {
@@ -95,6 +105,7 @@ export const ShopContextProvider = (props) => {
       const requestData = {
         itemId,
         cartId,
+        amount
       };
   
       const response = await axios.post('/api/cart_items/remove', requestData); // Replace with your API endpoint for removal
@@ -103,7 +114,7 @@ export const ShopContextProvider = (props) => {
       // Update cart state based on successful response (if applicable)
       if (response.data.success) { // Assuming response has a success property
         setCartItems((prev) => {
-          const updatedCart = { ...prev, [itemId]: Math.max((prev[itemId] || 0) - 1, 0) };
+          const updatedCart = { ...prev, [itemId]: Math.max((prev[itemId] || 0) - amount, 0) };
           console.log("Item Removed from Cart:", itemId, "Updated Cart:", updatedCart);
           return updatedCart;
         });
