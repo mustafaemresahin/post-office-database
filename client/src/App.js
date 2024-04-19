@@ -38,6 +38,7 @@ import PackageReport2 from './pages/packageReport2';
 import MonthlySignups from './pages/monthlySignups';
 import EmployeeAdd from './pages/employeeAdd';
 import TransactionHistory from './pages/transactionHistory';
+import SentPackages from './pages/sentPackages';
 
 const App = () => {
 
@@ -83,6 +84,7 @@ const App = () => {
           <Route path="/monthlysignups" element={<MonthlySignups />} />
           <Route path="/employeeAdd" element={<EmployeeAdd />} />
           <Route path="/transactionhistory" element={<TransactionHistory />} />
+          <Route path="/sentPackages" element={<SentPackages />} />
         </Routes>
         </ShopContextProvider>
       </div>      
