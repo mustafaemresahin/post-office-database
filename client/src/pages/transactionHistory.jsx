@@ -59,7 +59,7 @@ function TransactionHistory() {
                       <tr key={notification.userID} className="notify-tr">
                         <td>{notification.TransactionID}</td>
                         <td>{notification.TransactionType}</td>
-                        <td className="notify-td">{notification.TotalAmount}</td>
+                        <td className="notify-td">$ {notification.TotalAmount}</td>
                         <td className="notify-td">{(new Date(notification.TransactionDate).toLocaleString("en-US", { year: 'numeric', month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit', hour12: true }))}</td>
                       </tr>
                     ))}
