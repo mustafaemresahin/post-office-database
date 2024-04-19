@@ -825,25 +825,46 @@ else if (req.url.startsWith("/api/packagesbystatus")){
       });
       req.on("end", () => {
         const body = JSON.parse(data);
-        const status = body.Status;
-        console.log(status);
+        const newStatus = body.Status;
+        console.log(newStatus);
         console.log(PackageID);
- 
- 
+
         db.query(
-          "UPDATE package SET Status = ? WHERE PackageID = ?",
-          [status, PackageID],
-          (error) => {
+          "SELECT Status FROM package WHERE PackageID = ?",
+          [PackageID],
+          (error, results) => {
             if (error) {
               res.writeHead(500, { 'Content-Type': 'application/json' });
               res.end(JSON.stringify({ error: 'Internal Server Error' }));
-            } else {
-              res.writeHead(200, { 'Content-Type': 'application/json' });
-              res.end(JSON.stringify({ message: 'package status has been updated successfully' }));
+              return;
             }
+            
+            const currentStatus = results[0].Status;
+            
+            // If current status is 'Delivered', do not update
+            if (currentStatus === 'Delivered') {
+              res.writeHead(403, { 'Content-Type': 'application/json' });
+              res.end(JSON.stringify({ error: 'Cannot change status once delivered' }));
+              return;
+            }
+    
+ 
+ 
+            db.query(
+              "UPDATE package SET Status = ? WHERE PackageID = ?",
+              [newStatus, PackageID],
+              (updateError) => {
+                if (updateError) {
+                  res.writeHead(500, { 'Content-Type': 'application/json' });
+                  res.end(JSON.stringify({ error: 'Internal Server Error' }));
+                } else {
+                  res.writeHead(200, { 'Content-Type': 'application/json' });
+                  res.end(JSON.stringify({ message: 'Package status has been updated successfully' }));
+                }
+              }
+            );
           }
         );
-        return;
       });
     }
     // update VehicleID on packages, does not work
