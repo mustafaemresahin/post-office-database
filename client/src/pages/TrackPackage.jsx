@@ -58,7 +58,7 @@ const TrackingForm = () => {
                   pattern="[0-9a-f]{16}"
                 />
               </div>
-              <button type="submit">Track Package</button>
+              <button type="submit" style={{'margin-left':'10px'}}>Track Package</button>
             </form>
 
             {errorMessage && <p className="error-message">{errorMessage}</p>}
