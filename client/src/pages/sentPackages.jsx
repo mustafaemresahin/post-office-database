@@ -1,74 +1,84 @@
-import React, {useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import '../css/notification.css';
 import { useNavigate } from "react-router-dom";
 
 function SentPackages() {
-  const [notify, setNotify] = useState([])
+  const [packages, setPackages] = useState([]);
   const navigate = useNavigate();
 
-  useEffect(() => 
-  {
+  useEffect(() => {
     const token = localStorage.getItem('token');
     const id = localStorage.getItem('id');
     if (!token) {
       navigate("/login");
       return;
     }
-    const fetchNotifications = async () => {
+
+    // Function to fetch packages and their tracking information
+    const fetchPackagesAndTracking = async () => {
       try {
-        axios.get('/api/package')
-        .then(response => {
-            const userNotifs = response.data.filter(noti => noti.SenderID === id);
-            if (!userNotifs) {
-              console.log('No Notifications');
-            }
-            else{
-              setNotify(userNotifs);
-              console.log(userNotifs);
-            }
-        })
-        .catch(error => console.error('Error:', error));
+        const packagesResponse = await axios.get('/api/package');
+        const trackingResponse = await axios.get('/api/trackinghistory');
+
+        // Filtering packages for the current user
+        const userPackages = packagesResponse.data.filter(pkg => pkg.SenderID === id);
+
+        // Map over packages to include tracking information
+        const combinedData = userPackages.map(pkg => {
+          // Find tracking info for each package
+          const trackingInfo = trackingResponse.data.find(track => track.PackageID === pkg.PackageID) || {};
+          return {
+            ...pkg,
+            trackingID: trackingInfo.TrackingID || 'No Tracking Info'
+          };
+        });
+
+        setPackages(combinedData);
       } catch (error) {
-        console.error('Error:', error);
+        console.error('Error fetching data:', error);
       }
     };
-  
-    fetchNotifications();
+
+    fetchPackagesAndTracking();
   }, [navigate]);
-    
+
   return (
     <div className='notification-page'>
-      <div className="container-notify" style={{'min-width':'1000px'}}>
+      <div className="container-notify" style={{'min-width':'1200px'}}>
         <div className="notification-header">
           <h1>Sent Packages</h1>
         </div>
         <div className="notifcation-container">
           <main className="notification-card">
             <div className="description-notify">
-              {notify.length > 0 ? (
+              {packages.length > 0 ? (
                 <table>
                     <thead>
-                        <th>Weight</th>
-                        <th>Dimensions</th>
-                        <th>Type</th>
-                        <th>Status</th>
-                        <th>Date Sent</th>
-                        <th>Destination</th>
-                        <th>Receiver</th>
-                        <th>Cost</th>
+                        <tr>
+                            <th>Tracking #</th>
+                            <th>Weight</th>
+                            <th>Dimensions</th>
+                            <th>Type</th>
+                            <th>Status</th>
+                            <th>Date Sent</th>
+                            <th>Destination</th>
+                            <th>Receiver</th>
+                            <th>Cost</th>
+                        </tr>
                     </thead>
                   <tbody>
-                    {notify.map(notification => (
-                      <tr key={notification.userID} className="notify-tr">
-                        <td>{notification.Weight}</td>
-                        <td>{notification.Dimensions}</td>
-                        <td>{notification.Type}</td>
-                        <td>{notification.Status}</td>
-                        <td className="notify-td">{(new Date(notification.DateSent).toLocaleString("en-US", { year: 'numeric', month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit', hour12: true }))}</td>
-                        <td>{notification.destination}</td>
-                        <td>{notification.recipientFirstName} {notification.recipientLastName}</td>
-                        <td>{notification.cost}</td>
+                    {packages.map(pkg => (
+                      <tr key={pkg.PackageID} className="notify-tr">
+                        <td>{pkg.trackingID}</td>
+                        <td>{pkg.Weight}</td>
+                        <td>{pkg.Dimensions}</td>
+                        <td>{pkg.Type}</td>
+                        <td>{pkg.Status}</td>
+                        <td>{(new Date(pkg.DateSent).toLocaleString("en-US", { year: 'numeric', month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit', hour12: true }))}</td>
+                        <td>{pkg.destination}</td>
+                        <td>{pkg.recipientFirstName} {pkg.recipientLastName}</td>
+                        <td>{pkg.cost}</td>
                       </tr>
                     ))}
                   </tbody>
@@ -85,4 +95,3 @@ function SentPackages() {
 };
 
 export default SentPackages;
-
