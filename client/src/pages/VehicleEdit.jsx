@@ -33,6 +33,10 @@ const handleChange = (event) => {
 
   const handleEditVehicle = async (event) => {
     event.preventDefault();
+    const isConfirmed = window.confirm('Are you sure you want to edit vehicle?');
+         if(!isConfirmed){
+             return;
+             }
     try {
       const vehicleId = localStorage.getItem('editVehicleId');
       const response = await axios.put(`/api/vehicleEdit/${vehicleId}`, formData);

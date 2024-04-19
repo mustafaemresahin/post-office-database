@@ -30,7 +30,7 @@ const AddEmployee = () => {
     }, []);
 
     const handleChangeRole = async (user) => {
-        const isConfirmed = window.confirm('Are you sure you want to change the role ');
+        const isConfirmed = window.confirm('Are you sure you want to change the role?');
          if(!isConfirmed){
              return;
              }

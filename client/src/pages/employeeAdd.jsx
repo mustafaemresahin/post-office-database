@@ -33,6 +33,10 @@ const EmployeeAdd = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    const isConfirmed = window.confirm('Are you sure you want to add the employee?');
+         if(!isConfirmed){
+             return;
+             }
     try {
       const response = await axios.post('/api/employeeadd', JSON.stringify(employeeData), {
         headers: {

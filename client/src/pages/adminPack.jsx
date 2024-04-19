@@ -54,6 +54,10 @@ function AdminPack() {
   console.log('vehicles:',vehicles);
 
   const handleChangeStatus = async (PackageID, newStatus) => {
+    const isConfirmed = window.confirm('Are you sure you want to change the status of package');
+    if(!isConfirmed){
+        return;
+        }
     try {
       const response = await axios.put(`/api/userspackages/${PackageID}`, { Status: newStatus });
       console.log(response);

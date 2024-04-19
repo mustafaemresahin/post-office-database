@@ -23,6 +23,10 @@ const VehicleAdd = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    const isConfirmed = window.confirm('Are you sure you want to add vehicle?');
+         if(!isConfirmed){
+             return;
+             }
     try {
       const response = await axios.post('/api/vehicleadd', JSON.stringify(vehicleData), {
         headers: {

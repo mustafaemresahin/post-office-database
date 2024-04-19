@@ -45,6 +45,10 @@ const handleAddChange = (event) => {
 
 const handleAddSubmit = async (event) => {
     event.preventDefault();
+    const isConfirmed = window.confirm('Are you sure you want to add user?');
+    if(!isConfirmed){
+        return;
+        }
     try {
         const response = await axios.post('/api/adminAdd',  JSON.stringify(addFormData));
         console.log('Added Users successful:', response.data);
