@@ -144,3 +144,41 @@
 .cart-message-empty p {
   color: inherit;
 }
+
+.packageTable table {
+  width: 100%;
+  border-collapse: collapse;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.packageTable th, .packageTable td {
+  border: 1px solid #cccccc;
+  padding: 8px;
+  text-align: left;
+}
+
+.packageTable th {
+  background-color: #f4f4f4;
+}
+
+.packageTable tr:nth-child(odd) {
+  background-color: #f9f9f9;
+}
+
+.packageTable tr:hover {
+  background-color: #f1f1f1;
+}
+
+.packageRemove {
+  background-color: #ff6258;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.packageRemove:hover {
+  background-color: #cc503a;
+}
