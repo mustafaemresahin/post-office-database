@@ -83,6 +83,7 @@ const AddEmployee = () => {
                                 <td>{user.role}</td>
                                 <td>
                                     <select
+                                        style={{'min-width':'100px'}}
                                         value={selectedRoles[user.UserID] || ''}
                                         onChange={(e) => handleRoleSelection(user.UserID, e.target.value)}
                                         >
