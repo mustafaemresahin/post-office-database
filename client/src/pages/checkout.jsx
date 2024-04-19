@@ -197,11 +197,7 @@ function Checkout() {
               <h3>Shopping Cart</h3>
               {Object.keys(cartItems).some(itemId => cartItems[itemId] > 0) ?(
                 <ul className="cart-item-list">
-                  {Object.keys(cartItems).map((itemId) => {
-                    const product = PRODUCTS.find(product => product.id === parseInt(itemId));
-                    if (product && cartItems[itemId] > 0) {
-                      return (
-                        <li key={product.id}>
+                  <li>
                           <table className="packageTable2" style={{'max-width':'630px', 'margin-left':'20px', 'margin-bottom':'20px'}}>
                           <thead>
                             <tr>
@@ -210,18 +206,24 @@ function Checkout() {
                             </tr>
                           </thead>
                           <tbody>
-                              <tr key={product.id}>
-                                <td>{product.productName}</td>
-                                <td>{cartItems[itemId]}</td>
-                              </tr>
+                          {Object.keys(cartItems).map((itemId) => {
+                              const product = PRODUCTS.find(product => product.id === parseInt(itemId));
+                              if (product && cartItems[itemId] > 0) {
+                                return (
+                                  <tr key={product.id}>
+                                          <td>{product.productName}</td>
+                                          <td>{cartItems[itemId]}</td>
+                                        </tr>
+                                );
+                              }
+                              // Handle cases where the product might not exist in PRODUCTS
+                              return null;
+                            })}
+                              
                           </tbody>
                         </table>
                         </li>
-                      );
-                    }
-                    // Handle cases where the product might not exist in PRODUCTS
-                    return null;
-                  })}
+                  
                 </ul>
               ) : (
                 <p>Cart Empty</p>
