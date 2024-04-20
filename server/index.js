@@ -251,7 +251,7 @@ const server = http.createServer( async (req, res) => {
 
     else if (req.url === "/api/trackinghistory") 
     {
-      db.query("SELECT * FROM trackinghistory", (error, result) => {
+      db.query("SELECT * FROM trackinghistory ORDER BY Timestamp DESC;", (error, result) => {
         if (error) {
           res.writeHead(500, { "Content-Type": "application/json" });
           res.end(JSON.stringify({ error: error }));
