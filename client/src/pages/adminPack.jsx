@@ -31,7 +31,6 @@ function AdminPack() {
       const response = await axios.get('/api/package');
       setPack(response.data);
       console.log(pack);
-      console.log("here00");
       // Also update local storage
       localStorage.setItem('packages', JSON.stringify(response.data));
     } catch (error) {
@@ -63,6 +62,11 @@ function AdminPack() {
 
     if (currentPackage.Status === 'Delivered') {
       alert("Cannot change status once delivered!");
+      return;
+    }
+
+    if (currentPackage.Status === 'Cancelled') {
+      alert("Cannot change status once cancelled!");
       return;
     }
 
