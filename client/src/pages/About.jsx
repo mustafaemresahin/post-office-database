@@ -32,10 +32,10 @@ function About() {
 
           
             <div className='button-holder'>
-            <button onClick={()=> {navigate("/Send%20Package")}}>Send Package</button>
+            {isLoggedIn && <button onClick={()=> {navigate("/Send%20Package")}}>Send Package</button>}
             <button onClick={()=>{window.location.href="/track"}}>Track Package</button>
+            <button onClick={()=> {navigate("/shop")}}>Post Office Shop</button>
             {!isLoggedIn && <button onClick={()=>{window.location.href="/register"}}>Register</button>}
-            {isLoggedIn && <button onClick={()=> {navigate("/shop")}}>Post Office Shop</button>}
           </div>
 
 

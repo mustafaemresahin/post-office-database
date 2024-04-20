@@ -83,7 +83,7 @@ const TrackingForm = () => {
                      {index === 0 && (
                   <>
                     <p className="type">Package Type: {info.Description}</p>
-                    {info.Status !== "Delivered"||"Lost"||"Cancelled" && <p className="delivery">Estimated Delivery: {info.EstimatedDeliveryTime}</p>}
+                    {info.Status !== "Delivered" && info.Status !== "Cancelled"&& info.Status !== "Lost"&& <p className="delivery">Estimated Delivery: {info.EstimatedDeliveryTime}</p>}
                   </>
                 )}
               </div>

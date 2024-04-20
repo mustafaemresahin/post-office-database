@@ -3,23 +3,23 @@ import axios from 'axios';
 import '../css/notification.css';
 import { useNavigate } from "react-router-dom";
 
-function Notification() {
+function TransactionHistory() {
   const [notify, setNotify] = useState([])
   const navigate = useNavigate();
 
   useEffect(() => 
   {
     const token = localStorage.getItem('token');
-    const id = localStorage.getItem('id');
+    const id = localStorage.getItem('cartId');
     if (!token) {
       navigate("/login");
       return;
     }
     const fetchNotifications = async () => {
       try {
-        axios.get('/api/notify')
+        axios.get('/api/transaction')
         .then(response => {
-            const userNotifs = response.data.filter(noti => noti.userID === id); // Find the package by id
+            const userNotifs = response.data.filter(noti => noti.CartID === id);
             if (!userNotifs) {
               console.log('No Notifications');
             }
@@ -39,32 +39,34 @@ function Notification() {
     
   return (
     <div className='notification-page'>
-      <div className="container-notify" style={{'min-width':'1200px'}}>
+      <div className="container-notify">
         <div className="notification-header">
-          <h1>Notifications</h1>
+          <h1>Transaction History</h1>
         </div>
         <div className="notifcation-container">
           <main className="notification-card">
             <div className="description-notify">
               {notify.length > 0 ? (
-                <table style={{'min-width':'1000px'}}>
-                  <thead>
-                    <th>Notification ID</th>
-                    <th>Notification Content</th>
-                    <th>Date</th>
-                  </thead>
+                <table>
+                    <thead>
+                        <th>Transaction ID</th>
+                        <th>Transaction Type</th>
+                        <th>Total Amount</th>
+                        <th>Date</th>
+                    </thead>
                   <tbody>
                     {notify.map(notification => (
                       <tr key={notification.userID} className="notify-tr">
-                        <td>{notification.notification_id}</td> 
-                        <td className="notify-td">{notification.message}</td>
-                        <td className="notify-td">{(new Date(notification.timestamp).toLocaleString("en-US", { year: 'numeric', month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit', hour12: true }))}</td>
+                        <td>{notification.TransactionID}</td>
+                        <td>{notification.TransactionType}</td>
+                        <td className="notify-td">$ {notification.TotalAmount}</td>
+                        <td className="notify-td">{(new Date(notification.TransactionDate).toLocaleString("en-US", { year: 'numeric', month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit', hour12: true }))}</td>
                       </tr>
                     ))}
                   </tbody>
                 </table>
               ) : (
-                <p>No notifications</p>
+                <p>No Transaction History</p>
               )}
             </div>
           </main>
@@ -74,5 +76,5 @@ function Notification() {
   );  
 };
 
-export default Notification;
+export default TransactionHistory;
 
