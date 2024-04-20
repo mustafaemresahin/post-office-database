@@ -66,7 +66,7 @@ function AdminPack() {
       return;
     }
 
-    if (!currentPackage.VehicleID && (newStatus === 'In Transit' || newStatus === 'Delivered'|| newStatus === 'Cancelled')) {
+    if (!currentPackage.VehicleID && (newStatus === 'In Transit' || newStatus === 'Delivered'|| newStatus === 'Cancelled'|| newStatus === 'Lost')) {
       alert("A vehicle must be assigned before updating the status.");
       return;
     }
@@ -147,6 +147,7 @@ function AdminPack() {
                     <option value="In Transit">In Transit</option>
                     <option value="Delivered">Delivered</option>
                     <option value="Cancelled">Cancelled</option>
+                    <option value="Lost">Lost</option>
                   </select>
                 </td>
                 <td>{(new Date(p.DateSent).toLocaleString("en-US", { year: 'numeric', month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit', hour12: true }))}</td>
