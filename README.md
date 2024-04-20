@@ -64,7 +64,8 @@ The application supports three primary user roles:
 
 ## Usage
 
-Access the hosted web application at [Post Office Database Web](https://post-office-database-web-795a025bc915.herokuapp.com/home).
+Access the hosted web application at
+<a href="https://post-office-database-web-795a025bc915.herokuapp.com/home" target="_blank">Post Office Database Web Application</a>
 
 ### User Credentials
 - **Admin Access:**
