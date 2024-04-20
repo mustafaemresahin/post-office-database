@@ -39,7 +39,7 @@ function Notification() {
     
   return (
     <div className='notification-page'>
-      <div className="container-notify">
+      <div className="container-notify" style={{'min-width':'1200px'}}>
         <div className="notification-header">
           <h1>Notifications</h1>
         </div>
@@ -47,7 +47,12 @@ function Notification() {
           <main className="notification-card">
             <div className="description-notify">
               {notify.length > 0 ? (
-                <table>
+                <table style={{'min-width':'1000px'}}>
+                  <thead>
+                    <th>Notification ID</th>
+                    <th>Notification Content</th>
+                    <th>Date</th>
+                  </thead>
                   <tbody>
                     {notify.map(notification => (
                       <tr key={notification.userID} className="notify-tr">
