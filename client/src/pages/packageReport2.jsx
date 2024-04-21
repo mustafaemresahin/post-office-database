@@ -198,6 +198,8 @@ function PackageReport2() {
                 <option value="Pending">Pending</option>
                 <option value="In Transit">In Transit</option>
                 <option value="Accepted">Accepted</option>
+                <option value="Cancelled">Cancelled</option>
+                <option value="Lost">Lost</option>
           </select>
       </div>
       {packages.packages.length > 0 ? (
@@ -206,10 +208,10 @@ function PackageReport2() {
       <thead>
         <tr>
           <th>#</th>
-          <th>Status</th>
           <th>Date Sent</th>
           <th>Type</th>
           <th>Destination</th>
+          <th>Receiver</th>
           <th>Sender</th>
         </tr>
       </thead>
@@ -217,10 +219,10 @@ function PackageReport2() {
       {packages.packages.map((item, index) => (
           <tr key={index}>
             <td>{index + 1}</td>
-            <td>{item.Status}</td>
             <td>{(new Date(item.DateSent).toLocaleString("en-US", { year: 'numeric', month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit', hour12: true }))}</td>
             <td>{item.Type}</td>
             <td>{item.Destination}</td>
+            <td>{item.recipientFirstname} {item.recipientLastname}</td>
             <td>{item.firstname} {item.lastname}</td>
           </tr>
         ))}
