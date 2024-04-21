@@ -62,7 +62,7 @@ const TrackingForm = () => {
             </form>
 
             {errorMessage && <p className="error-message">{errorMessage}</p>}
-            {trackingInfo.length >= 0 ? (
+            {trackingInfo.length > 0 ? (
               <div className="tracking-info">
                 
                 {trackingInfo.map((info, index) => (
