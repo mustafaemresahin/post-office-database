@@ -646,7 +646,7 @@ else if (req.url.startsWith("/api/packagesbystatus")){
   const endDate = reqUrl.searchParams.get('endDate');
   const status = reqUrl.searchParams.get('status');
 
-  const statusQuery = `SELECT Status, DateSent, Type, Destination, firstname, lastname
+  const statusQuery = `SELECT Status, DateSent, Type, Destination, firstname, lastname, recipientFirstname, recipientLastname
                        FROM package
                        JOIN customer_user ON package.SenderID = customer_user.UserID
                        WHERE Status = ? AND DateSent BETWEEN ? AND ?;`;
