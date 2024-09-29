@@ -32,9 +32,10 @@ const generateToken = (user) => {
 };
 
 const db = mysql.createPool({
-  host: 'post-office-web-database.mysql.database.azure.com',
-  user: 'postofficeadmin',
-  password: 'D@tabase123',
+  host: 'localhost',
+  // host: 'post-office-web-database.mysql.database.azure.com',
+  user: 'root',
+  password: 'A.Kkill5524u',
   database: 'mydb',
   port: 3306,
   // You can add connection pool specific options here (refer to official docs)
